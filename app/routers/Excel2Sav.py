@@ -20,7 +20,7 @@ async def load_xlsx(request: Request):
 
 
 
-@router.post('/', response_class=HTMLResponse)
+@router.post('/', response_class=FileResponse)
 async def convert_sav(file: UploadFile, request: Request):
     try:
         # apCvt = APDataConverter()
