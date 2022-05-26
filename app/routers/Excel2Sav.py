@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import HTMLResponse
-from starlette.responses import FileResponse
+from starlette.responses import FileResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
 from ..classes.AP_DataConverter import APDataConverter
 import traceback
@@ -20,7 +20,7 @@ async def load_xlsx(request: Request):
 
 
 
-@router.post('/', response_class=FileResponse)
+@router.post('/', response_class=PlainTextResponse)
 async def convert_sav(file: UploadFile, request: Request):
     try:
         # apCvt = APDataConverter()
@@ -33,7 +33,7 @@ async def convert_sav(file: UploadFile, request: Request):
 
         aName = str(Path(BASE_DIR, file.filename))
 
-        return str(Path(BASE_DIR, file.filename))
+        return 'aaaaa'
 
         # return templates.TemplateResponse('successful.html', {
         #     'request': request,
