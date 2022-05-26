@@ -25,7 +25,9 @@ async def convert_sav(file: UploadFile, request: Request):
         apCvt.getMRSetSyntax()
         apCvt.zipfiles()
 
-        return FileResponse(apCvt.zipName, filename=apCvt.zipName)
+        strName = f'././{apCvt.zipName}'
+
+        return FileResponse(strName, filename=apCvt.zipName)
 
         # return templates.TemplateResponse('successful.html', {
         #     'request': request,
