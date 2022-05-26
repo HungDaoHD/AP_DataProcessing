@@ -1,0 +1,8 @@
+.idea
+__pycache__
+*.zip
+*.swp
+*.sqlite3
+dashmin-1.0.0
+*.sav
+*.xlsx
