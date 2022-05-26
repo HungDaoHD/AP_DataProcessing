@@ -2,13 +2,13 @@ from fastapi import FastAPI, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from app.routers import Excel2Sav, BaeminCheck
+from app.routers import Excel2Sav
 
 
 # from starlette.responses import FileResponse
 # import traceback
 # from app.classes.AP_DataConverter import APDataConverter
-# from app.classes.Baemin_Checking import BaeminCheck
+from app.classes.Baemin_Checking import BaeminCheck
 
 
 templates = Jinja2Templates(directory='app/frontend/templates')
@@ -16,7 +16,7 @@ templates = Jinja2Templates(directory='app/frontend/templates')
 app = FastAPI()
 
 app.include_router(Excel2Sav.router)
-app.include_router(BaeminCheck.router)
+# app.include_router(BaeminCheck.router)
 
 app.mount('/static', StaticFiles(directory='app/frontend/static'), name='static')
 app.mount('/convert-sav/static', StaticFiles(directory='app/frontend/static'), name='static')
@@ -69,31 +69,32 @@ async def index(request: Request):
 #
 #
 #
-#
-#
-# @app.get('/baemin-check', response_class=HTMLResponse)
-# async def load_baemin_xlsx(request: Request):
-#     return templates.TemplateResponse('baemin_check.html', {'request': request})
-#
-#
-# @app.post('/baemin-check', response_class=HTMLResponse)
-# async def baemin_cheking(file: UploadFile, request: Request):
-#
-#     try:
-#         bmc = BaeminCheck()
-#         bmc.load(file)
-#         bmc.check()
-#
-#         return FileResponse(bmc.strFileName, filename=bmc.strFileName)
-#
-#     except Exception:
-#         print(traceback.format_exc())
-#
-#         return templates.TemplateResponse('error.html', {
-#             'request': request,
-#             'strTask': 'Baemin checking',
-#             'strErr': traceback.format_exc()
-#         })
+
+
+
+@app.get('/baemin-check', response_class=HTMLResponse)
+async def load_baemin_xlsx(request: Request):
+    return templates.TemplateResponse('baemin_check.html', {'request': request})
+
+
+@app.post('/baemin-check', response_class=HTMLResponse)
+async def baemin_cheking(file: UploadFile, request: Request):
+
+    try:
+        bmc = BaeminCheck()
+        bmc.load(file)
+        bmc.check()
+
+        return FileResponse(bmc.strFileName, filename=bmc.strFileName)
+
+    except Exception:
+        print(traceback.format_exc())
+
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Baemin checking',
+            'strErr': traceback.format_exc()
+        })
 
 
 
