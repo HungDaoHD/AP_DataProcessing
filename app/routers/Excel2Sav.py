@@ -31,7 +31,7 @@ async def convert_sav(file: UploadFile, request: Request):
         #
         # return FileResponse(apCvt.zipName, filename=apCvt.zipName)
 
-        aName = str(Path(BASE_DIR, file.filename))
+        # aName = str(Path(BASE_DIR, file.filename))
 
         return 'aaaaa'
 
