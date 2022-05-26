@@ -33,7 +33,7 @@ async def convert_sav(file: UploadFile, request: Request):
 
         aName = str(Path(BASE_DIR, file.filename))
 
-        return file.filename
+        return str(Path(BASE_DIR, file.filename))
 
         # return templates.TemplateResponse('successful.html', {
         #     'request': request,
