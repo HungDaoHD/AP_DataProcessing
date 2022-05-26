@@ -5,6 +5,10 @@ from fastapi.templating import Jinja2Templates
 from ..classes.AP_DataConverter import APDataConverter
 import traceback
 
+from pathlib import Path
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 templates = Jinja2Templates(directory='./app/frontend/templates')
 router = APIRouter(prefix='/convert-sav', tags=['convert-sav'])
@@ -27,7 +31,9 @@ async def convert_sav(file: UploadFile, request: Request):
         #
         # return FileResponse(apCvt.zipName, filename=apCvt.zipName)
 
-        return FileResponse(file.filename, filename='aaaa.xlsx')
+        aName = str(Path(BASE_DIR, file.filename))
+
+        return FileResponse(aName, filename='aaaa.xlsx')
 
         # return templates.TemplateResponse('successful.html', {
         #     'request': request,
