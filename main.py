@@ -22,6 +22,9 @@ async def index(request: Request):
     return templates.TemplateResponse('myindex.html', {'request': request})
 
 
+@app.get('/index', response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse('myindex.html', {'request': request})
 
 
 import uvicorn
