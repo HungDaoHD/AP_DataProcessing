@@ -32,6 +32,14 @@ async def custom_404_handler(request: Request, _):
     return templates.TemplateResponse('404.html', {'request': request})
 
 
+@app.get('/msn-prj', response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse('msn_prj.html', {'request': request})
+
+
+@app.get('/chart', response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse('chart.html', {'request': request})
 
 # import uvicorn
 # if __name__ == "__main__":

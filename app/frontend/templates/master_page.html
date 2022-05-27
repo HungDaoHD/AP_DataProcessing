@@ -50,7 +50,7 @@
                     <h4 class="text-primary"><i class="fa fa-hashtag me-2"></i>Data Processing</h4>
                 </a>
                 <div class="navbar-nav w-100">
-                    <a href="#" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Masan projects</a>
+                    <a href="\msn-prj" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>MSN projects</a>
 
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Tools</a>
@@ -60,6 +60,7 @@
                         </div>
                     </div>
 
+                    <a href="\chart" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
                 </div>
             </nav>
         </div>
@@ -76,9 +77,12 @@
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
+
+                <div>
+                    {% block search_bar %}
+                    {% endblock %}
+                </div>
+
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -99,7 +103,6 @@
             <!-- My content Start -->
             <div>
                 {% block content %}
-
                 {% endblock %}
             </div>
             <!-- My content End -->

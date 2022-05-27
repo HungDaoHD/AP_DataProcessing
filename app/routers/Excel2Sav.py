@@ -11,12 +11,12 @@ router = APIRouter(prefix='/convert-sav', tags=['convert-sav'])
 
 
 @router.get('', response_class=HTMLResponse)
-def load_xlsx(request: Request):
+async def load_xlsx(request: Request):
     return templates.TemplateResponse('load_xlsx.html', {'request': request})
 
 
 @router.post('', response_class=FileResponse)
-def convert_sav(file: UploadFile, request: Request):
+async def convert_sav(file: UploadFile, request: Request):
     try:
         apCvt = APDataConverter()
         apCvt.load(file)
