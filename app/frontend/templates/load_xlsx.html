@@ -2,28 +2,42 @@
 
 {% block content %}
 <div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light text-center rounded p-5">
-                <div class="d-flex align-items-center justify-content-between mb-4">
+    <div class="row bg-light rounded align-items-top justify-content-center mx-0">
+        <div class="col-md-6 text-center p-4">
+            <div class="d-flex align-items-center justify-content-center mb-4">
                     <h4 class="mb-0">Convert to SAV</h4>
-                </div>
+            </div>
 
-                <div class="d-flex align-items-center justify-content-center">
-                    <form id="uploadform" action="/convert-sav" method="post" enctype="multipart/form-data">
+            <div class="d-flex align-items-center justify-content-center">
 
-                        <div class="mb-3">
-                            <label for="xlsxFile" class="form-label">Choose xlsx file</label>
-                            <input class="form-control" type="file" id="xlsxFile" name="file" multiple data-max="1" accept=".xlsx" value="">
-                        </div>
+                <form id="uploadform" action="/convert-sav" method="post" enctype="multipart/form-data">
 
-                        <input class="btn btn-primary py-3 w-100 mb-4" type="submit" value="Convert">
+                    <div class="mb-3">
+                        <label for="xlsxFile" class="form-label">Choose xlsx file</label>
+                        <input class="form-control" type="file" id="xlsxFile" name="file" multiple data-max="1" accept=".xlsx" value="">
+                    </div>
 
-                    </form>
-                </div>
+                    <input class="btn btn-primary py-3 w-100 mb-4" type="submit" value="Convert">
 
+                    {% if strErr|trim|length %}
+                    <div id="err" class="alert alert-danger" role="alert">
+                        {{ strErr }}
+                    </div>
+                    {% endif %}
+
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+
+<script>
+    setTimeout(() => {
+        const err = document.getElementById('err');
+        err.style.display = 'none';
+<!--        err.style.visibility = 'hidden';-->
+    }, 3000);
+</script>
+
 {% endblock %}

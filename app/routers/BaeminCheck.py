@@ -28,7 +28,7 @@ async def baemin_cheking(file: UploadFile, request: Request):
     except Exception:
         print(traceback.format_exc())
 
-        return templates.TemplateResponse('error.html', {
+        return templates.TemplateResponse('baemin_check.html', {
             'request': request,
             'strTask': 'Baemin checking',
             'strErr': traceback.format_exc()

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -27,9 +27,12 @@ async def index(request: Request):
     return templates.TemplateResponse('myindex.html', {'request': request})
 
 
+@app.exception_handler(status.HTTP_404_NOT_FOUND)
+async def custom_404_handler(request: Request, _):
+    return templates.TemplateResponse('404.html', {'request': request})
 
 
 
-import uvicorn
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+# import uvicorn
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="127.0.0.1", port=8000)
