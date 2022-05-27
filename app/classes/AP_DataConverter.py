@@ -4,7 +4,7 @@ import pyreadstat
 import io
 import numpy as np
 import zipfile
-
+import re
 
 
 class APDataConverter:
@@ -157,7 +157,7 @@ class APDataConverter:
             for col in dfQres.columns:
                 if col not in ['Name of items', 'Question type', 'Question(Matrix)', 'Question(Normal)'] \
                         and dfQres.loc[idx, col] is not None:
-                    dictQres[strQreName]['cats'].update({int(col): str(dfQres.loc[idx, col])})
+                    dictQres[strQreName]['cats'].update({int(col): self.cleanhtml(str(dfQres.loc[idx, col]))})
 
 
         lstMatrixHeader = list()
@@ -171,6 +171,7 @@ class APDataConverter:
                 strQreLbl = dictQres[i]['label']
                 strAttLbl = str(dictQres[f'{i}_{code}']['label'])
                 strAttLbl = strAttLbl.replace(strQreLbl.rsplit('_', 1)[0], '')[1:]
+                strAttLbl = self.cleanhtml(strAttLbl)
 
                 dictQres[f'{i}_{code}']['label'] = f"{strQreLbl}_{strAttLbl}"
 
@@ -184,7 +185,7 @@ class APDataConverter:
 
             if col in dictQres.keys():
 
-                variable_labels[col] = dictQres[col]['label']
+                variable_labels[col] = self.cleanhtml(dictQres[col]['label'])
                 variable_value_labels[col] = dictQres[col]['cats']
 
             else:
@@ -270,8 +271,11 @@ class APDataConverter:
         self.zipFile = zf
 
 
-
-
+    @staticmethod
+    def cleanhtml(raw_html):
+        CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
+        cleantext = re.sub(CLEANR, '', raw_html)
+        return cleantext
 
 
 
