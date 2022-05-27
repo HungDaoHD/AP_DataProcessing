@@ -24,6 +24,7 @@ app.mount('/static', StaticFiles(directory='app/frontend/static'), name='static'
 
 
 
+
 @app.get('/', response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse('myindex.html', {'request': request})

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, UploadFile
+from fastapi import APIRouter, Request, UploadFile, Depends
 from fastapi.responses import HTMLResponse
 from starlette.responses import FileResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
