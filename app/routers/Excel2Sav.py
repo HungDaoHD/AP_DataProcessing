@@ -16,19 +16,18 @@ router = APIRouter(prefix='/convert-sav', tags=['convert-sav'])
 
 
 
-
 # router.mount('/convert-sav/static', StaticFiles(directory='./app/frontend/static'), name='static')
 
 
 
-@router.get('/', response_class=HTMLResponse)
-async def load_xlsx(request: Request):
+@router.get('', response_class=HTMLResponse)
+def load_xlsx(request: Request):
     return templates.TemplateResponse('load_xlsx.html', {'request': request})
 
 
 
-@router.post('/', response_class=FileResponse)
-async def convert_sav(request: Request, file: UploadFile = File(...)):
+@router.post('', response_class=FileResponse)
+def convert_sav(file: UploadFile, request: Request):
     try:
         apCvt = APDataConverter()
         apCvt.load(file)
