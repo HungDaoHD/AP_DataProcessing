@@ -1,29 +1,18 @@
-from fastapi import APIRouter, Request, UploadFile, File
+from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import HTMLResponse
-from starlette.responses import FileResponse, PlainTextResponse
+from starlette.responses import FileResponse
 from fastapi.templating import Jinja2Templates
 from ..classes.AP_DataConverter import APDataConverter
 import traceback
 
-from pathlib import Path
-
-from fastapi.staticfiles import StaticFiles
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 templates = Jinja2Templates(directory='./app/frontend/templates')
 router = APIRouter(prefix='/convert-sav', tags=['convert-sav'])
 
 
-
-# router.mount('/convert-sav/static', StaticFiles(directory='./app/frontend/static'), name='static')
-
-
-
 @router.get('', response_class=HTMLResponse)
 def load_xlsx(request: Request):
     return templates.TemplateResponse('load_xlsx.html', {'request': request})
-
 
 
 @router.post('', response_class=FileResponse)

@@ -10,12 +10,12 @@ templates = Jinja2Templates(directory='./app/frontend/templates')
 router = APIRouter(prefix='/baemin-check', tags=['baemin-check'])
 
 
-@router.get('/', response_class=HTMLResponse)
+@router.get('', response_class=HTMLResponse)
 async def load_baemin_xlsx(request: Request):
     return templates.TemplateResponse('baemin_check.html', {'request': request})
 
 
-@router.post('/', response_class=HTMLResponse)
+@router.post('', response_class=HTMLResponse)
 async def baemin_cheking(file: UploadFile, request: Request):
 
     try:
