@@ -23,17 +23,13 @@ async def load_xlsx(request: Request):
 @router.post('/', response_class=PlainTextResponse)
 async def convert_sav(file: UploadFile, request: Request):
     try:
-        # apCvt = APDataConverter()
-        # apCvt.load(file)
-        # apCvt.toSav()
-        # apCvt.getMRSetSyntax()
-        # apCvt.zipfiles()
-        #
-        # return FileResponse(apCvt.zipName, filename=apCvt.zipName)
+        apCvt = APDataConverter()
+        apCvt.load(file)
+        apCvt.toSav()
+        apCvt.getMRSetSyntax()
+        apCvt.zipfiles()
 
-        # aName = str(Path(BASE_DIR, file.filename))
-
-        return 'aaaaa'
+        return FileResponse(apCvt.zipName, filename=apCvt.zipName)
 
         # return templates.TemplateResponse('successful.html', {
         #     'request': request,
