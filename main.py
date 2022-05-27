@@ -19,7 +19,7 @@ app.include_router(Excel2Sav.router)
 # app.include_router(BaeminCheck.router)
 
 app.mount('/static', StaticFiles(directory='app/frontend/static'), name='static')
-# app.mount('/convert-sav/static', StaticFiles(directory='app/frontend/static'), name='static')
+app.mount('/convert-sav/static', StaticFiles(directory='app/frontend/static'), name='static')
 # app.mount('/baemin-check/static', StaticFiles(directory='app/frontend/static'), name='static')
 
 
