@@ -1,5 +1,9 @@
 {% extends 'master_page.html' %}
 
+{% block sidebar_MSN_prj %}
+    <a href="\msn-prj" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>MSN projects</a>
+{% endblock %}
+
 {% block search_bar %}
 <form class="d-none d-md-flex ms-4">
     <input class="form-control border-0" type="search" placeholder="Search">
@@ -117,20 +121,18 @@
         </div>
     </div>
 
-
     <div class="bg-light rounded h-100 p-4">
-        <div class="btn-toolbar justify-content-end" role="toolbar">
-            <div class="btn-group me-2" role="group" aria-label="First group">
-                <button type="button" class="btn btn-primary">1</button>
-                <button type="button" class="btn btn-primary">2</button>
-                <button type="button" class="btn btn-primary">3</button>
-                <button type="button" class="btn btn-secondary">...</button>
-                <button type="button" class="btn btn-primary">9</button>
-                <button type="button" class="btn btn-primary">10</button>
-            </div>
+        <div class="btn-toolbar justify-content-end" role="group">
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio1">1</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio2">2</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio3">3</label>
         </div>
     </div>
-
 
 </div>
 

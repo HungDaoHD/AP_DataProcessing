@@ -1,5 +1,15 @@
 {% extends 'master_page.html' %}
 
+{% block sidebar_tool %}
+<div class="nav-item dropdown">
+    <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Tools</a>
+    <div class="dropdown-menu bg-transparent border-0">
+        <a href="\convert-sav" class="dropdown-item">Convert to Sav</a>
+        <a href="\baemin-check" class="dropdown-item active">Baemin checking</a>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid pt-4 px-4">
     <div class="row bg-light rounded align-items-top justify-content-center mx-0">
