@@ -34,11 +34,16 @@ async def custom_404_handler(request: Request, _):
     return templates.TemplateResponse('404.html', {'request': request})
 
 
+# @app.exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR)
+# async def custom_404_handler(request: Request, _):
+#     return templates.TemplateResponse('404.html', {'request': request})
+
+
 @app.get('/chart', response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse('chart.html', {'request': request})
 
 
-# import uvicorn
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="127.0.0.1", port=8000)
+import uvicorn
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

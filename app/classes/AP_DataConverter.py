@@ -185,7 +185,13 @@ class APDataConverter:
 
             if col in dictQres.keys():
 
-                variable_labels[col] = self.cleanhtml(dictQres[col]['label'])
+                if dictQres[col]['type'] == 'MA' and not dictQres[col]['isMAMatrix']:
+                    variable_labels[col] = dictQres[col]['cats'][1]
+                else:
+                    variable_labels[col] = f"{col}. {self.cleanhtml(dictQres[col]['label'])}"
+
+                # variable_labels[col] = self.cleanhtml(dictQres[col]['label'])
+
                 variable_value_labels[col] = dictQres[col]['cats']
 
             else:

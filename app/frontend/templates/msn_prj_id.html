@@ -1,0 +1,1089 @@
+{% extends 'master_page.html' %}
+
+{% block sidebar_MSN_prj %}
+    <a href="\msn-prj" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>MSN projects</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pt-4 px-4">
+
+            {% if strErr|trim|length %}
+                <div id="err" class="alert alert-danger" role="alert">
+                    {{ strErr }}
+                </div>
+            {% endif %}
+
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-0">
+                    <h3 class="mb-0">{{ prj.internal_id }} - {{ prj.name }}</h3>
+
+                    <div>
+                        <h7 class="mb-0">{{ prj.categorical }}</h7><br/>
+                        <h7 class="mb-0">{{ prj.status }}</h7>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    <div class="container-fluid pt-4 px-4">
+
+        <div class="bg-light rounded h-100 p-4">
+
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-info-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-info" type="button" role="tab" aria-controls="nav-info"
+                        aria-selected="true">Information</button>
+
+                    <button class="nav-link" id="nav-sections-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-sections" type="button" role="tab" aria-controls="nav-sections"
+                        aria-selected="false">Sections</button>
+
+                    <button class="nav-link" id="nav-oe_combine-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-oe_combine" type="button" role="tab" aria-controls="nav-oe_combine"
+                        aria-selected="false">OE combine</button>
+
+                    <button class="nav-link" id="nav-scr-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-scr" type="button" role="tab" aria-controls="nav-scr"
+                        aria-selected="false">Screener</button>
+
+                    <button class="nav-link" id="nav-pro-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-pro" type="button" role="tab" aria-controls="nav-pro"
+                        aria-selected="false">Product</button>
+
+                    <button class="nav-link" id="nav-fc-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-fc" type="button" role="tab" aria-controls="nav-fc"
+                        aria-selected="false">Force choice</button>
+
+                    <button class="nav-link" id="nav-add_vars-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-add_vars" type="button" role="tab" aria-controls="nav-add_vars"
+                        aria-selected="false">Addin variables</button>
+
+                    <button class="nav-link" id="nav-topline-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-topline" type="button" role="tab" aria-controls="nav-topline"
+                        aria-selected="false">Topline design</button>
+
+
+                </div>
+            </nav>
+
+
+
+            <div class="tab-content pt-3" id="nav-tabContent">
+
+
+                <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="nav-info-tab">
+<!--                    this is information-->
+                    <form id="form_info" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id='output_info' name="output">
+
+                        <div class="row g-0">
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-light rounded h-100 p-4">
+                                    <div class="form-floating mb-0">
+                                        <input type="text" class="form-control" id="internal_id"
+                                               name="internal_id" value="{{ prj.internal_id }}" placeholder="">
+                                        <label for="internal_id">Internal ID</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-light rounded h-100 p-4">
+                                    <div class="form-floating mb-0">
+                                        <input type="text" class="form-control" id="prj_name"
+                                               name="name" value="{{ prj.name }}" placeholder="">
+                                        <label for="prj_name">Name</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-0">
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-light rounded h-100 p-4">
+                                    <div class="form-floating mb-0">
+                                        <input type="text" class="form-control" id="prj_cat"
+                                               name="categorical" value="{{ prj.categorical }}" placeholder="">
+                                        <label for="prj_cat">Category</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-light rounded h-100 p-4">
+                                    <div class="form-floating mb-0">
+
+                                        <select class="form-select" id="floatingSelect_status"
+                                            aria-label="Floating label select example"
+                                            name="status">
+
+                                            {% for stt in ['Completed', 'On Going', 'Pending', 'Cancel'] %}
+
+                                                {% if prj.status == stt %}
+                                                    <option selected value="{{ stt }}">{{ stt }}</option>
+                                                {% else %}
+                                                    <option value="{{ stt }}">{{ stt }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        </select>
+                                        <label for="floatingSelect_status">Status</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-end mb-4">
+                                <input class="btn btn-primary py-3 w-25" type="submit" value="Info submit" onclick="fnc_submit('info', false)">
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-sections" role="tabpanel" aria-labelledby="nav-sections-tab">
+
+<!--                    This is sections-->
+
+                    <form id="form_sections" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" id='output_sections' name="output">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="form-floating mb-0">
+                                <input type="text" class="form-control" id="join_col" name="detail.join_col" value="{{ prj.detail.join_col }}" placeholder="">
+                                <label for="join_col">RID column</label>
+                            </div>
+
+                        </div>
+
+                        {% for key, val in prj.detail.sections.items() %}
+
+                            <div class="bg-light rounded h-100 p-4">
+                                <h4 class="mb-0">Section {{ key }}</h4>
+
+                                <div class="row g-0">
+
+                                    <div class="col-sm-12 col-xl-6">
+                                        <div class="bg-light rounded h-100 p-4">
+                                            <div class="form-floating mb-0">
+                                                <input type="text" class="form-control" id="detail.sections.{{ key }}.name"
+                                                       name="detail.sections.{{ key }}.name" value="{{ val.name }}" placeholder="">
+                                                <label for="detail.sections.{{ key }}.name">Name</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 col-xl-6">
+                                        <div class="bg-light rounded h-100 p-4">
+                                            <div class="form-floating mb-0">
+                                                <input type="text" class="form-control" id="detail.sections.{{ key }}.filter"
+                                                       name="detail.sections.{{ key }}.filter" value="{{ val.filter }}" placeholder="">
+                                                <label for="detail.sections.{{ key }}.filter">Filter</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    {% for k_p, v_p in val.product_qres.items() %}
+                                        <div class="col-sm-12 col-xl-6">
+                                            <div class="bg-light rounded h-100 p-4">
+                                                <h6 class="mb-3">Product {{ k_p }}</h6>
+
+                                                    <div class="form-floating mb-2">
+                                                        <input type="text" class="form-control" id="detail.sections.{{ key }}.product_qres.{{ k_p }}.name"
+                                                               name="detail.sections.{{ key }}.product_qres.{{ k_p }}.name" value="{{ v_p.name }}" placeholder="">
+                                                        <label for="detail.sections.{{ key }}.product_qres.{{ k_p }}.name">Name</label>
+                                                    </div>
+
+                                                    <div class="form-floating mb-2">
+                                                        <input type="text" class="form-control" id="detail.sections.{{ key }}.product_qres.{{ k_p }}.lbl"
+                                                               name="detail.sections.{{ key }}.product_qres.{{ k_p }}.lbl" value="{{ v_p.lbl }}" placeholder="">
+                                                        <label for="detail.sections.{{ key }}.product_qres.{{ k_p }}.lbl">Label</label>
+                                                    </div>
+
+                                                    <div class="form-floating mb-2">
+                                                        <input type="text" class="form-control" id="detail.sections.{{ key }}.product_qres.{{ k_p }}.qres.0"
+                                                               name="detail.sections.{{ key }}.product_qres.{{ k_p }}.qres.0" value="{{ v_p.qres[0] }}" placeholder="">
+                                                        <label for="detail.sections.{{ key }}.product_qres.{{ k_p }}.qres.0">Get data from</label>
+                                                    </div>
+
+                                                    {% for k_cat, v_cat in v_p.cats.items() %}
+
+                                                        <div class="input-group mb-1">
+                                                            <span class="input-group-text">Value</span>
+
+                                                            <input type="text" class="form-control" id="detail.sections.{{ key }}.product_qres.{{ k_p }}.cats.{{ k_cat }}.val"
+                                                                   name="detail.sections.{{ key }}.product_qres.{{ k_p }}.cats.{{ k_cat }}.val"
+                                                                   value="{{ v_cat.val }}" placeholder="" aria-label="">
+
+                                                            <span class="input-group-text">Label</span>
+
+                                                            <input type="text" class="form-control" id="detail.sections.{{ key }}.product_qres.{{ k_p }}.cats.{{ k_cat }}.lbl"
+                                                                   name="detail.sections.{{ key }}.product_qres.{{ k_p }}.cats.{{ k_cat }}.lbl"
+                                                                   value="{{ v_cat.lbl }}" placeholder="" aria-label="">
+                                                        </div>
+
+                                                    {% endfor %}
+
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                    <div class="bg-light rounded h-100 p-4 mb-0">
+                                        <div class="form-floating mb-0">
+                                            <input type="text" class="form-control" id="detail.sections.{{ key }}.fc_qres.0"
+                                                   name="detail.sections.{{ key }}.fc_qres.0"
+                                                   value="{{ val.fc_qres[0] }}" placeholder="">
+                                            <label for="detail.sections.{{ key }}.fc_qres.0">Force choice question</label>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-end mb-4">
+                                <input class="btn btn-primary py-3 w-25" type="submit" value="Sections submit" onclick="fnc_submit('sections', false)">
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-oe_combine" role="tabpanel" aria-labelledby="nav-oe_combine-tab">
+<!--                        this is oe combine-->
+
+                    <dialog id="dialog_bulkup_oe_combine" class="col-sm-12 col-xl-6">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h5 class="mb-2">Bulk-up OE Combine</h5>
+                            </div>
+
+                            <form id="form_bulkup_oe_combine" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                                <input type="hidden" id='output_bulkup_oe_combine' name="output">
+
+                                <div class="align-items-center justify-content-between mb-2">
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a input here"
+                                            id="floatingTextarea_oe_combine" name="detail.oe_combine_cols" style="height: 500px"></textarea>
+                                        <label for="floatingTextarea_oe_combine">Leave an input here</label>
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end mb-2">
+                                    <button type="button" class="btn btn-secondary py-3 w-25" onclick="closeDialog('dialog_bulkup_oe_combine')">Close</button>
+                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Submit" id="submit_bulkup_oe_combine" onclick="fnc_submit('bulkup_oe_combine', true)">
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </dialog>
+
+
+                    <form id="form_oe_combine" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" id='output_oe_combine' name="output">
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="row g-1">
+
+                                {% if prj.detail.oe_combine_cols %}
+
+                                    {% for key, val in prj.detail.oe_combine_cols.items() %}
+
+                                        <div class="input-group mb-1">
+                                            <span class="input-group-text">{{ key }}</span>
+
+                                            <input type="text" class="form-control" id="detail.oe_combine_cols.{{ key }}.0"
+                                                   name="detail.oe_combine_cols.{{ key }}.0" value="{{ val[0] }}" placeholder="" aria-label="">
+
+                                            <span class="input-group-text">=</span>
+
+                                            <input type="text" class="form-control" id="detail.oe_combine_cols.{{ key }}.1"
+                                                   name="detail.oe_combine_cols.{{ key }}.1" value="{{ val[1] }}" placeholder="" aria-label="">
+
+                                            <span class="input-group-text">+</span>
+
+                                            <input type="text" class="form-control" id="detail.oe_combine_cols.{{ key }}.2"
+                                                   name="detail.oe_combine_cols.{{ key }}.2" value="{{ val[2] }}" placeholder="" aria-label="">
+                                        </div>
+
+                                    {% endfor %}
+
+                                {% else %}
+
+                                    <div class="d-flex align-items-center justify-content-center mb-2">
+                                        <h6 class="mb-2">Bulk it up</h6>
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-0">
+                                <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_oe_combine')">Bulk-up</button>
+                                <input class="btn btn-primary py-3 w-25 mb-0" type="submit" id="submit_oe_combine" value="OE combine submit" onclick="fnc_submit('oe_combine', false)">
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-scr" role="tabpanel" aria-labelledby="nav-scr-tab">
+<!--                    this is screener-->
+
+                    <dialog id="dialog_bulkup_scr_cols" class="col-sm-12 col-xl-6">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h5 class="mb-2">Bulk-up screener columns</h5>
+                            </div>
+
+                            <form id="form_bulkup_scr_cols" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                                <input type="hidden" id='output_bulkup_scr_cols' name="output">
+
+                                <div class="align-items-center justify-content-between mb-2">
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a input here"
+                                            id="floatingTextarea_scr_cols" name="detail.scr_cols" style="height: 500px"></textarea>
+                                        <label for="floatingTextarea_scr_cols">Leave an input here</label>
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end mb-2">
+                                    <button type="button" class="btn btn-secondary py-3 w-25" onclick="closeDialog('dialog_bulkup_scr_cols')">Close</button>
+                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Submit" id="submit_bulkup_scr_cols" onclick="fnc_submit('bulkup_scr_cols', true)">
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </dialog>
+
+
+                    <form id="form_scr_cols" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" id='output_scr_cols' name="output">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="table-responsive">
+                                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr class="text-dark">
+                                            <th scope="col">#</th>
+                                            <th scope="col">Output data column name</th>
+                                            <th scope="col">Rawdata column name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% if prj.detail.scr_cols %}
+
+                                            {% for key, val in prj.detail.scr_cols.items() %}
+
+                                                <tr>
+                                                    <td>{{ key }}</td>
+                                                    <td><input type="text" class="form-control" id="detail.scr_cols.{{ key }}.0"
+                                                           name="detail.scr_cols.{{ key }}.0" value="{{ val[0] }}" placeholder="" aria-label=""></td>
+                                                    <td><input type="text" class="form-control" id="detail.scr_cols.{{ key }}.1"
+                                                           name="detail.scr_cols.{{ key }}.1" value="{{ val[1] }}" placeholder="" aria-label=""></td>
+                                                </tr>
+
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <tr>
+                                                <td>=></td>
+                                                <td>Bulk it up</td>
+                                                <td><=</td>
+                                            </tr>
+
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-0">
+                                <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_scr_cols')">Bulk-up</button>
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_scr_cols" value="Screener submit" onclick="fnc_submit('scr_cols', false)">
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-pro" role="tabpanel" aria-labelledby="nav-pro-tab">
+<!--                    this is product-->
+
+                    <dialog id="dialog_bulkup_product_cols" class="col-sm-12 col-xl-6">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h5 class="mb-2">Bulk-up product columns</h5>
+                            </div>
+
+                            <form id="form_bulkup_product_cols" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                                <input type="hidden" id='output_bulkup_product_cols' name="output">
+
+                                <div class="align-items-center justify-content-between mb-2">
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a input here"
+                                            id="floatingTextarea_product_cols" name="detail.product_cols" style="height: 500px"></textarea>
+                                        <label for="floatingTextarea_product_cols">Leave an input here</label>
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end mb-2">
+                                    <button type="button" class="btn btn-secondary py-3 w-25" onclick="closeDialog('dialog_bulkup_product_cols')">Close</button>
+                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Submit" id="submit_bulkup_product_cols" onclick="fnc_submit('bulkup_product_cols', true)">
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </dialog>
+
+
+                    <form id="form_product_cols" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" id='output_product_cols' name="output">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="table-responsive">
+                                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr class="text-dark">
+                                            <th scope="col">#</th>
+                                            <th scope="col">Output data column name</th>
+                                            <th scope="col">Rawdata 1st product col name</th>
+                                            <th scope="col">Rawdata 2nd product col name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% if prj.detail.product_cols %}
+
+                                            {% for key, val in prj.detail.product_cols.items() %}
+
+                                                <tr>
+                                                    <td>{{ key }}</td>
+                                                    <td><input type="text" class="form-control" id="detail.product_cols.{{ key }}.0"
+                                                           name="detail.product_cols.{{ key }}.0" value="{{ val[0] }}" placeholder="" aria-label=""></td>
+                                                    <td><input type="text" class="form-control" id="detail.product_cols.{{ key }}.1"
+                                                           name="detail.product_cols.{{ key }}.1" value="{{ val[1] }}" placeholder="" aria-label=""></td>
+                                                    <td><input type="text" class="form-control" id="detail.product_cols.{{ key }}.2"
+                                                           name="detail.product_cols.{{ key }}.2" value="{{ val[2] }}" placeholder="" aria-label=""></td>
+                                                </tr>
+
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <tr>
+                                                <td></td>
+                                                <td>=></td>
+                                                <td>Bulk it up</td>
+                                                <td><=</td>
+                                            </tr>
+
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-0">
+                                <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_product_cols')">Bulk-up</button>
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_product_cols" value="Product submit" onclick="fnc_submit('product_cols', false)">
+                            </div>
+                        </div>
+
+                    </form>
+
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-fc" role="tabpanel" aria-labelledby="nav-fc-tab">
+<!--                    this is force choice-->
+
+                    <dialog id="dialog_bulkup_fc_cols" class="col-sm-12 col-xl-6">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h5 class="mb-2">Bulk-up force choice columns</h5>
+                            </div>
+
+                            <form id="form_bulkup_fc_cols" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                                <input type="hidden" id='output_bulkup_fc_cols' name="output">
+
+                                <div class="align-items-center justify-content-between mb-2">
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a input here"
+                                            id="floatingTextarea_fc_cols" name="detail.fc_cols" style="height: 500px"></textarea>
+                                        <label for="floatingTextarea_fc_cols">Leave an input here</label>
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end mb-2">
+                                    <button type="button" class="btn btn-secondary py-3 w-25" onclick="closeDialog('dialog_bulkup_fc_cols')">Close</button>
+                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Submit" id="submit_bulkup_fc_cols" onclick="fnc_submit('bulkup_fc_cols', true)">
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </dialog>
+
+
+                    <form id="form_fc_cols" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" id='output_fc_cols' name="output">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="table-responsive">
+                                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr class="text-dark">
+                                            <th scope="col">#</th>
+                                            <th scope="col">Output data column name</th>
+                                            <th scope="col">Rawdata column name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% if prj.detail.fc_cols %}
+
+                                            {% for key, val in prj.detail.fc_cols.items() %}
+
+                                                <tr>
+                                                    <td>{{ key }}</td>
+                                                    <td><input type="text" class="form-control" id="detail.fc_cols.{{ key }}.0"
+                                                           name="detail.fc_cols.{{ key }}.0" value="{{ val[0] }}" placeholder="" aria-label=""></td>
+                                                    <td><input type="text" class="form-control" id="detail.fc_cols.{{ key }}.1"
+                                                           name="detail.fc_cols.{{ key }}.1" value="{{ val[1] }}" placeholder="" aria-label=""></td>
+                                                </tr>
+
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <tr>
+                                                <td>=></td>
+                                                <td>Bulk it up</td>
+                                                <td><=</td>
+                                            </tr>
+
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-0">
+                                <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_fc_cols')">Bulk-up</button>
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_fc_cols" value="Force choice submit" onclick="fnc_submit('fc_cols', false)">
+                            </div>
+                        </div>
+
+                    </form>
+
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-add_vars" role="tabpanel" aria-labelledby="nav-add_vars-tab">
+<!--                    this is addin variables-->
+
+                    <form id="form_add_vars" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" id='output_add_vars' name="output">
+
+                        <div class="bg-light rounded h-100 p-4" id="group_addin_vars">
+
+                            {% for key, val in prj.detail.addin_vars.items() %}
+                                <div class="row g-0 p-4" id="detail.addin_vars.{{ key }}">
+
+                                    <div class="d-flex align-items-center justify-content-between p-1">
+                                        <h6 class="mb-1">#{{ key }}</h6>
+                                        <button type="button" class="btn btn-outline-danger" onclick="Del_variable('detail.addin_vars.{{ key }}', 'group_addin_vars');">Delete</button>
+                                    </div>
+
+
+                                    <div class="col-sm-12 col-xl-6">
+                                        <div class="bg-light rounded h-100 p-1">
+                                            <div class="form-floating mb-0">
+                                                <input type="text" class="form-control" id="detail.addin_vars.{{ key }}.name"
+                                                       name="detail.addin_vars.{{ key }}.name" value="{{ val.name }}" placeholder="">
+                                                <label for="detail.addin_vars.{{ key }}.name">Name</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 col-xl-6">
+                                        <div class="bg-light rounded h-100 p-1">
+                                            <div class="form-floating mb-0">
+                                                <input type="text" class="form-control" id="detail.addin_vars.{{ key }}.lbl"
+                                                       name="detail.addin_vars.{{ key }}.lbl" value="{{ val.lbl }}" placeholder="">
+                                                <label for="detail.addin_vars.{{ key }}.lbl">Label</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive p-1">
+                                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr class="text-dark">
+                                                    <th scope="col">Value</th>
+                                                    <th scope="col">Label</th>
+                                                    <th scope="col">Condition</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="detail.addin_vars.{{ key }}.cats">
+
+                                                {% if val.cats %}
+
+                                                    {% for k_cat, v_cat in val.cats.items() %}
+
+                                                        <tr id="detail.addin_vars.{{ key }}.cats.{{ k_cat }}.row">
+                                                            <td width="10%"><input type="text" class="form-control" id="detail.addin_vars.{{ key }}.cats.{{ k_cat }}.val"
+                                                                   name="detail.addin_vars.{{ key }}.cats.{{ k_cat }}.val" value="{{ v_cat.val }}" placeholder="" aria-label=""></td>
+
+                                                            <td width="30%"><input type="text" class="form-control" id="detail.addin_vars.{{ key }}.cats.{{ k_cat }}.lbl"
+                                                                   name="detail.addin_vars.{{ key }}.cats.{{ k_cat }}.lbl" value="{{ v_cat.lbl }}" placeholder="" aria-label=""></td>
+
+                                                            <td width="55%"><input type="text" class="form-control" id="detail.addin_vars.{{ key }}.cats.{{ k_cat }}.condition"
+                                                                   name="detail.addin_vars.{{ key }}.cats.{{ k_cat }}.condition" value="{{ v_cat.condition }}" placeholder="" aria-label=""></td>
+
+                                                            <td width="5%"><button type="button" class="btn btn-outline-danger" onclick="Del_variable_cat('detail.addin_vars.{{ key }}.cats.{{ k_cat }}.row');">X</button></td>
+                                                        </tr>
+
+                                                    {% endfor %}
+
+                                                {% else %}
+
+<!--                                                    <tr>-->
+<!--                                                        <td>=></td>-->
+<!--                                                        <td>Add value</td>-->
+<!--                                                        <td></td>-->
+<!--                                                        <td><=</td>-->
+<!--                                                    </tr>-->
+
+                                                {% endif %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="col-sm-12 col-xl-6">
+                                        <div class="bg-light rounded h-100 p-1 ">
+                                            <button type="button" class="btn btn-outline-primary" onclick="Add_variable_cat('detail.addin_vars.{{ key }}.cats');">+</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-0">
+                                <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="Add_variable('group_addin_vars');">Add variable</button>
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_add_vars" value="Add variables submit" onclick="fnc_submit('add_vars', false)">
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-topline" role="tabpanel" aria-labelledby="nav-topline-tab">
+                    this is topline
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+        setTimeout(() => {
+            const err = document.getElementById('err');
+            err.style.display = 'none';
+        }, 3000);
+
+        function showDialog(strID) {
+            document.getElementById(strID).showModal();
+        }
+
+        function closeDialog(strID) {
+            document.getElementById(strID).close();
+        }
+
+        function fnc_submit(strName, isBulkup){
+
+            strForm = 'form_' + strName;
+            strOutput = 'output_' + strName;
+
+            isSubmit = confirm('Confirm update the ' + strName + '?');
+
+            if (isSubmit == true) {
+
+                document.getElementById(strForm).addEventListener('submit', (e) => {
+                    e.preventDefault();
+
+                    formData = new FormData(e.target);
+                    data = Array.from(formData.entries()).reduce((memo, [key, value]) => ({
+                        ...memo,
+                        [key]: value,
+                    }), {});
+
+
+                    console.log(data);
+
+                    jsonData = JSON.stringify(data);
+
+                    if(isBulkup == true){
+
+                        obj = JSON.parse(jsonData);
+
+                        key = Object.keys(obj)[1];
+                        val = obj[key];
+
+                        lstVal = val.split('\n');
+
+                        newJsonData = {"output": ""};
+
+                        for(var i = 0; i < lstVal.length; i++){
+
+                            if(lstVal[i].length > 0)
+                            {
+                                lstSubVal = lstVal[i].split('\t');
+
+                                newJsonData[key + '.' + (i+1).toString()] = lstSubVal;
+                            }
+                        }
+
+                        jsonData = JSON.stringify(newJsonData);
+                    }
+
+                    if(Object.keys(JSON.parse(jsonData)).length > 1) {
+                        document.getElementById(strOutput).value = jsonData;
+                        document.getElementById(strForm).submit();
+                    }
+                    else {
+                        alert("Cannot submit null data!");
+                    }
+
+                });
+            }
+            else
+            {
+                document.getElementById(strForm).addEventListener('submit', (e) => {
+                    e.preventDefault();
+                });
+            }
+
+        }
+
+        function Del_variable_cat(elm_id) {
+
+            const cat = document.getElementById(elm_id);
+
+            arr = elm_id.split(".");
+
+            idx_cat = arr[4];
+            strId = "detail.addin_vars." + arr[2] + ".cats.XXX";
+            var bodyId = "detail.addin_vars." + arr[2] + ".cats";
+            var count = document.getElementById(bodyId).children.length;
+
+            for(var i = parseInt(idx_cat); i < count; i++) {
+
+                itemParent = strId.replace("XXX", i.toString());
+                nextItemParent = strId.replace("XXX", (i+1).toString());
+
+                val = document.getElementById(itemParent + ".val");
+                nextVal = document.getElementById(nextItemParent + ".val");
+                val.value = nextVal.value;
+
+
+                lbl = document.getElementById(itemParent + ".lbl");
+                nextLbl = document.getElementById(nextItemParent + ".lbl");
+                lbl.value = nextLbl.value;
+
+                cond = document.getElementById(itemParent + ".condition");
+                nextCond = document.getElementById(nextItemParent + ".condition");
+                cond.value = nextCond.value;
+
+            }
+
+            removeItem = document.getElementById("detail.addin_vars." + arr[2] + ".cats." + count.toString() + ".row");
+            removeItem.remove();
+
+        };
+
+        function Add_variable_cat(elm_id) {
+            var count = document.getElementById(elm_id).children.length;
+
+            var tbl_row = document.createElement("tr");
+            tbl_row.id = elm_id + "." + (count + 1).toString() + ".row";
+
+            var td_Value = document.createElement("td");
+            td_Value.width = '10%';
+            var txt_Value = document.createElement("input");
+            txt_Value.type = "text";
+            txt_Value.classList.add("form-control");
+            txt_Value.id = elm_id + "." + (count + 1).toString() + ".val";
+            txt_Value.name = elm_id + "." + (count + 1).toString() + ".val";
+            td_Value.appendChild(txt_Value);
+
+            var td_Label = document.createElement("td");
+            td_Label.width = '30%';
+            var txt_Label = document.createElement("input");
+            txt_Label.type = "text";
+            txt_Label.classList.add("form-control");
+            txt_Label.id = elm_id + "." + (count + 1).toString() + ".lbl";
+            txt_Label.name = elm_id + "." + (count + 1).toString() + ".lbl";
+            td_Label.appendChild(txt_Label);
+
+            var td_Condition = document.createElement("td");
+            td_Condition.width = '55%';
+            var txt_Condition = document.createElement("input");
+            txt_Condition.type = "text";
+            txt_Condition.classList.add("form-control");
+            txt_Condition.id = elm_id + "." + (count + 1).toString() + ".condition";
+            txt_Condition.name = elm_id + "." + (count + 1).toString() + ".condition";
+            td_Condition.appendChild(txt_Condition);
+
+            var td_Action = document.createElement("td");
+            td_Action.width = '5%';
+            var btn_del = document.createElement("input");
+            btn_del.type = "button";
+            btn_del.classList.add("btn", "btn-outline-danger");
+            btn_del.value = "X";
+            btn_del.onclick = function() { Del_variable_cat(tbl_row.id); };
+            td_Action.appendChild(btn_del);
+
+            tbl_row.appendChild(td_Value);
+            tbl_row.appendChild(td_Label);
+            tbl_row.appendChild(td_Condition);
+            tbl_row.appendChild(td_Action);
+
+            document.getElementById(elm_id).appendChild(tbl_row);
+        };
+
+
+        function Add_variable(group_id) {
+
+            var count = document.getElementById(group_id).children.length;
+
+            lastItemID = document.getElementById(group_id).children.item(count-1).id;
+            lastKey = lastItemID.split(".")[2];
+
+            newKey = parseInt(lastKey) + 1;
+
+            var elm_var = document.createElement("div");
+            elm_var.classList.add("row", "g-0", "p-4");
+            elm_var.id = "detail.addin_vars." + newKey.toString();
+
+            var div_header = document.createElement("div");
+            var header = document.createElement("h6");
+            var btn_header = document.createElement("input");
+
+            div_header.classList.add("d-flex", "align-items-center", "justify-content-between", "p-1");
+            header.classList.add("mb-1");
+            btn_header.classList.add("btn", "btn-outline-danger");
+
+            header.innerHTML = "#" + newKey.toString();
+
+            btn_header.type = "button";
+            btn_header.value = "Delete";
+            btn_header.onclick = function() { Del_variable(elm_var.id); };
+
+            div_header.appendChild(header);
+            div_header.appendChild(btn_header);
+            elm_var.appendChild(div_header);
+
+            var div_name_1 = document.createElement("div");
+            var div_name_2 = document.createElement("div");
+            var div_name_3 = document.createElement("div");
+            var input_name = document.createElement("input");
+            var label_name = document.createElement("label");
+
+            div_name_1.classList.add("col-sm-12", "col-xl-6");
+            div_name_2.classList.add("bg-light", "rounded", "h-100", "p-1");
+            div_name_3.classList.add("form-floating", "mb-0");
+            input_name.classList.add("form-control");
+
+            input_name.type = "text";
+            input_name.id = "detail.addin_vars." + newKey.toString() + ".name";
+            input_name.name = input_name.id;
+
+            label_name.htmlFor = input_name.id;
+            label_name.innerHTML = "Name";
+
+            div_name_1.appendChild(div_name_2);
+            div_name_2.appendChild(div_name_3);
+            div_name_3.appendChild(input_name);
+            div_name_3.appendChild(label_name);
+            elm_var.appendChild(div_name_1);
+
+            var div_lbl_1 = document.createElement("div");
+            var div_lbl_2 = document.createElement("div");
+            var div_lbl_3 = document.createElement("div");
+            var input_lbl = document.createElement("input");
+            var label_lbl = document.createElement("label");
+
+            div_lbl_1.classList.add("col-sm-12", "col-xl-6");
+            div_lbl_2.classList.add("bg-light", "rounded", "h-100", "p-1");
+            div_lbl_3.classList.add("form-floating", "mb-0");
+            input_lbl.classList.add("form-control");
+
+            input_lbl.type = "text";
+            input_lbl.id = "detail.addin_vars." + newKey.toString() + ".lbl";
+            input_lbl.name = input_lbl.id;
+
+            label_lbl.htmlFor = input_lbl.id;
+            label_lbl.innerHTML = "Label";
+
+            div_lbl_1.appendChild(div_lbl_2);
+            div_lbl_2.appendChild(div_lbl_3);
+            div_lbl_3.appendChild(input_lbl);
+            div_lbl_3.appendChild(label_lbl);
+            elm_var.appendChild(div_lbl_1);
+
+            var table_div = document.createElement("div");
+            var table_tbl = document.createElement("table");
+            var table_thead = document.createElement("thead");
+            var table_thead_row = document.createElement("tr");
+            var table_th1 = document.createElement("th");
+            var table_th2 = document.createElement("th");
+            var table_th3 = document.createElement("th");
+            var table_th4 = document.createElement("th");
+            var table_tbody = document.createElement("tbody");
+
+            table_div.classList.add("table-responsive", "p-1");
+            table_tbl.classList.add("table", "text-start", "align-middle", "table-bordered", "table-hover", "mb-0");
+            table_thead_row.classList.add("text-dark");
+
+            table_th1.scope = "col";
+            table_th2.scope = "col";
+            table_th3.scope = "col";
+            table_th4.scope = "col";
+
+            table_th1.innerHTML = "Value";
+            table_th2.innerHTML = "Label";
+            table_th3.innerHTML = "Condition";
+            table_th4.innerHTML = "";
+
+            table_tbody.id = "detail.addin_vars." + newKey.toString() + ".cats"
+
+            table_div.appendChild(table_tbl);
+            table_tbl.appendChild(table_thead);
+            table_tbl.appendChild(table_tbody);
+            table_thead.appendChild(table_thead_row);
+            table_thead_row.appendChild(table_th1);
+            table_thead_row.appendChild(table_th2);
+            table_thead_row.appendChild(table_th3);
+            table_thead_row.appendChild(table_th4);
+            elm_var.appendChild(table_div);
+
+            var btn_div_1 = document.createElement("div");
+            var btn_div_2 = document.createElement("div");
+            var btn_input = document.createElement("input");
+
+            btn_div_1.classList.add("col-sm-12", "col-xl-6");
+            btn_div_2.classList.add("bg-light", "rounded", "h-100", "p-1");
+            btn_input.classList.add("btn", "btn-outline-primary");
+
+            btn_input.type = "button";
+            btn_input.value = "+";
+            btn_input.onclick = function() { Add_variable_cat(table_tbody.id); };
+
+            btn_div_1.appendChild(btn_div_2);
+            btn_div_2.appendChild(btn_input);
+            elm_var.appendChild(btn_div_1);
+
+            document.getElementById(group_id).appendChild(elm_var);
+
+        }
+
+        function Del_variable(elm_id, group_id){
+
+            isDel = confirm('Confirm delete variable #' + elm_id.split(".")[2] + "?");
+
+            if(isDel == true){
+                var elm_remove = document.getElementById(elm_id);
+                elm_remove.remove();
+            }
+
+        };
+
+
+
+
+
+    </script>
+{% endblock %}

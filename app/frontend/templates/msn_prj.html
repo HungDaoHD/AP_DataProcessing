@@ -5,114 +5,110 @@
 {% endblock %}
 
 {% block search_bar %}
-<form class="d-none d-md-flex ms-4">
-    <input class="form-control border-0" type="search" placeholder="Search">
-</form>
+    <form class="d-none d-md-flex ms-4">
+        <input class="form-control border-0" type="search" placeholder="Search">
+    </form>
 {% endblock %}
 
 {% block content %}
-<!-- Sale & Revenue Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-line fa-3x text-primary"></i>
-                <div class="ms-3">
+    <!-- Overview -->
+    <div class="container-fluid pt-4 px-4">
+
+        <div class="row g-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <p class="mb-2">Total</p>
                     <h6 class="mb-0">{{ overView.total }}</h6>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                <div class="ms-3">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <p class="mb-2">Completed</p>
                     <h6 class="mb-0">{{ overView.completed }}</h6>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-area fa-3x text-primary"></i>
-                <div class="ms-3">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <p class="mb-2">On Going</p>
                     <h6 class="mb-0">{{ overView.on_going }}</h6>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                <div class="ms-3">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <p class="mb-2">Pending/Cancel</p>
                     <h6 class="mb-0">{{ overView.pending_cancel }}</h6>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Sale & Revenue End -->
+    <!-- Overview End -->
 
+    <!-- Recent Sales Start -->
+    <div class="container-fluid pt-4 px-4">
 
+        {% if strErr|trim|length %}
+            <div id="err" class="alert alert-danger" role="alert">
+                {{ strErr }}
+            </div>
+        {% endif %}
 
-<!-- Recent Sales Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="bg-light text-center rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">MSN Projects</h4>
-            <button type="button" class="btn btn-primary m-2">Add project</button>
-        </div>
-        <div class="table-responsive">
-            <table class="table text-start align-middle table-bordered table-hover mb-0">
-                <thead>
-                    <tr class="text-dark">
-                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                        <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Categorical</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {% for prj in lst_prj %}
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox"></td>
-                            <td>{{ prj.prj_id }}</td>
-                            <td>{{ prj.name }}</td>
-                            <td>{{ prj.categorical }}</td>
-                            <td>{{ prj.status }}</td>
-                            <td><a class="btn btn-sm btn-primary" href="/msn-prj/{{ prj.id }}" >Detail</a></td>
+        <div class="bg-light text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h4 class="mb-0">MSN Projects</h4>
+                <button type="button" class="btn btn-primary m-2">Add project</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                    <thead>
+                        <tr class="text-dark">
+                            <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Categorical</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
                         </tr>
-                    {% endfor %}
+                    </thead>
+                    <tbody>
 
-                </tbody>
-            </table>
+                        {% for prj in lst_prj %}
+                            <tr>
+                                <td><input class="form-check-input" type="checkbox"></td>
+                                <td>{{ prj.internal_id }}</td>
+                                <td>{{ prj.name }}</td>
+                                <td>{{ prj.categorical }}</td>
+                                <td>{{ prj.status }}</td>
+                                <td><a class="btn btn-sm btn-primary" href="/msn-prj/{{ prj.id }}" >Detail</a></td>
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
         </div>
+
+        <!--Pagination-->
+    <!--    <div class="bg-light rounded h-100 p-4">-->
+    <!--        <div class="btn-toolbar justify-content-end" role="group">-->
+    <!--            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>-->
+    <!--            <label class="btn btn-outline-primary" for="btnradio1">1</label>-->
+
+    <!--            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">-->
+    <!--            <label class="btn btn-outline-primary" for="btnradio2">2</label>-->
+
+    <!--            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">-->
+    <!--            <label class="btn btn-outline-primary" for="btnradio3">3</label>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
     </div>
+    <!-- Recent Sales End -->
 
-
-
-
-
-    <!--Pagination-->
-<!--    <div class="bg-light rounded h-100 p-4">-->
-<!--        <div class="btn-toolbar justify-content-end" role="group">-->
-<!--            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>-->
-<!--            <label class="btn btn-outline-primary" for="btnradio1">1</label>-->
-
-<!--            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">-->
-<!--            <label class="btn btn-outline-primary" for="btnradio2">2</label>-->
-
-<!--            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">-->
-<!--            <label class="btn btn-outline-primary" for="btnradio3">3</label>-->
-<!--        </div>-->
-<!--    </div>-->
-
-</div>
-
-
-<!-- Recent Sales End -->
+    <script>
+        setTimeout(() => {
+            const err = document.getElementById('err');
+            err.style.display = 'none';
+    <!--        err.style.visibility = 'hidden';-->
+        }, 3000);
+    </script>
 {% endblock %}

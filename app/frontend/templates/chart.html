@@ -1,50 +1,50 @@
 {% extends 'master_page.html' %}
 
 {% block sidebar_chart %}
-<a href="\chart" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+    <a href="\chart" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Charts</a>
 {% endblock %}
 
 {% block content %}
-<!-- Chart Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Single Line Chart</h6>
-                <canvas id="line-chart"></canvas>
+    <!-- Chart Start -->
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Single Line Chart</h6>
+                    <canvas id="line-chart"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Multiple Line Chart</h6>
-                <canvas id="salse-revenue"></canvas>
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Multiple Line Chart</h6>
+                    <canvas id="salse-revenue"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Single Bar Chart</h6>
-                <canvas id="bar-chart"></canvas>
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Single Bar Chart</h6>
+                    <canvas id="bar-chart"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Multiple Bar Chart</h6>
-                <canvas id="worldwide-sales"></canvas>
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Multiple Bar Chart</h6>
+                    <canvas id="worldwide-sales"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Pie Chart</h6>
-                <canvas id="pie-chart"></canvas>
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Pie Chart</h6>
+                    <canvas id="pie-chart"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Doughnut Chart</h6>
-                <canvas id="doughnut-chart"></canvas>
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Doughnut Chart</h6>
+                    <canvas id="doughnut-chart"></canvas>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Chart End -->
+    <!-- Chart End -->
 {% endblock %}

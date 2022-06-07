@@ -1,5 +1,7 @@
 import motor.motor_asyncio
 from bson.objectid import ObjectId
+import re
+import json
 
 
 class MsnPrj:
@@ -20,7 +22,7 @@ class MsnPrj:
         if isShort:
             return {
                 'id': str(prj['_id']),
-                'prj_id': prj['prj_id'],
+                'internal_id': prj['internal_id'],
                 'name': prj['name'],
                 'categorical': prj['categorical'],
                 'status': prj['status']
@@ -28,7 +30,7 @@ class MsnPrj:
         else:
             return {
                 'id': str(prj['_id']),
-                'prj_id': prj['prj_id'],
+                'internal_id': prj['internal_id'],
                 'name': prj['name'],
                 'categorical': prj['categorical'],
                 'status': prj['status'],
@@ -62,14 +64,130 @@ class MsnPrj:
     async def retrieve_id(self, _id: str) -> dict:
         prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
-        prj = self.prj_info(prj, False)
+        if prj:
+            prj = self.prj_info(prj, False)
 
         return prj
 
 
 
+    async def update_prj(self, _id: str, strBody: str):
+
+        data = self.body_to_json(strBody)
+
+        if len(data) < 1:
+            return False
+
+        prj = await self.prj_collection.find_one({"_id": ObjectId(_id)})
+
+        if prj:
+
+            prj_updated = await self.prj_collection.update_one(
+                {'_id': ObjectId(_id)}, {'$set': data}
+            )
+
+            if prj_updated:
+                return True
+
+            return False
 
 
+    @staticmethod
+    def body_to_json(strBody: str):
+        re_json = re.compile(r'\{"output".+}')
+        str_json = re_json.search(strBody).group()
+        dictBody = dict(json.loads(str_json))
+        dictBody.pop('output')
+
+        updateData = dict()
+        for key, val in dictBody.items():
+            if val is not None:
+
+                if '.' in key:
+                    parentKey = str(key).rsplit('.', 1)[0]
+                    childKey = str(key).rsplit('.', 1)[1]
+
+                    if parentKey in ['detail.oe_combine_cols', 'detail.scr_cols', 'detail.product_cols', 'detail.fc_cols']:
+
+                        if updateData:
+                            updateData[parentKey][childKey] = val
+                        else:
+                            updateData = {
+                                parentKey:
+                                    {
+                                        childKey: val
+                                    }
+                            }
+
+                    elif 'detail.addin_vars' in parentKey:
+
+                        lstKey = str(key).rsplit('.')
+
+                        parentKey2 = '.'.join(lstKey[:2])
+                        varIdx = lstKey[2]
+                        varAtt = lstKey[3]
+
+                        catIdx, catAtt = None, None
+                        if len(lstKey) > 4:
+                            catIdx = lstKey[4]
+                            catAtt = lstKey[5]
+
+                        if parentKey2 not in updateData.keys():
+                            updateData[parentKey2] = dict()
+
+                        if varIdx not in updateData[parentKey2].keys():
+                            updateData[parentKey2][varIdx] = dict()
+
+                        if varAtt not in updateData[parentKey2][varIdx].keys():
+                            updateData[parentKey2][varIdx][varAtt] = dict()
+
+                        if varAtt in ['name', 'lbl']:
+                            updateData[parentKey2][varIdx][varAtt] = val
+                        else:
+                            if catIdx not in updateData[parentKey2][varIdx][varAtt].keys():
+                                updateData[parentKey2][varIdx][varAtt][catIdx] = dict()
+
+                            updateData[parentKey2][varIdx][varAtt][catIdx][catAtt] = val
+
+                        a = 1
+
+                        # updateData[parentKey2] = {
+                        #     '48': {
+                        #         'name': '',
+                        #         'lbl': '',
+                        #         'cats': {
+                        #             '1': {
+                        #                 'val': '',
+                        #                 'lbl': '',
+                        #                 'condition': ''
+                        #             }
+                        #         }
+                        #     }
+                        # }
+
+
+                        # if parentKey2 not in updateData.keys():
+                        #     updateData[parentKey2] = {
+                        #         childKey2a: {
+                        #             'val': str(),
+                        #             'lbl': str(),
+                        #             'condition': str()
+                        #         }
+                        #     }
+                        #
+                        # if childKey2a not in updateData[parentKey2].keys():
+                        #     updateData[parentKey2][childKey2a] = {childKey2b: val}
+                        # else:
+                        #     updateData[parentKey2][childKey2a][childKey2b] = val
+
+
+
+                    else:
+                        updateData[key] = val
+                else:
+                    updateData[key] = val
+
+        return updateData
 
 
 
