@@ -15,7 +15,7 @@ class APDataConverter:
         self.xlsx = None
 
         self.dfData = pd.DataFrame
-        self.dictVarLbl, self.dictValLbl = dict(), dict()
+        self.dictData, self.dictVarLbl, self.dictValLbl = dict(), dict(), dict()
 
         self.dfQres = pd.DataFrame
         self.dictQres = dict()
@@ -202,6 +202,7 @@ class APDataConverter:
 
 
         self.dfData = dfData
+        self.dictData = dfData.to_dict('records')
         self.dictVarLbl, self.dictValLbl = variable_labels, variable_value_labels
 
         self.dfQres = dfQres

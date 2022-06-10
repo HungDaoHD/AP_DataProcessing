@@ -2,6 +2,9 @@ import motor.motor_asyncio
 from bson.objectid import ObjectId
 import re
 import json
+from ...classes.AP_DataConverter import APDataConverter
+import pandas as pd
+import traceback
 
 
 class MsnPrj:
@@ -78,7 +81,7 @@ class MsnPrj:
         if len(data) < 1:
             return False
 
-        prj = await self.prj_collection.find_one({"_id": ObjectId(_id)})
+        prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
         if prj:
 
@@ -103,6 +106,11 @@ class MsnPrj:
         for key, val in dictBody.items():
             if val is not None:
 
+                if str(val).lower() in ['true', 'false']:
+                    upVal = True if str(val).lower() == 'true' else False
+                else:
+                    upVal = val
+
                 if '.' in key:
                     parentKey = str(key).rsplit('.', 1)[0]
                     childKey = str(key).rsplit('.', 1)[1]
@@ -110,12 +118,12 @@ class MsnPrj:
                     if parentKey in ['detail.oe_combine_cols', 'detail.scr_cols', 'detail.product_cols', 'detail.fc_cols']:
 
                         if updateData:
-                            updateData[parentKey][childKey] = val
+                            updateData[parentKey][childKey] = upVal
                         else:
                             updateData = {
                                 parentKey:
                                     {
-                                        childKey: val
+                                        childKey: upVal
                                     }
                             }
 
@@ -142,52 +150,138 @@ class MsnPrj:
                             updateData[parentKey2][varIdx][varAtt] = dict()
 
                         if varAtt in ['name', 'lbl']:
-                            updateData[parentKey2][varIdx][varAtt] = val
+                            updateData[parentKey2][varIdx][varAtt] = upVal
                         else:
                             if catIdx not in updateData[parentKey2][varIdx][varAtt].keys():
                                 updateData[parentKey2][varIdx][varAtt][catIdx] = dict()
 
-                            updateData[parentKey2][varIdx][varAtt][catIdx][catAtt] = val
+                            updateData[parentKey2][varIdx][varAtt][catIdx][catAtt] = upVal
 
-                        a = 1
+                    elif 'topline_design.header' in parentKey:
+                        lstKey = str(key).rsplit('.')
+                        parentKey2 = '.'.join(lstKey[:3])
+                        varIdx = lstKey[3]
 
-                        # updateData[parentKey2] = {
-                        #     '48': {
-                        #         'name': '',
-                        #         'lbl': '',
-                        #         'cats': {
-                        #             '1': {
-                        #                 'val': '',
-                        #                 'lbl': '',
-                        #                 'condition': ''
-                        #             }
-                        #         }
-                        #     }
-                        # }
+                        if parentKey2 not in updateData.keys():
+                            updateData[parentKey2] = dict()
 
+                        if varIdx not in updateData[parentKey2].keys():
+                            updateData[parentKey2][varIdx] = dict()
 
-                        # if parentKey2 not in updateData.keys():
-                        #     updateData[parentKey2] = {
-                        #         childKey2a: {
-                        #             'val': str(),
-                        #             'lbl': str(),
-                        #             'condition': str()
-                        #         }
-                        #     }
-                        #
-                        # if childKey2a not in updateData[parentKey2].keys():
-                        #     updateData[parentKey2][childKey2a] = {childKey2b: val}
-                        # else:
-                        #     updateData[parentKey2][childKey2a][childKey2b] = val
+                        if isinstance(upVal, list):
+                            updateData[parentKey2][varIdx] = {
+                              'name': upVal[0],
+                              'lbl': upVal[1],
+                              'hidden_cats': upVal[2],
+                            }
 
+                        else:
+                            varAtt = lstKey[4]
+                            updateData[parentKey2][varIdx][varAtt] = upVal
 
+                    elif 'topline_design.side' in parentKey:
+
+                        lstKey = str(key).rsplit('.')
+                        parentKey2 = '.'.join(lstKey[:3])
+                        varIdx = lstKey[3]
+
+                        if parentKey2 not in updateData.keys():
+                            updateData[parentKey2] = dict()
+
+                        if varIdx not in updateData[parentKey2].keys():
+                            updateData[parentKey2][varIdx] = {
+                                'name': '',
+                                'group_lbl': '',
+                                'lbl': '',
+                                'type': '',
+                                't2b': False,
+                                'b2b': False,
+                                'mean': False,
+                                'ma_cats': '',
+                                'hidden_cats': '',
+                                'is_count': False,
+                                'is_corr': False,
+                                'is_ua': False
+                            }
+
+                        if isinstance(upVal, list):
+
+                            lstAttKey = updateData[parentKey2][varIdx].keys()
+                            for idx_AttKey, val_AttKey in enumerate(lstAttKey):
+
+                                if str(upVal[idx_AttKey]).lower() in ['true', 'false']:
+                                    newUpVal = True if str(upVal[idx_AttKey]).lower() == 'true' else False
+                                else:
+                                    newUpVal = upVal[idx_AttKey]
+
+                                updateData[parentKey2][varIdx][val_AttKey] = newUpVal
+
+                        else:
+                            varAtt = lstKey[4]
+                            updateData[parentKey2][varIdx][varAtt] = upVal
 
                     else:
-                        updateData[key] = val
+                        updateData[key] = upVal
                 else:
-                    updateData[key] = val
+                    updateData[key] = upVal
 
         return updateData
+
+
+    async def upload_prj_data(self, _id: str, file_scr, file_main):
+
+        try:
+
+            apCvt = APDataConverter()
+
+            apCvt.load(file_scr)
+
+            scr_data = apCvt.dictData
+            scr_varLbl = apCvt.dictVarLbl
+            scr_valLbl = {k: {str(k2): v2 for k2, v2 in v.items()} for k, v in apCvt.dictValLbl.items()}
+
+            apCvt.load(file_main)
+
+            main_data = apCvt.dictData
+            main_varLbl = apCvt.dictVarLbl
+            main_valLbl = {k: {str(k2): v2 for k2, v2 in v.items()} for k, v in apCvt.dictValLbl.items()}
+
+            if not scr_data or not main_data:
+                return False
+
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+
+            if prj:
+
+                data = {
+                    'screener': {
+                        'data': scr_data,
+                        'varLbl': scr_varLbl,
+                        'valLbl': scr_valLbl
+                    },
+                    'main': {
+                        'data': main_data,
+                        'varLbl': main_varLbl,
+                        'valLbl': main_valLbl
+                    }
+                }
+
+                upload_prj_data = await self.prj_collection.update_one(
+                    {'_id': ObjectId(_id)}, {'$set': data}
+                )
+
+                if upload_prj_data:
+                    return True
+
+                return False
+
+        except Exception:
+            print(traceback.format_exc())
+            return False
+
+
+
+
 
 
 

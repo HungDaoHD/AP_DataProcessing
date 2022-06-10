@@ -67,6 +67,9 @@
                         data-bs-target="#nav-topline" type="button" role="tab" aria-controls="nav-topline"
                         aria-selected="false">Topline design</button>
 
+                    <button class="nav-link" id="nav-data-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-data" type="button" role="tab" aria-controls="nav-data"
+                        aria-selected="false">Data</button>
 
                 </div>
             </nav>
@@ -143,7 +146,7 @@
 
                         <div class="bg-light rounded h-100 p-4">
                             <div class="d-flex align-items-center justify-content-end mb-4">
-                                <input class="btn btn-primary py-3 w-25" type="submit" value="Info submit" onclick="fnc_submit('info', false)">
+                                <input class="btn btn-primary py-3 w-25" type="submit" value="Submit info" onclick="fnc_submit('info', false)">
                             </div>
                         </div>
                     </form>
@@ -261,7 +264,7 @@
 
                         <div class="bg-light rounded h-100 p-4">
                             <div class="d-flex align-items-center justify-content-end mb-4">
-                                <input class="btn btn-primary py-3 w-25" type="submit" value="Sections submit" onclick="fnc_submit('sections', false)">
+                                <input class="btn btn-primary py-3 w-25" type="submit" value="Submit sections" onclick="fnc_submit('sections', false)">
                             </div>
                         </div>
 
@@ -350,7 +353,7 @@
                         <div class="bg-light rounded h-100 p-4">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_oe_combine')">Bulk-up</button>
-                                <input class="btn btn-primary py-3 w-25 mb-0" type="submit" id="submit_oe_combine" value="OE combine submit" onclick="fnc_submit('oe_combine', false)">
+                                <input class="btn btn-primary py-3 w-25 mb-0" type="submit" id="submit_oe_combine" value="Submit OE combine" onclick="fnc_submit('oe_combine', false)">
                             </div>
                         </div>
 
@@ -446,7 +449,7 @@
                         <div class="bg-light rounded h-100 p-4">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_scr_cols')">Bulk-up</button>
-                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_scr_cols" value="Screener submit" onclick="fnc_submit('scr_cols', false)">
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_scr_cols" value="Submit screener" onclick="fnc_submit('scr_cols', false)">
                             </div>
                         </div>
 
@@ -545,7 +548,7 @@
                         <div class="bg-light rounded h-100 p-4">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_product_cols')">Bulk-up</button>
-                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_product_cols" value="Product submit" onclick="fnc_submit('product_cols', false)">
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_product_cols" value="Submit product" onclick="fnc_submit('product_cols', false)">
                             </div>
                         </div>
 
@@ -641,7 +644,7 @@
                         <div class="bg-light rounded h-100 p-4">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="showDialog('dialog_bulkup_fc_cols')">Bulk-up</button>
-                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_fc_cols" value="Force choice submit" onclick="fnc_submit('fc_cols', false)">
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_fc_cols" value="Submit force choice" onclick="fnc_submit('fc_cols', false)">
                             </div>
                         </div>
 
@@ -732,6 +735,7 @@
 
                                             </tbody>
                                         </table>
+
                                     </div>
 
                                     <div class="col-sm-12 col-xl-6">
@@ -740,7 +744,10 @@
                                         </div>
                                     </div>
 
+                                    <hr>
                                 </div>
+
+
                             {% endfor %}
 
                         </div>
@@ -748,7 +755,7 @@
                         <div class="bg-light rounded h-100 p-4">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <button type="button" class="btn btn-outline-primary py-3 w-25" onclick="Add_variable('group_addin_vars');">Add variable</button>
-                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_add_vars" value="Add variables submit" onclick="fnc_submit('add_vars', false)">
+                                <input class="btn btn-primary py-3 w-25" type="submit" id="submit_add_vars" value="Submit add variables" onclick="fnc_submit('add_vars', false)">
                             </div>
                         </div>
 
@@ -757,7 +764,385 @@
                 </div>
 
                 <div class="tab-pane fade" id="nav-topline" role="tabpanel" aria-labelledby="nav-topline-tab">
-                    this is topline
+<!--                    this is topline-->
+
+                    <form id="form_topline" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id='output_topline' name="output">
+
+                        <input type="hidden" id='detail.topline_design.is_display_pct_sign' name="detail.topline_design.is_display_pct_sign" value="{{ prj.detail.topline_design.is_display_pct_sign }}">
+
+                        <input type="hidden" id='detail.topline_design.is_jar_scale_3' name="detail.topline_design.is_jar_scale_3" value="{{ prj.detail.topline_design.is_jar_scale_3 }}">
+
+                        <div class="row g-0 p-4">
+
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-light rounded h-100 p-1">
+                                    <div class="form-check form-switch">
+
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="cbx_is_display_pct_sign" onclick="cbxClick(this, 'detail.topline_design.is_display_pct_sign');">
+                                        <label class="form-check-label" for="cbx_is_display_pct_sign">Display percentage sign(%)</label>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-light rounded h-100 p-1">
+                                    <div class="form-check form-switch">
+
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="cbx_is_jar_scale_3" onclick="cbxClick(this, 'detail.topline_design.is_jar_scale_3');">
+                                        <label class="form-check-label" for="cbx_is_jar_scale_3">Run JAR mean base on scale 3</label>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="flush-headingOne">
+                                        <button class="accordion-button" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                                            aria-expanded="true" aria-controls="flush-collapseOne">
+                                            <b>Header</b>
+                                        </button>
+                                    </h2>
+
+                                    <div id="flush-collapseOne" class="accordion-collapse collapse show"
+                                        aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                        <div class="accordion-body">
+<!--                                            topline header-->
+                                            <div class="table-responsive p-1">
+                                                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                                    <thead>
+                                                        <tr class="text-dark">
+                                                            <th scope="col">Name</th>
+                                                            <th scope="col">Label</th>
+                                                            <th scope="col">Hidden categories</th>
+                                                            <th scope="col"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="detail.topline_design.header">
+
+                                                        {% if prj.detail.topline_design.header %}
+
+                                                            {% for k_hd, v_hd in prj.detail.topline_design.header.items() %}
+
+                                                                <tr id="detail.topline_design.header.{{ k_hd }}.row">
+                                                                    <td width="40%"><input type="text" class="form-control" id="detail.topline_design.header.{{ k_hd }}.name"
+                                                                       name="detail.topline_design.header.{{ k_hd }}.name" value="{{ v_hd.name }}"></td>
+
+                                                                    <td width="20%"><input type="text" class="form-control" id="detail.topline_design.header.{{ k_hd }}.lbl"
+                                                                       name="detail.topline_design.header.{{ k_hd }}.lbl" value="{{ v_hd.lbl }}"></td>
+
+                                                                    <td width="35%"><input type="text" class="form-control" id="detail.topline_design.header.{{ k_hd }}.hidden_cats"
+                                                                       name="detail.topline_design.header.{{ k_hd }}.hidden_cats" value="{{ v_hd.hidden_cats }}"></td>
+
+                                                                    <td width="5%"><button type="button" class="btn btn-outline-danger"
+                                                                       id="detail.topline_design.header.{{ k_hd }}.btn_del"
+                                                                       onclick="Del_topline_header_item('detail.topline_design.header.{{ k_hd }}.row');">X</button></td>
+                                                                </tr>
+
+                                                            {% endfor %}
+
+                                                        {% endif %}
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="d-flex align-items-center justify-content-between p-1">
+                                                <button type="button" class="btn btn-outline-primary" onclick="Add_topline_header_item('detail.topline_design.header');">+</button>
+                                                <button type="button" class="btn btn-outline-primary" onclick="showDialog('dialog_bulkup_topline_header')">Bulk-up header</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="flush-headingTwo">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+                                            aria-expanded="false" aria-controls="flush-collapseTwo">
+                                            <b>Side axis</b>
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                        aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                        <div class="accordion-body">
+<!--                                            topline side axis-->
+
+                                            <div class="bg-light rounded h-100 p-2" id="group_topline_side_items">
+
+                                                {% if prj.detail.topline_design.side %}
+
+                                                    {% for key, val in prj.detail.topline_design.side.items() %}
+
+                                                        <div class="row g-0 p-2" id="detail.topline_design.side.{{ key }}">
+
+                                                            <div class="d-flex align-items-center justify-content-between p-1">
+                                                                <h6 class="mb-1">#{{ key }}</h6>
+                                                                <button type="button" class="btn btn-outline-danger" onclick="Del_topline_side_item('detail.topline_design.side.{{ key }}', 'group_topline_side_items');">Delete</button>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+                                                                    <input type="text" class="form-control" id="detail.topline_design.side.{{ key }}.group_lbl"
+                                                                           name="detail.topline_design.side.{{ key }}.group_lbl" value="{{ val.group_lbl }}">
+                                                                    <label for="detail.topline_design.side.{{ key }}.group_lbl">Group</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+                                                                    <input type="text" class="form-control" id="detail.topline_design.side.{{ key }}.name"
+                                                                           name="detail.topline_design.side.{{ key }}.name" value="{{ val.name }}">
+                                                                    <label for="detail.topline_design.side.{{ key }}.name">Name</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+                                                                    <input type="text" class="form-control" id="detail.topline_design.side.{{ key }}.lbl"
+                                                                           name="detail.topline_design.side.{{ key }}.lbl" value="{{ val.lbl }}">
+                                                                    <label for="detail.topline_design.side.{{ key }}.lbl">Label</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+                                                                    <select class="form-select" id="detail.topline_design.side.{{ key }}.type"
+                                                                            name="detail.topline_design.side.{{ key }}.type"
+                                                                            onchange="topline_side_type(this);">
+
+                                                                        {% for _type in ['OL', 'JR', 'FC', 'SA', 'MA', 'NUM'] %}
+
+                                                                            {% if val.type == _type %}
+                                                                                <option selected value="{{ _type }}">{{ _type }}</option>
+                                                                            {% else %}
+                                                                                <option value="{{ _type }}">{{ _type }}</option>
+                                                                            {% endif %}
+
+                                                                        {% endfor %}
+
+                                                                    </select>
+                                                                    <label for="detail.topline_design.side.{{ key }}.type">Type</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+
+                                                                    <div class="form-check form-check-inline form-switch">
+                                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                                               id="detail.topline_design.side.{{ key }}.t2b"
+                                                                               name="detail.topline_design.side.{{ key }}.t2b"
+                                                                               value="{{ val.t2b }}"
+                                                                               onclick="cbxClick(this, 'detail.topline_design.side.{{ key }}.t2b');">
+                                                                        <label class="form-check-label" for="detail.topline_design.side.{{ key }}.t2b">T2B</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline form-switch">
+                                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                                               id="detail.topline_design.side.{{ key }}.b2b"
+                                                                               name="detail.topline_design.side.{{ key }}.b2b"
+                                                                               value="{{ val.b2b }}"
+                                                                               onclick="cbxClick(this, 'detail.topline_design.side.{{ key }}.b2b');">
+                                                                        <label class="form-check-label" for="detail.topline_design.side.{{ key }}.b2b">B2B</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline form-switch">
+                                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                                               id="detail.topline_design.side.{{ key }}.mean"
+                                                                               name="detail.topline_design.side.{{ key }}.mean"
+                                                                               value="{{ val.mean }}"
+                                                                               onclick="cbxClick(this, 'detail.topline_design.side.{{ key }}.mean');">
+                                                                        <label class="form-check-label" for="detail.topline_design.side.{{ key }}.mean">Mean</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+
+                                                                    <div class="form-check form-check-inline form-switch">
+                                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                                               id="detail.topline_design.side.{{ key }}.is_count"
+                                                                               name="detail.topline_design.side.{{ key }}.is_count"
+                                                                               value="{{ val.is_count }}"
+                                                                               onclick="cbxClick(this, 'detail.topline_design.side.{{ key }}.is_count');">
+                                                                        <label class="form-check-label" for="detail.topline_design.side.{{ key }}.is_count">Display count</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline form-switch">
+                                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                                               id="detail.topline_design.side.{{ key }}.is_corr"
+                                                                               name="detail.topline_design.side.{{ key }}.is_corr"
+                                                                               value="{{ val.is_corr }}"
+                                                                               onclick="cbxClick(this, 'detail.topline_design.side.{{ key }}.is_corr');">
+                                                                        <label class="form-check-label" for="detail.topline_design.side.{{ key }}.is_corr">Correlation</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline form-switch">
+                                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                                               id="detail.topline_design.side.{{ key }}.is_ua"
+                                                                               name="detail.topline_design.side.{{ key }}.is_ua"
+                                                                               value="{{ val.is_ua }}"
+                                                                               onclick="cbxClick(this, 'detail.topline_design.side.{{ key }}.is_ua');">
+                                                                        <label class="form-check-label" for="detail.topline_design.side.{{ key }}.is_ua">U&A</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+                                                                    <input type="text" class="form-control" id="detail.topline_design.side.{{ key }}.ma_cats"
+                                                                           name="detail.topline_design.side.{{ key }}.ma_cats" value="{{ val.ma_cats }}">
+                                                                    <label for="detail.topline_design.side.{{ key }}.ma_cats">MA Categories</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12 col-xl-6">
+                                                                <div class="form-floating p-1">
+                                                                    <input type="text" class="form-control" id="detail.topline_design.side.{{ key }}.hidden_cats"
+                                                                           name="detail.topline_design.side.{{ key }}.hidden_cats" value="{{ val.hidden_cats }}">
+                                                                    <label for="detail.topline_design.side.{{ key }}.hidden_cats">Hidden categories</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <hr>
+                                                        </div>
+
+                                                    {% endfor %}
+
+                                                {% endif %}
+
+                                            </div>
+
+                                            <div class="d-flex align-items-center justify-content-between p-2">
+                                                <button type="button" class="btn btn-outline-primary" onclick="Add_topline_side_item('group_topline_side_items');">+</button>
+                                                <button type="button" class="btn btn-outline-primary" onclick="showDialog('dialog_bulkup_topline_side')">Bulk-up side</button>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-end mb-4">
+                                <input class="btn btn-primary py-3 w-25" type="submit" value="Submit topline" onclick="fnc_submit('topline', false)">
+                            </div>
+                        </div>
+                    </form>
+
+<!--                    dialog for bulkup topline header-->
+                    <dialog id="dialog_bulkup_topline_header" class="col-sm-12 col-xl-6">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h5 class="mb-2">Bulk-up topline header</h5>
+                            </div>
+
+                            <form id="form_bulkup_topline_header" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                                <input type="hidden" id='output_bulkup_topline_header' name="output">
+
+                                <div class="align-items-center justify-content-between mb-2">
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a input here"
+                                            id="floatingTextarea_bulkup_topline_header" name="detail.topline_design.header" style="height: 500px"></textarea>
+                                        <label for="floatingTextarea_bulkup_topline_header">Leave an input here</label>
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end mb-2">
+                                    <button type="button" class="btn btn-secondary py-3 w-25" onclick="closeDialog('dialog_bulkup_topline_header')">Close</button>
+                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Submit" id="submit_bulkup_topline_header" onclick="fnc_submit('bulkup_topline_header', true)">
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </dialog>
+
+                    <!--                    dialog for bulkup topline side-->
+                    <dialog id="dialog_bulkup_topline_side" class="col-sm-12 col-xl-6">
+
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h5 class="mb-2">Bulk-up topline side</h5>
+                            </div>
+
+                            <form id="form_bulkup_topline_side" action="/msn-prj/update/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                                <input type="hidden" id='output_bulkup_topline_side' name="output">
+
+                                <div class="align-items-center justify-content-between mb-2">
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a input here"
+                                            id="floatingTextarea_bulkup_topline_side" name="detail.topline_design.side" style="height: 500px"></textarea>
+                                        <label for="floatingTextarea_bulkup_topline_side">Leave an input here</label>
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end mb-2">
+                                    <button type="button" class="btn btn-secondary py-3 w-25" onclick="closeDialog('dialog_bulkup_topline_side')">Close</button>
+                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Submit" id="submit_bulkup_topline_side" onclick="fnc_submit('bulkup_topline_side', true)">
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </dialog>
+
+                </div>
+
+                <div class="tab-pane fade" id="nav-data" role="tabpanel" aria-labelledby="nav-data-tab">
+<!--                    this is data-->
+
+                    <form id="form_data_upload" action="/msn-prj/data_upload/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <h3 class="bg-light rounded h-100 p-2">Data upload</h3>
+
+                        <div class="row g-4 p-4">
+
+                            <div class="col-sm-12 col-xl-6">
+                                <label for="file_scr" class="form-label">Choose screener file</label>
+                                <input class="form-control" type="file" id="file_scr" name="file_scr" multiple data-max="1" accept=".xlsx" value="">
+                            </div>
+
+                            <div class="col-sm-12 col-xl-6">
+                                <label for="file_main" class="form-label">Choose main file</label>
+                                <input class="form-control" type="file" id="file_main" name="file_main" multiple data-max="1" accept=".xlsx" value="">
+                            </div>
+
+                            <div class="bg-light rounded h-100">
+                                <div class="d-flex align-items-center justify-content-end mb-4">
+                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Upload data">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                    <hr>
+
+
+
                 </div>
 
             </div>
@@ -769,6 +1154,72 @@
 
 
     <script>
+        window.addEventListener('load', function() {
+
+            a = document.getElementById('detail.topline_design.is_display_pct_sign');
+            b = document.getElementById('detail.topline_design.is_jar_scale_3');
+
+            c = document.getElementById('cbx_is_display_pct_sign');
+            d = document.getElementById('cbx_is_jar_scale_3');
+
+            if (a.value == "True") {
+                c.checked = true;
+            }
+            else {
+                c.checked = false;
+            }
+
+            if (b.value == "True") {
+                d.checked = true;
+            }
+            else {
+                d.checked = false;
+            }
+
+<!--            name_tl_hd_total = document.getElementById('detail.topline_design.header.1.name');-->
+<!--            lbl_tl_hd_total = document.getElementById('detail.topline_design.header.1.lbl');-->
+<!--            hidden_cats_tl_hd_total = document.getElementById('detail.topline_design.header.1.hidden_cats');-->
+<!--            bnt_tl_hd_total = document.getElementById('detail.topline_design.header.1.btn_del');-->
+
+<!--            name_tl_hd_total.disabled = true;-->
+<!--            lbl_tl_hd_total.disabled = true;-->
+<!--            hidden_cats_tl_hd_total.disabled = true;-->
+<!--            bnt_tl_hd_total.hidden = true;-->
+
+            var elm_group_tl_side_items = document.getElementById('group_topline_side_items');
+
+            for (idx in elm_group_tl_side_items.children)
+            {
+                child = elm_group_tl_side_items.children.item(idx);
+                childID = child.id;
+
+                arr = ['t2b', 'b2b', 'mean', 'is_count', 'is_corr', 'is_ua'];
+
+                for(var i = 0; i < arr.length; i++){
+                    childItem = document.getElementById(childID + "." + arr[i]);
+
+                    a = childItem.value
+
+                    if(childItem.value == "True")
+                    {
+                        childItem.checked = true;
+                    }
+                    else {
+                        childItem.checked = false;
+                    }
+                }
+
+            }
+
+
+
+        });
+
+        function cbxClick(cbx, elm_id){
+            var elm = document.getElementById(elm_id);
+            elm.value = cbx.checked;
+        };
+
         setTimeout(() => {
             const err = document.getElementById('err');
             err.style.display = 'none';
@@ -776,11 +1227,11 @@
 
         function showDialog(strID) {
             document.getElementById(strID).showModal();
-        }
+        };
 
         function closeDialog(strID) {
             document.getElementById(strID).close();
-        }
+        };
 
         function fnc_submit(strName, isBulkup){
 
@@ -830,11 +1281,13 @@
                     }
 
                     if(Object.keys(JSON.parse(jsonData)).length > 1) {
+
                         document.getElementById(strOutput).value = jsonData;
                         document.getElementById(strForm).submit();
                     }
                     else {
                         alert("Cannot submit null data!");
+
                     }
 
                 });
@@ -843,10 +1296,11 @@
             {
                 document.getElementById(strForm).addEventListener('submit', (e) => {
                     e.preventDefault();
+
                 });
             }
 
-        }
+        };
 
         function Del_variable_cat(elm_id) {
 
@@ -1066,9 +1520,10 @@
             btn_div_2.appendChild(btn_input);
             elm_var.appendChild(btn_div_1);
 
-            document.getElementById(group_id).appendChild(elm_var);
+            elm_var.appendChild(document.createElement("hr"))
 
-        }
+            document.getElementById(group_id).appendChild(elm_var);
+        };
 
         function Del_variable(elm_id, group_id){
 
@@ -1081,8 +1536,394 @@
 
         };
 
+        function Add_topline_header_item(elm_id){
+
+            var elm = document.getElementById(elm_id);
+            var count = elm.children.length;
+
+            lastItemID = elm.children.item(count-1).id;
+            arr_lastItemID = lastItemID.split('.');
+
+            newItemID = parseInt(arr_lastItemID[arr_lastItemID.indexOf('row') - 1]) + 1;
+            strNewItemID = "detail.topline_design.header." + newItemID.toString();
+
+            tr = document.createElement("tr");
+            td_name = document.createElement("td");
+            td_lbl = document.createElement("td");
+            td_hid = document.createElement("td");
+            td_btn = document.createElement("td");
+
+            tr.id = strNewItemID + ".row";
+
+            td_name.width = "40%";
+            td_lbl.width = "20%";
+            td_hid.width = "35%";
+            td_btn.width = "5%";
+
+            ipt_name = document.createElement("input");
+            ipt_lbl = document.createElement("input");
+            ipt_hid = document.createElement("input");
+            ipt_btn = document.createElement("input");
+
+            ipt_name.type = "text"
+            ipt_name.classList.add("form-control");
+            ipt_name.id = strNewItemID + ".name";
+            ipt_name.name = ipt_name.id
+
+            ipt_lbl.type = "text"
+            ipt_lbl.classList.add("form-control");
+            ipt_lbl.id = strNewItemID + ".lbl";
+            ipt_lbl.name = ipt_lbl.id
+
+            ipt_hid.type = "text"
+            ipt_hid.classList.add("form-control");
+            ipt_hid.id = strNewItemID + ".hidden_cats";
+            ipt_hid.name = ipt_hid.id
+
+            ipt_btn.type = "button"
+            ipt_btn.classList.add("btn", "btn-outline-danger");
+            ipt_btn.id = strNewItemID + ".btn_del";
+            ipt_btn.value = "X";
+            ipt_btn.setAttribute('onclick', "Del_topline_header_item('" + tr.id + "')");
+
+            tr.appendChild(td_name);
+            tr.appendChild(td_lbl);
+            tr.appendChild(td_hid);
+            tr.appendChild(td_btn);
+
+            td_name.appendChild(ipt_name);
+            td_lbl.appendChild(ipt_lbl);
+            td_hid.appendChild(ipt_hid);
+            td_btn.appendChild(ipt_btn);
+
+            elm.appendChild(tr);
+
+        };
+
+        function Del_topline_header_item(elm_id){
+
+            isDel = confirm('Confirm delete variable #' + elm_id + "?");
+
+            if(isDel == true){
+                var elm = document.getElementById(elm_id);
+                elm.remove();
+            }
+        };
+
+        function Add_topline_side_item(elm_id) {
+
+            var elm = document.getElementById(elm_id);
+            var count = elm.children.length;
+
+            lastItemID = elm.children.item(count-1).id;
+            arr_lastItemID = lastItemID.split('.');
+
+            newItemID = parseInt(arr_lastItemID[arr_lastItemID.length - 1]) + 1;
+            strNewItemID = "detail.topline_design.side." + newItemID.toString();
+
+            sideItem = document.createElement("div");
+            sideItem.classList.add("row", "g-0", "p-2");
+            sideItem.id = strNewItemID;
+
+            div1 = document.createElement("div");
+            div1.classList.add("d-flex", "align-items-center", "justify-content-between", "p-1");
+
+            div1_h6 = document.createElement("h6");
+            div1_h6.classList.add("mb-1");
+            div1_h6.innerHTML = "#" + newItemID.toString();
+
+            btn_del_item = document.createElement("input");
+            btn_del_item.type = "button"
+            btn_del_item.classList.add("btn", "btn-outline-danger");
+            btn_del_item.value = "Delete";
+            btn_del_item.setAttribute('onclick', "Del_topline_side_item('" + sideItem.id + "')");
+
+            sideItem.appendChild(div1);
+            div1.appendChild(div1_h6);
+            div1.appendChild(btn_del_item);
+
+            arr = ['group_lbl', 'name', 'lbl', 'type', 't2b|b2b|mean', 'is_count|is_corr|is_ua', 'ma_cats', 'hidden_cats'];
+            for(var i = 0; i < arr.length; i++)
+            {
+                div_sub1 = document.createElement("div");
+                div_sub1.classList.add("col-sm-12", "col-xl-6");
+
+                div_sub2 = document.createElement("div");
+                div_sub2.classList.add("form-floating", "p-1");
+
+                if (arr[i] == 'group_lbl' || arr[i] == 'name' || arr[i] == 'lbl' || arr[i] == 'ma_cats' || arr[i] == 'hidden_cats') {
+
+                    ipt_item = document.createElement("input");
+                    ipt_item.type = "text";
+                    ipt_item.classList.add("form-control");
+                    ipt_item.id = strNewItemID + "." + arr[i];
+                    ipt_item.name = ipt_item.id;
+
+                    label_item = document.createElement("label");
+                    label_item.htmlFor = ipt_item.id;
+
+                    if (arr[i] == 'group_lbl') {
+                        label_item.innerHTML = "Group";
+                    }
+                    else if(arr[i] == 'name') {
+                        label_item.innerHTML = "Name";
+                    }
+                    else if(arr[i] == 'lbl') {
+                        label_item.innerHTML = "Label";
+                    }
+                    else if(arr[i] == 'ma_cats') {
+                        label_item.innerHTML = "MA Categories";
+                    }
+                    else if(arr[i] == 'hidden_cats') {
+                        label_item.innerHTML = "Hidden categories";
+                    }
 
 
+                }
+                else if (arr[i] == 'type') {
+
+                    ipt_item = document.createElement("select");
+                    ipt_item.classList.add("form-select");
+                    ipt_item.id = strNewItemID + "." + arr[i];
+                    ipt_item.name = ipt_item.id;
+                    ipt_item.setAttribute('onchange', "topline_side_type(this);");
+
+                    arr_sel_item = ['OL', 'JR', 'FC', 'SA', 'MA', 'NUM'];
+                    for(var j = 0; j < arr_sel_item.length; j++) {
+                        sel_item = document.createElement("option");
+                        sel_item.value = arr_sel_item[j];
+                        sel_item.innerHTML = sel_item.value
+                        ipt_item.appendChild(sel_item);
+                    }
+
+                    label_item = document.createElement("label");
+                    label_item.htmlFor = ipt_item.id;
+                    label_item.innerHTML = "Type";
+
+                }
+                else if (arr[i] == 't2b|b2b|mean' || 'is_count|is_corr|is_ua') {
+
+                    sub_arr = arr[i].split('|');
+
+                    for(var j = 0; j < sub_arr.length; j++) {
+                        div_sub3 = document.createElement("div");
+                        div_sub3.classList.add("form-check", "form-check-inline", "form-switch");
+
+                        ipt_item = document.createElement("input");
+                        ipt_item.type = "checkbox";
+                        ipt_item.classList.add("form-check-input");
+                        ipt_item.setAttribute('role', "switch");
+                        ipt_item.id = strNewItemID + "." + sub_arr[j];
+                        ipt_item.name = ipt_item.id;
+                        ipt_item.setAttribute('onclick', "cbxClick(this, '" + ipt_item.id + "');");
+
+                        label_item = document.createElement("label");
+                        label_item.htmlFor = ipt_item.id;
+
+                        if (sub_arr[j] == 't2b') {
+                            label_item.innerHTML = "T2B";
+                        }
+                        else if(sub_arr[j] == 'b2b') {
+                            label_item.innerHTML = "B2B";
+                        }
+                        else if(sub_arr[j] == 'mean') {
+                            label_item.innerHTML = "Mean";
+                        }
+                        else if(sub_arr[j] == 'is_count') {
+                            label_item.innerHTML = "Display count";
+                        }
+                        else if(sub_arr[j] == 'is_corr') {
+                            label_item.innerHTML = "Correlation";
+                        }
+                        else if(sub_arr[j] == 'is_ua') {
+                            label_item.innerHTML = "U&A";
+                        }
+
+                        div_sub3.appendChild(ipt_item);
+                        div_sub3.appendChild(label_item);
+                        div_sub2.appendChild(div_sub3);
+                    }
+
+                }
+
+                sideItem.appendChild(div_sub1);
+                div_sub1.appendChild(div_sub2);
+
+                if (arr[i] != 't2b|b2b|mean' && arr[i] != 'is_count|is_corr|is_ua') {
+                    div_sub2.appendChild(ipt_item);
+                    div_sub2.appendChild(label_item);
+                }
+
+            }
+
+            sideItem.appendChild(document.createElement("hr"));
+
+            elm.appendChild(sideItem);
+
+        };
+
+        function Del_topline_side_item(elm_id, group_id){
+
+            isDel = confirm('Confirm delete variable #' + elm_id.split(".")[3] + "?");
+
+            if(isDel == true){
+                var elm_remove = document.getElementById(elm_id);
+                elm_remove.remove();
+            }
+        };
+
+        function topline_side_type(sel) {
+            itemID = (sel.id).replace("type", "");
+
+            elm_t2b = document.getElementById(itemID + "t2b");
+            elm_b2b = document.getElementById(itemID + "b2b");
+            elm_mean = document.getElementById(itemID + "mean");
+
+            elm_ma_cats = document.getElementById(itemID + "ma_cats");
+            elm_hidden_cats = document.getElementById(itemID + "hidden_cats");
+
+            elm_is_count = document.getElementById(itemID + "is_count");
+            elm_is_corr = document.getElementById(itemID + "is_corr");
+            elm_is_ua = document.getElementById(itemID + "is_ua");
+
+            selVal = sel.value;
+            switch(selVal) {
+                case 'OL':
+                    elm_t2b.checked = true;
+                    elm_b2b.checked = true;
+                    elm_mean.checked = true;
+
+                    elm_is_count.checked = false;
+                    elm_is_corr.checked = true;
+                    elm_is_ua.checked = false;
+
+                    elm_t2b.value = "true";
+                    elm_b2b.value = "true";
+                    elm_mean.value = "true";
+
+                    elm_is_count.value = "false";
+                    elm_is_corr.value = "true";
+                    elm_is_ua.value = "false";
+
+                    elm_ma_cats.value = "";
+                    elm_hidden_cats.value = "";
+
+                    break;
+
+                case 'JR':
+                    elm_t2b.checked = true;
+                    elm_b2b.checked = true;
+                    elm_mean.checked = true;
+
+                    elm_is_count.checked = false;
+                    elm_is_corr.checked = false;
+                    elm_is_ua.checked = false;
+
+                    elm_t2b.value = "true";
+                    elm_b2b.value = "true";
+                    elm_mean.value = "true";
+
+                    elm_is_count.value = "false";
+                    elm_is_corr.value = "false";
+                    elm_is_ua.value = "false";
+
+                    elm_ma_cats.value = "";
+                    elm_hidden_cats.value = "";
+
+                    break;
+
+                case 'FC':
+
+                    elm_t2b.checked = false;
+                    elm_b2b.checked = false;
+                    elm_mean.checked = false;
+
+                    elm_is_count.checked = false;
+                    elm_is_corr.checked = false;
+                    elm_is_ua.checked = false;
+
+                    elm_t2b.value = "false";
+                    elm_b2b.value = "false";
+                    elm_mean.value = "false";
+
+                    elm_is_count.value = "false";
+                    elm_is_corr.value = "false";
+                    elm_is_ua.value = "false";
+
+                    elm_ma_cats.value = "";
+                    elm_hidden_cats.value = "";
+
+                    break;
+
+                case 'SA':
+
+                    elm_t2b.checked = false;
+                    elm_b2b.checked = false;
+                    elm_mean.checked = false;
+
+                    elm_is_count.checked = false;
+                    elm_is_corr.checked = false;
+                    elm_is_ua.checked = true;
+
+                    elm_t2b.value = "false";
+                    elm_b2b.value = "false";
+                    elm_mean.value = "false";
+
+                    elm_is_count.value = "false";
+                    elm_is_corr.value = "false";
+                    elm_is_ua.value = "true";
+
+                    elm_ma_cats.value = "";
+                    elm_hidden_cats.value = "";
+
+                    break;
+
+                case 'MA':
+
+                    elm_t2b.checked = false;
+                    elm_b2b.checked = false;
+                    elm_mean.checked = false;
+
+                    elm_is_count.checked = false;
+                    elm_is_corr.checked = false;
+                    elm_is_ua.checked = true;
+
+                    elm_t2b.value = "false";
+                    elm_b2b.value = "false";
+                    elm_mean.value = "false";
+
+                    elm_is_count.value = "false";
+                    elm_is_corr.value = "false";
+                    elm_is_ua.value = "true";
+
+                    break;
+
+                case 'NUM':
+
+                    elm_t2b.checked = false;
+                    elm_b2b.checked = false;
+                    elm_mean.checked = false;
+
+                    elm_is_count.checked = false;
+                    elm_is_corr.checked = false;
+                    elm_is_ua.checked = true;
+
+                    elm_t2b.value = "false";
+                    elm_b2b.value = "false";
+                    elm_mean.value = "false";
+
+                    elm_is_count.value = "false";
+                    elm_is_corr.value = "false";
+                    elm_is_ua.value = "true";
+
+                    elm_ma_cats.value = "";
+                    elm_hidden_cats.value = "";
+
+                    break;
+
+            }
+
+        };
 
 
     </script>

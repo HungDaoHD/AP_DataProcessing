@@ -73,7 +73,27 @@ async def update_prj_data(request: Request, _id: str, strBody: str = Body(...)):
         })
 
 
+@router.post('/data_upload/{_id}', response_class=RedirectResponse)
+async def upload_prj_data(request: Request, _id: str, file_scr: UploadFile, file_main: UploadFile):
+    try:
 
+        upload_data = await msn_prj.upload_prj_data(_id, file_scr, file_main)
+
+        if upload_data:
+            redirect_url = request.url_for('retrieve_id', **{'_id': _id})
+            return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+        else:
+            redirect_url = request.url_for('retrieve')
+            return RedirectResponse(redirect_url, status_code=status.HTTP_404_NOT_FOUND)
+
+    except Exception:
+        print(traceback.format_exc())
+
+        return templates.TemplateResponse('msn_prj_id.html', {
+            'request': request,
+            'strTask': 'MSN Projects\'s id',
+            'strErr': traceback.format_exc()
+        })
 
 
 
