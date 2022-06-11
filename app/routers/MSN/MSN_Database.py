@@ -2,9 +2,9 @@ import motor.motor_asyncio
 from bson.objectid import ObjectId
 import re
 import json
-from ...classes.AP_DataConverter import APDataConverter
-import pandas as pd
 import traceback
+from .MSN_Data_Converter import QMeFileConvert
+from .MSN_Export_Data import ExportMSNData
 
 
 class MsnPrj:
@@ -37,62 +37,109 @@ class MsnPrj:
                 'name': prj['name'],
                 'categorical': prj['categorical'],
                 'status': prj['status'],
-                'detail': prj['detail']
+                'detail': prj['detail'],
+                'lenOfScr': len(prj['screener']['data']),
+                'lenOfMain': len(prj['main']['data'])
             }
 
 
     async def retrieve(self):
-        lst_prj = []
-        async for prj in self.prj_collection.find():
-            lst_prj.append(self.prj_info(prj, True))
+        try:
 
-        overView = {
-            'total': len(lst_prj),
-            'completed': 0,
-            'on_going': 0,
-            'pending_cancel': 0,
-        }
+            lst_prj = []
+            async for prj in self.prj_collection.find():
+                lst_prj.append(self.prj_info(prj, True))
 
-        for item in lst_prj:
-            if item['status'] in ['Completed']:
-                overView['completed'] += 1
-            elif item['status'] in ['On Going']:
-                overView['on_going'] += 1
-            elif item['status'] in ['Pending', 'Cancel']:
-                overView['pending_cancel'] += 1
+            overView = {
+                'total': len(lst_prj),
+                'completed': 0,
+                'on_going': 0,
+                'pending_cancel': 0,
+            }
 
-        return lst_prj, overView
+            for item in lst_prj:
+                if item['status'] in ['Completed']:
+                    overView['completed'] += 1
+                elif item['status'] in ['On Going']:
+                    overView['on_going'] += 1
+                elif item['status'] in ['Pending', 'Cancel']:
+                    overView['pending_cancel'] += 1
+
+            return {
+                'isSuccess': True,
+                'strErr': None,
+                'lst_prj': lst_prj,
+                'overView': overView
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc(),
+                'lst_prj': None,
+                'overView': None
+            }
 
 
     async def retrieve_id(self, _id: str) -> dict:
-        prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+        try:
 
-        if prj:
-            prj = self.prj_info(prj, False)
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
-        return prj
+            if prj:
+                prj = self.prj_info(prj, False)
 
+            return {
+                'isSuccess': True,
+                'strErr': None,
+                'prj': prj
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc(),
+                'prj': None
+            }
 
 
     async def update_prj(self, _id: str, strBody: str):
 
-        data = self.body_to_json(strBody)
+        try:
 
-        if len(data) < 1:
-            return False
+            data = self.body_to_json(strBody)
 
-        prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+            if len(data) < 1:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Data is null'
+                }
 
-        if prj:
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
-            prj_updated = await self.prj_collection.update_one(
-                {'_id': ObjectId(_id)}, {'$set': data}
-            )
+            if prj:
 
-            if prj_updated:
-                return True
+                prj_updated = await self.prj_collection.update_one(
+                    {'_id': ObjectId(_id)}, {'$set': data}
+                )
 
-            return False
+                if prj_updated:
+                    return {
+                        'isSuccess': True,
+                        'strErr': None
+                    }
+
+            return {
+                'isSuccess': False,
+                'strErr': 'Cannot update'
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
+            }
+
 
 
     @staticmethod
@@ -232,22 +279,15 @@ class MsnPrj:
 
         try:
 
-            apCvt = APDataConverter()
-
-            apCvt.load(file_scr)
-
-            scr_data = apCvt.dictData
-            scr_varLbl = apCvt.dictVarLbl
-            scr_valLbl = {k: {str(k2): v2 for k2, v2 in v.items()} for k, v in apCvt.dictValLbl.items()}
-
-            apCvt.load(file_main)
-
-            main_data = apCvt.dictData
-            main_varLbl = apCvt.dictVarLbl
-            main_valLbl = {k: {str(k2): v2 for k2, v2 in v.items()} for k, v in apCvt.dictValLbl.items()}
+            cvter = QMeFileConvert()
+            scr_data, scr_varLbl, scr_valLbl = cvter.convert(file_scr)
+            main_data, main_varLbl, main_valLbl = cvter.convert(file_main)
 
             if not scr_data or not main_data:
-                return False
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Data is null'
+                }
 
             prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
@@ -271,15 +311,87 @@ class MsnPrj:
                 )
 
                 if upload_prj_data:
-                    return True
+                    return {
+                        'isSuccess': True,
+                        'strErr': 'Upload successfully'
+                    }
 
-                return False
+            return {
+                'isSuccess': False,
+                'strErr': 'Upload unsuccessfully'
+            }
 
         except Exception:
-            print(traceback.format_exc())
-            return False
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
+            }
 
 
+
+    async def clear_prj_data(self, _id: str):
+
+        try:
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+
+            if prj:
+
+                data = {
+                    'screener': {
+                        'data': {},
+                        'varLbl': {},
+                        'valLbl': {}
+                    },
+                    'main': {
+                        'data': {},
+                        'varLbl': {},
+                        'valLbl': {}
+                    }
+                }
+
+                clear_prj_data = await self.prj_collection.update_one(
+                    {'_id': ObjectId(_id)}, {'$set': data}
+                )
+
+                if clear_prj_data:
+                    return {
+                        'isSuccess': True,
+                        'strErr': 'Upload successfully'
+                    }
+
+            return {
+                    'isSuccess': False,
+                    'strErr': 'Upload unsuccessfully'
+                }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
+            }
+
+
+    async def data_export(self, _id: str, export_section):
+
+        try:
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+
+            exp_data = ExportMSNData(prj, False, export_section)
+            exp_data.run()
+            exp_data.zipfiles()
+
+            return {
+                    'isSuccess': True,
+                    'strErr': '',
+                    'zipName': exp_data.zipName
+                }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc(),
+                'zipName': None
+            }
 
 
 

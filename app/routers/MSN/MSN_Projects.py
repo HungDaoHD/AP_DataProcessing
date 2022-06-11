@@ -16,89 +16,96 @@ router = APIRouter(prefix='/msn-prj', tags=['msn-prj'])
 
 @router.get('', response_class=HTMLResponse)
 async def retrieve(request: Request):
-    try:
-        lst_prj, overView = await msn_prj.retrieve()
-        return templates.TemplateResponse('msn_prj.html', {'request': request, 'overView': overView, 'lst_prj': lst_prj})
 
-    except Exception:
-        print(traceback.format_exc())
+    result = await msn_prj.retrieve()
 
-        return templates.TemplateResponse('msn_prj.html', {
+    if result['isSuccess']:
+        return templates.TemplateResponse('msn_prj.html', {'request': request, 'overView': result['overView'], 'lst_prj': result['lst_prj']})
+    else:
+        return templates.TemplateResponse('error.html', {
             'request': request,
-            'strTask': 'MSN Projects',
-            'strErr': traceback.format_exc()
+            'strTask': 'Retrieve project error',
+            'strErr': result['strErr']
         })
-
 
 
 @router.get('/{_id}', response_class=HTMLResponse)
 async def retrieve_id(_id, request: Request):
-    try:
-        prj = await msn_prj.retrieve_id(_id)
+    result = await msn_prj.retrieve_id(_id)
 
-        if prj:
-            return templates.TemplateResponse('msn_prj_id.html', {'request': request, 'prj': prj})
-        else:
-            return templates.TemplateResponse('404.html', {'request': request})
-
-    except Exception:
-        print(traceback.format_exc())
-
-        return templates.TemplateResponse('msn_prj_id.html', {
+    if result['isSuccess']:
+        return templates.TemplateResponse('msn_prj_id.html', {'request': request, 'prj': result['prj']})
+    else:
+        return templates.TemplateResponse('error.html', {
             'request': request,
-            'strTask': 'MSN Projects\'s id',
-            'strErr': traceback.format_exc()
+            'strTask': 'Retrieve project id error',
+            'strErr': result['strErr']
         })
 
 
 @router.post('/update/{_id}', response_class=RedirectResponse)
 async def update_prj_data(request: Request, _id: str, strBody: str = Body(...)):
-    try:
-        updated_prj = await msn_prj.update_prj(_id, strBody)
+    result = await msn_prj.update_prj(_id, strBody)
 
-        if updated_prj:
-            redirect_url = request.url_for('retrieve_id', **{'_id': _id})
-            return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-        else:
-            redirect_url = request.url_for('retrieve')
-            return RedirectResponse(redirect_url, status_code=status.HTTP_404_NOT_FOUND)
-
-    except Exception:
-        print(traceback.format_exc())
-
-        return templates.TemplateResponse('msn_prj_id.html', {
+    if result['isSuccess']:
+        redirect_url = request.url_for('retrieve_id', **{'_id': _id})
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    else:
+        return templates.TemplateResponse('error.html', {
             'request': request,
-            'strTask': 'MSN Projects\'s id',
-            'strErr': traceback.format_exc()
+            'strTask': 'Update project data error',
+            'strErr': result['strErr']
         })
 
 
 @router.post('/data_upload/{_id}', response_class=RedirectResponse)
 async def upload_prj_data(request: Request, _id: str, file_scr: UploadFile, file_main: UploadFile):
-    try:
 
-        upload_data = await msn_prj.upload_prj_data(_id, file_scr, file_main)
+    result = await msn_prj.upload_prj_data(_id, file_scr, file_main)
 
-        if upload_data:
-            redirect_url = request.url_for('retrieve_id', **{'_id': _id})
-            return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-        else:
-            redirect_url = request.url_for('retrieve')
-            return RedirectResponse(redirect_url, status_code=status.HTTP_404_NOT_FOUND)
-
-    except Exception:
-        print(traceback.format_exc())
-
-        return templates.TemplateResponse('msn_prj_id.html', {
+    if result['isSuccess']:
+        redirect_url = request.url_for('retrieve_id', **{'_id': _id})
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    else:
+        return templates.TemplateResponse('error.html', {
             'request': request,
-            'strTask': 'MSN Projects\'s id',
-            'strErr': traceback.format_exc()
+            'strTask': 'Upload project data error',
+            'strErr': result['strErr']
         })
 
 
+@router.post('/data_clear/{_id}', response_class=RedirectResponse)
+async def clear_prj_data(request: Request, _id: str):
+
+    result = await msn_prj.clear_prj_data(_id)
+
+    if result['isSuccess']:
+        redirect_url = request.url_for('retrieve_id', **{'_id': _id})
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Clear project data error',
+            'strErr': result['strErr']
+        })
 
 
+@router.get('/data_export/{_id}', response_class=FileResponse)
+async def prj_data_export(request: Request, _id: str, export_section, export_task):
 
+    if export_task == 'Data':
+        result = await msn_prj.data_export(_id, export_section)
+
+        if result['isSuccess']:
+
+            return FileResponse(result['zipName'], filename=result['zipName'])
+
+        else:
+            return templates.TemplateResponse('error.html', {
+                'request': request,
+                'strTask': 'Export data error',
+                'strErr': result['strErr']
+            })
 
 
 

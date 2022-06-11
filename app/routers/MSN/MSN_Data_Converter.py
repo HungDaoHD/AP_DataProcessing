@@ -3,18 +3,20 @@ import openpyxl
 import numpy as np
 import pyreadstat
 import re
+import io
 
 
-class ConvertQandMeExcelFile:
+class QMeFileConvert:
 
-    def __init__(self, strFileName):
-        self.strFileName = strFileName
+    def __init__(self):
+        pass
+        # self.dfData = pd.DataFrame()
+        # self.dictData, self.dictVarLbl, self.dictValLbl = dict(), dict(), dict()
 
-        self.dfData = pd.DataFrame()
-        self.dict_column_labels, self.variable_value_labels = dict(), dict()
 
-    def convert(self):
-        wb = openpyxl.load_workbook(f'{self.strFileName}')
+    def convert(self, file):
+        xlsx = io.BytesIO(file.file.read())
+        wb = openpyxl.load_workbook(xlsx)
 
         wsData = wb['Data']
         wsQres = wb['Question']
@@ -101,6 +103,8 @@ class ConvertQandMeExcelFile:
             'RespondentCellPhone',
             'RespondentAddress',
 
+            'Memo',
+            'No.'
         ]
 
         for col in dfData.columns:
@@ -110,6 +114,8 @@ class ConvertQandMeExcelFile:
         data = wsQres.values
         columns = next(data)[0:]
         dfQres = pd.DataFrame(data, columns=columns)
+
+        wb.close()
 
         dictQres = dict()
         for idx in dfQres.index:
@@ -132,7 +138,7 @@ class ConvertQandMeExcelFile:
             for col in dfQres.columns:
                 if col not in ['Name of items', 'Question type', 'Question(Matrix)', 'Question(Normal)'] \
                         and dfQres.loc[idx, col] is not None:
-                    dictQres[strQreName]['cats'].update({int(col): self.cleanhtml(str(dfQres.loc[idx, col]))})
+                    dictQres[strQreName]['cats'].update({str(col): self.cleanhtml(str(dfQres.loc[idx, col]))})
 
         lstMatrixHeader = list()
         for k in dictQres.keys():
@@ -145,31 +151,23 @@ class ConvertQandMeExcelFile:
                 dictQres[f'{i}_{code}']['cats'].update({1: self.cleanhtml(lstLblMatrixMA[1])})
                 dictQres[f'{i}_{code}']['label'] = f"{dictQres[i]['label']}_{lstLblMatrixMA[1]}"
 
-        dict_column_labels = dict()
-        variable_value_labels = dict()
+        dictVarLbl = dict()
+        dictValLbl = dict()
         for col in dfData.columns:
             if col in dictQres.keys():
-                dict_column_labels[col] = self.cleanhtml(dictQres[col]['label'])
+                dictVarLbl[col] = self.cleanhtml(dictQres[col]['label'])
 
-                variable_value_labels[col] = dictQres[col]['cats']
+                dictValLbl[col] = dictQres[col]['cats']
 
             else:
-                dict_column_labels[col] = col
+                dictVarLbl[col] = col
 
         dfData.replace({None: np.nan}, inplace=True)
+        dictData = dfData.to_dict('records')
 
-        wb.close()
-
-        self.dfData, self.dict_column_labels, self.variable_value_labels = dfData, dict_column_labels, variable_value_labels
-
-        return dfData, dict_column_labels, variable_value_labels
+        return dictData, dictVarLbl, dictValLbl
 
 
-    def toSav(self):
-        pyreadstat.write_sav(self.dfData,
-                             f'{self.strFileName}.sav',
-                             column_labels=list(self.dict_column_labels.values()),
-                             variable_value_labels=self.variable_value_labels)
 
 
     @staticmethod

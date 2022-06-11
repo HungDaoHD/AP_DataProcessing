@@ -1113,26 +1113,20 @@
                 <div class="tab-pane fade" id="nav-data" role="tabpanel" aria-labelledby="nav-data-tab">
 <!--                    this is data-->
 
-                    <form id="form_data_upload" action="/msn-prj/data_upload/{{ prj.id }}" method="post" enctype="multipart/form-data">
-
-                        <h3 class="bg-light rounded h-100 p-2">Data upload</h3>
+                    <form id="form_data_clear" action="/msn-prj/data_clear/{{ prj.id }}" method="post" enctype="multipart/form-data">
 
                         <div class="row g-4 p-4">
 
-                            <div class="col-sm-12 col-xl-6">
-                                <label for="file_scr" class="form-label">Choose screener file</label>
-                                <input class="form-control" type="file" id="file_scr" name="file_scr" multiple data-max="1" accept=".xlsx" value="">
+                            <div class="col-sm-12 col-xl-4">
+                                <h5>Screener = {{ prj.lenOfScr }} res</h5>
                             </div>
 
-                            <div class="col-sm-12 col-xl-6">
-                                <label for="file_main" class="form-label">Choose main file</label>
-                                <input class="form-control" type="file" id="file_main" name="file_main" multiple data-max="1" accept=".xlsx" value="">
+                            <div class="col-sm-12 col-xl-4">
+                                <h5>Main = {{ prj.lenOfMain }} res</h5>
                             </div>
 
-                            <div class="bg-light rounded h-100">
-                                <div class="d-flex align-items-center justify-content-end mb-4">
-                                    <input class="btn btn-primary py-3 w-25" type="submit" value="Upload data">
-                                </div>
+                            <div class="col-sm-12 col-xl-4">
+                                <input class="btn btn-outline-danger py-3 w-100" type="submit" value="Clear data" onclick="fnc_submit_clear_data()">
                             </div>
 
                         </div>
@@ -1141,6 +1135,91 @@
 
                     <hr>
 
+                    <form id="form_data_upload" action="/msn-prj/data_upload/{{ prj.id }}" method="post" enctype="multipart/form-data">
+
+                        <h3 class="bg-light rounded h-100 p-2">Upload</h3>
+
+                        <div class="row g-4 p-4">
+
+                            <div class="col-sm-12 col-xl-4">
+                                <label for="file_scr" class="form-label">Choose screener file</label>
+                                <input class="form-control" type="file" id="file_scr" name="file_scr" multiple data-max="1" accept=".xlsx" value="">
+                            </div>
+
+                            <div class="col-sm-12 col-xl-4">
+                                <label for="file_main" class="form-label">Choose main file</label>
+                                <input class="form-control" type="file" id="file_main" name="file_main" multiple data-max="1" accept=".xlsx" value="">
+                            </div>
+
+                            <div class="col-sm-12 col-xl-4">
+                                <input class="btn btn-primary py-3 w-100" type="submit" value="Upload data">
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                    <hr>
+
+                    <form id="form_data_export" action="/msn-prj/data_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
+
+                        <h3 class="bg-light rounded h-100 p-2">Export</h3>
+
+                        <div class="row g-4 p-4">
+
+                            <div class="col-sm-12 col-xl-4">
+
+                                <div class="form-floating mb-0">
+
+                                    <select class="form-select" id="export_section"
+                                        aria-label="Floating label select example"
+                                        name="export_section">
+
+                                        {% for key, val in prj.detail.sections.items() %}
+
+                                            {% if key == '1' %}
+
+                                                <option selected value="{{ key }}">{{ val.name }}</option>
+
+                                            {% else %}
+
+                                                <option value="{{ key }}">{{ val.name }}</option>
+
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </select>
+                                    <label for="export_section">Please select section</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12 col-xl-4">
+
+                                <div class="form-floating mb-0">
+
+                                    <select class="form-select" id="export_task"
+                                        aria-label="Floating label select example"
+                                        name="export_task">
+
+                                        <option selected value="Data">Data</option>
+                                        <option value="Topline">Topline</option>
+
+                                    </select>
+                                    <label for="export_task">Please select task</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12 col-xl-4">
+                                <input class="btn btn-primary py-3 w-100" type="submit" value="Export">
+                            </div>
+
+
+                        </div>
+
+                    </form>
 
 
                 </div>
@@ -1925,6 +2004,25 @@
 
         };
 
+        function fnc_submit_clear_data(){
+            isSubmit = confirm('Confirm clear data?');
+
+            elm = document.getElementById("form_data_clear")
+
+            if (isSubmit == true) {
+
+                elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    elm.submit();
+                });
+            }
+            else
+            {
+                elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                });
+            }
+        };
 
     </script>
 {% endblock %}
