@@ -1,10 +1,11 @@
 .idea
 __pycache__
 temp
+file_format
+dashmin-1.0.0
 *.zip
 *.swp
 *.sqlite3
-dashmin-1.0.0
 *.sav
 *.xlsx
 *.sps

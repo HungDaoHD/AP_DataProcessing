@@ -376,13 +376,20 @@ class MsnPrj:
         try:
             prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
-            exp_data = ExportMSNData(prj, False, export_section)
-            exp_data.run()
-            exp_data.zipfiles()
+            exp_data = ExportMSNData(prj=prj, isExportSPCode=False, export_section=export_section, isExportForceChoiceYN=False)
+
+            isSuccess = exp_data.export_data()
+
+            if not isSuccess[0]:
+                return {
+                    'isSuccess': False,
+                    'strErr': isSuccess[1],
+                    'zipName': None
+                }
 
             return {
                     'isSuccess': True,
-                    'strErr': '',
+                    'strErr': None,
                     'zipName': exp_data.zipName
                 }
 
