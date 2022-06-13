@@ -107,6 +107,20 @@ async def prj_data_export(request: Request, _id: str, export_section, export_tas
                 'strErr': result['strErr']
             })
 
+    if export_task == 'Topline':
+        result = await msn_prj.topline_export(_id, export_section)
+
+        if result['isSuccess']:
+
+            return FileResponse(result['zipName'], filename=result['zipName'])
+
+        else:
+            return templates.TemplateResponse('error.html', {
+                'request': request,
+                'strTask': 'Export topline error',
+                'strErr': result['strErr']
+            })
+
 
 
 

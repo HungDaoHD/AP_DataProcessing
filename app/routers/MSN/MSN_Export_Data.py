@@ -45,7 +45,6 @@ class ExportMSNData:
         self.dictMerge_column_labels, self.dictMerge_variable_value_labels = dict(), dict()
 
         self.dfSP1, self.dfSP2 = pd.DataFrame(), pd.DataFrame()
-        self.create_dfSP1_dfSP2()
 
         self.dfStacked, self.dfUnstacked = pd.DataFrame(), pd.DataFrame()
         self.dictUnstack_column_labels, self.dictUnstack_variable_value_labels = dict(), dict()
@@ -76,11 +75,11 @@ class ExportMSNData:
         if not isSuccess[0]:
             return isSuccess
 
-        isSuccess = self.export_stackSav()
+        isSuccess = self.export_stackSav(isCreateSavFile=True)
         if not isSuccess[0]:
             return isSuccess
 
-        isSuccess = self.export_unstackSav()
+        isSuccess = self.export_unstackSav(isCreateSavFile=True)
         if not isSuccess[0]:
             return isSuccess
 
@@ -93,8 +92,34 @@ class ExportMSNData:
         if not isSuccess[0]:
             return isSuccess
 
+        return True, None
+
+
+    def export_dfOnly(self):
+
+        isSuccess = self.get_prj_info()
+        if not isSuccess[0]:
+            return isSuccess
+
+        isSuccess = self.create_dfMerge()
+        if not isSuccess[0]:
+            return isSuccess
+
+        isSuccess = self.create_dfSP1_dfSP2()
+        if not isSuccess[0]:
+            return isSuccess
+
+        isSuccess = self.export_stackSav(isCreateSavFile=False)
+        if not isSuccess[0]:
+            return isSuccess
+
+        isSuccess = self.export_unstackSav(isCreateSavFile=False)
+        if not isSuccess[0]:
+            return isSuccess
 
         return True, None
+
+
 
 
     def get_prj_info(self):
@@ -344,7 +369,7 @@ class ExportMSNData:
             return False, traceback.format_exc()
 
 
-    def export_stackSav(self):
+    def export_stackSav(self, isCreateSavFile):
 
         try:
 
@@ -377,19 +402,20 @@ class ExportMSNData:
             print('Created dfStacked')
 
             if self.isExportForceChoiceYN:
-
-                self.savStackFile = pyreadstat.write_sav(self.dfStacked, self.savStackName,
-                                                         column_labels=lstStack_column_labels,
-                                                         variable_value_labels=dictStack_variable_value_labels)
+                if isCreateSavFile:
+                    self.savStackFile = pyreadstat.write_sav(self.dfStacked, self.savStackName,
+                                                             column_labels=lstStack_column_labels,
+                                                             variable_value_labels=dictStack_variable_value_labels)
 
             else:
                 self.dfStacked.drop(columns=[strForceChoiceYN], inplace=True)
                 lstStack_column_labels = lstStack_column_labels[:-1]
                 dictStack_variable_value_labels.pop(strForceChoiceYN)
 
-                self.savStackFile = pyreadstat.write_sav(self.dfStacked, self.savStackName,
-                                                         column_labels=lstStack_column_labels,
-                                                         variable_value_labels=dictStack_variable_value_labels)
+                if isCreateSavFile:
+                    self.savStackFile = pyreadstat.write_sav(self.dfStacked, self.savStackName,
+                                                             column_labels=lstStack_column_labels,
+                                                             variable_value_labels=dictStack_variable_value_labels)
 
             print('Exported Stacked Sav file')
 
@@ -399,7 +425,7 @@ class ExportMSNData:
             return False, traceback.format_exc()
 
 
-    def export_unstackSav(self):
+    def export_unstackSav(self, isCreateSavFile):
         try:
 
             self.savUnstackName = f"{self.strProjectName}_Unstack.sav"
@@ -490,14 +516,16 @@ class ExportMSNData:
                 self.dictUnstack_variable_value_labels[strForceChoiceSP1] = {0: 'No', 1: 'Yes'}
                 self.dictUnstack_variable_value_labels[strForceChoiceSP2] = {0: 'No', 1: 'Yes'}
 
-                self.savUnstackFile = pyreadstat.write_sav(self.dfUnstacked, self.savUnstackName,
-                                                           column_labels=list(self.dictUnstack_column_labels.values()),
-                                                           variable_value_labels=self.dictUnstack_variable_value_labels)
+                if isCreateSavFile:
+                    self.savUnstackFile = pyreadstat.write_sav(self.dfUnstacked, self.savUnstackName,
+                                                               column_labels=list(self.dictUnstack_column_labels.values()),
+                                                               variable_value_labels=self.dictUnstack_variable_value_labels)
 
             else:
-                self.savUnstackFile = pyreadstat.write_sav(self.dfUnstacked, self.savUnstackName,
-                                                           column_labels=lstUnstack_column_labels,
-                                                           variable_value_labels=dictUnstack_variable_value_labels)
+                if isCreateSavFile:
+                    self.savUnstackFile = pyreadstat.write_sav(self.dfUnstacked, self.savUnstackName,
+                                                               column_labels=lstUnstack_column_labels,
+                                                               variable_value_labels=dictUnstack_variable_value_labels)
 
 
             print('Exported Unstacked Sav file')

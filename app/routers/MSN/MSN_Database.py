@@ -5,6 +5,7 @@ import json
 import traceback
 from .MSN_Data_Converter import QMeFileConvert
 from .MSN_Export_Data import ExportMSNData
+from .MSN_Topline_Exporter import ToplineExporter
 
 
 class MsnPrj:
@@ -237,8 +238,8 @@ class MsnPrj:
 
                         if varIdx not in updateData[parentKey2].keys():
                             updateData[parentKey2][varIdx] = {
-                                'name': '',
                                 'group_lbl': '',
+                                'name': '',
                                 'lbl': '',
                                 'type': '',
                                 't2b': False,
@@ -401,6 +402,48 @@ class MsnPrj:
             }
 
 
+    async def topline_export(self, _id: str, export_section):
+
+        try:
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+            exp_data = ExportMSNData(prj=prj, isExportSPCode=False, export_section=export_section, isExportForceChoiceYN=True)
+
+            isSuccess = exp_data.export_dfOnly()
+            if not isSuccess[0]:
+                return {
+                    'isSuccess': False,
+                    'strErr': isSuccess[1],
+                    'zipName': None
+                }
+
+            lstSPCodes = [int(i) for i in exp_data.lstSPCodes]
+            exp_topline = ToplineExporter(prj=prj, df=exp_data.dfUnstacked,
+                                          dfCorr=exp_data.dfStacked,
+                                          dictVarName=exp_data.dictUnstack_column_labels,
+                                          dictValLbl=exp_data.dictUnstack_variable_value_labels,
+                                          lstSPCodes=lstSPCodes)
+
+            isSuccess = exp_topline.toExcel()
+            if not isSuccess[0]:
+                return {
+                    'isSuccess': False,
+                    'strErr': isSuccess[1],
+                    'zipName': None
+                }
+
+            return {
+                    'isSuccess': True,
+                    'strErr': None,
+                    'zipName': exp_topline.toplineName
+                }
+
+        except Exception:
+
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc(),
+                'zipName': None
+            }
 
 
 
