@@ -88,17 +88,13 @@ class ExportMSNData:
         if not isSuccess[0]:
             return isSuccess
 
-        isSuccess = self.zipfiles()
+        lstFile = [self.savStackName, self.savUnstackName, self.xlsxName]
+        isSuccess = self.zipfiles(lstFile)
         if not isSuccess[0]:
             return isSuccess
 
 
-
         return True, None
-
-
-
-
 
 
     def get_prj_info(self):
@@ -537,29 +533,13 @@ class ExportMSNData:
             return False, traceback.format_exc()
 
 
-
-
-
-    # def run(self):
-    #
-    #     print('---------------------------Start data formatting---------------------------')
-    #
-    #     self.export_stackSav()
-    #
-    #     # self.export_unstackSav()
-    #     #
-    #     # self.export_excelFile()
-    #
-    #     print('---------------------------Data exporting completed---------------------------')
-
-
-    def zipfiles(self):
+    def zipfiles(self, lstFile: list):
         try:
             self.zipName = f"{self.strProjectName}.zip"
 
             with zipfile.ZipFile(self.zipName, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
-                zf.write(self.savStackName)
-                zf.write(self.savUnstackName)
+                for f in lstFile:
+                    zf.write(f)
 
             self.zipFile = zf
 
