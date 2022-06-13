@@ -13,13 +13,13 @@ from .MSN_Addin_Variables import AddinVariables
 
 class ToplineExporter:
 
-    def __init__(self, prj: dict, df: pd.DataFrame, dfCorr: pd.DataFrame, dictVarName: dict, dictValLbl: dict, lstSPCodes: list):
+    def __init__(self, prj: dict, df: pd.DataFrame, dfCorr: pd.DataFrame, dictVarName: dict, dictValLbl: dict, lstSPCodes: list, export_section: str):
         self.prj = prj
         self.df, self.dictVarName, self.dictValLbl = df, dictVarName, dictValLbl
         self.dfCorr = dfCorr
 
-        self.toplineName = f"{self.prj['internal_id']}_{self.prj['name']}_Topline.xlsx"
-        self.toplineTitle = f"{self.prj['internal_id']}_{self.prj['name']}"
+        self.toplineName = f"{self.prj['internal_id']}_{self.prj['name']}_{self.prj['detail']['sections'][export_section]['name']}_Topline.xlsx"
+        self.toplineTitle = f"{self.prj['internal_id']}_{self.prj['name']}_{self.prj['detail']['sections'][export_section]['name']}"
         self.toplineFile = None
 
         self.productCode = lstSPCodes
@@ -47,7 +47,7 @@ class ToplineExporter:
             fileName = self.toplineName
 
             self.toSummary(wb, self.dictTtest)
-            # self.toTabulation(wb, self.dictTtest)
+            self.toTabulation(wb, self.dictTtest)
             # self.toOlJrSummary(wb, self.dictTtest, 'OL')
             # self.toOlJrSummary(wb, self.dictTtest, 'JR')
             # self.toUandA(wb, self.dictUA)
@@ -71,7 +71,10 @@ class ToplineExporter:
         try:
             # Compute new vars
             addVars = AddinVariables(self.prj['detail']['addin_vars'], self.df, self.dictVarName, self.dictValLbl)
-            addVars.addin()
+            isSuccess = addVars.addin()
+
+            if not isSuccess[0]:
+                return isSuccess
             # End Compute new vars
 
             self.df, self.dictVarName, self.dictValLbl = addVars.df, addVars.dictVarName, addVars.dictValLbl

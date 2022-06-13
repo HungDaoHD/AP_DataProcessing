@@ -20,6 +20,10 @@ class AddinVariables:
             availabelCols = self.df.columns
 
             for key, val in self.prj_addVars.items():
+
+                if key == '19':
+                    a = 1
+
                 varName = val['name']
                 varLbl = val['lbl']
 
@@ -70,24 +74,25 @@ class AddinVariables:
                     dictQreCond[f'a{idx}'] = item
                     idx += 1
 
-            strZip = f"zip(df[{'], df['.join(list(dictQreCond.values()))}])"
-            strZip = strZip.replace("[", "['").replace("]", "']")
+            if len(dictQreCond.keys()) > 1:
+                strZip = f"zip(df[{'], df['.join(list(dictQreCond.values()))}])"
+                strZip = strZip.replace("[", "['").replace("]", "']")
 
-            strFor = f"for {', '.join(list(dictQreCond.keys()))} in "
+                strFor = f"for {', '.join(list(dictQreCond.keys()))} in "
 
-            strConditionReplace = strCondition
-            for key, val in dictQreCond.items():
-                if key == 'a0':
-                    continue
+                strConditionReplace = strCondition
+                for key, val in dictQreCond.items():
+                    if key == 'a0':
+                        continue
 
-                strConditionReplace = strConditionReplace.replace(val, key)
+                    strConditionReplace = strConditionReplace.replace(val, key)
 
-            strIf = f"{catVal} if {strConditionReplace} else a0"
+                strIf = f"{catVal} if {strConditionReplace} else a0"
 
-            strExec = f"df['{varName}'] = [{strIf} {strFor} {strZip}]"
-            strExec = strExec.replace('AND', 'and').replace('OR', 'or')
+                strExec = f"df['{varName}'] = [{strIf} {strFor} {strZip}]"
+                strExec = strExec.replace('AND', 'and').replace('OR', 'or')
 
-            exec(strExec)
+                exec(strExec)
 
 
 

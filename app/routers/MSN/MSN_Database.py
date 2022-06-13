@@ -406,6 +406,7 @@ class MsnPrj:
 
         try:
             prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+
             exp_data = ExportMSNData(prj=prj, isExportSPCode=False, export_section=export_section, isExportForceChoiceYN=True)
 
             isSuccess = exp_data.export_dfOnly()
@@ -416,12 +417,23 @@ class MsnPrj:
                     'zipName': None
                 }
 
+            if prj:
+                prj = self.prj_info(prj, False)
+
+            dfUnstacked = exp_data.dfUnstacked
+            dfStacked = exp_data.dfStacked
+            dictUnstack_column_labels = exp_data.dictUnstack_column_labels
+            dictUnstack_variable_value_labels = exp_data.dictUnstack_variable_value_labels
             lstSPCodes = [int(i) for i in exp_data.lstSPCodes]
-            exp_topline = ToplineExporter(prj=prj, df=exp_data.dfUnstacked,
-                                          dfCorr=exp_data.dfStacked,
-                                          dictVarName=exp_data.dictUnstack_column_labels,
-                                          dictValLbl=exp_data.dictUnstack_variable_value_labels,
-                                          lstSPCodes=lstSPCodes)
+
+            exp_data = None
+
+            exp_topline = ToplineExporter(prj=prj, df=dfUnstacked,
+                                          dfCorr=dfStacked,
+                                          dictVarName=dictUnstack_column_labels,
+                                          dictValLbl=dictUnstack_variable_value_labels,
+                                          lstSPCodes=lstSPCodes,
+                                          export_section=export_section)
 
             isSuccess = exp_topline.toExcel()
             if not isSuccess[0]:
