@@ -48,10 +48,10 @@ class ToplineExporter:
 
             # self.toSummary(wb, self.dictTtest)
             # self.toTabulation(wb, self.dictTtest)
-            self.toOlJrSummary(wb, self.dictTtest, 'OL')
-            self.toOlJrSummary(wb, self.dictTtest, 'JR')
-            # self.toUandA(wb, self.dictUA)
-            # self.toCorr(wb)
+            # self.toOlJrSummary(wb, self.dictTtest, 'OL')
+            # self.toOlJrSummary(wb, self.dictTtest, 'JR')
+            self.toUandA(wb, self.dictUA)
+            self.toCorr(wb)
 
             wb.remove(wb['Sheet'])
 
