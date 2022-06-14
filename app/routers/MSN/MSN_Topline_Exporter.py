@@ -46,7 +46,7 @@ class ToplineExporter:
             wb = openpyxl.Workbook()
             fileName = self.toplineName
 
-            self.toSummary(wb, self.dictTtest)
+            # self.toSummary(wb, self.dictTtest)
             self.toTabulation(wb, self.dictTtest)
             # self.toOlJrSummary(wb, self.dictTtest, 'OL')
             # self.toOlJrSummary(wb, self.dictTtest, 'JR')
