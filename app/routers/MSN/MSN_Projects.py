@@ -90,8 +90,11 @@ async def clear_prj_data(request: Request, _id: str):
         })
 
 
-@router.get('/data_export/{_id}', response_class=FileResponse)
-async def prj_data_export(request: Request, _id: str, export_section, export_task):
+@router.post('/data_export/{_id}', response_class=FileResponse)
+async def prj_data_export(request: Request, _id: str):
+    export_section = '2'
+    export_task = 'Topline'
+
 
     if export_task == 'Data':
         result = await msn_prj.data_export(_id, export_section)
