@@ -1,4 +1,5 @@
 import motor.motor_asyncio
+import pandas as pd
 from bson.objectid import ObjectId
 import re
 import json
@@ -402,7 +403,7 @@ class MsnPrj:
             }
 
 
-    async def topline_export(self, _id: str, export_section):
+    async def topline_process(self, _id: str, export_section):
 
         try:
             prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
@@ -413,11 +414,8 @@ class MsnPrj:
             if not isSuccess[0]:
                 return {
                     'isSuccess': False,
-                    'strErr': isSuccess[1],
-                    'zipName': None
+                    'strErr': isSuccess[1]
                 }
-
-            a = prj['Ttest']
 
             if prj:
                 prj = self.prj_info(prj, False)
@@ -436,29 +434,61 @@ class MsnPrj:
                                           dictValLbl=dictUnstack_variable_value_labels,
                                           lstSPCodes=lstSPCodes,
                                           export_section=export_section)
-            #
-            # isSuccess = exp_topline.getInfo_RunSig()
-            # if not isSuccess[0]:
-            #     return {
-            #         'isSuccess': False,
-            #         'strErr': isSuccess[1],
-            #         'zipName': None
-            #     }
-            #
-            #
-            # a = exp_topline.dictTtest
-            # b = exp_topline.dictUA
-            #
-            # c = 1
-            #
-            #
-            # upload_prj_data = await self.prj_collection.update_one(
-            #     {'_id': ObjectId(_id)}, {'$set': {'Ttest': exp_topline.dictTtest}}
-            # )
-            #
-            # d = 1
 
-            exp_topline.dictTtest = a
+            isSuccess = exp_topline.getInfo_RunSig()
+            if not isSuccess[0]:
+                return {
+                    'isSuccess': False,
+                    'strErr': isSuccess[1]
+                }
+
+            json_Ttest = json.dumps(exp_topline.dictTtest)
+            json_UA = json.dumps(exp_topline.dictUA)
+
+            exp_topline = None
+
+            upload_prj_Ttest_UA = await self.prj_collection.update_one(
+                {'_id': ObjectId(_id)}, {'$set': {
+                        'Ttest': json_Ttest,
+                        'UA': json_UA,
+                    }
+                }
+            )
+
+            if not upload_prj_Ttest_UA:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Upload Test & UA failed'
+                }
+
+            return {
+                    'isSuccess': True,
+                    'strErr': None
+                }
+
+        except Exception:
+
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
+            }
+
+
+    async def topline_export(self, _id: str, export_section):
+
+        try:
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+
+            exp_topline = ToplineExporter(prj=prj,
+                                          df=pd.DataFrame(),
+                                          dfCorr=pd.DataFrame(),
+                                          dictVarName=dict(),
+                                          dictValLbl=dict(),
+                                          lstSPCodes=list(),
+                                          export_section=export_section)
+
+            exp_topline.dictTtest = json.loads(prj['Ttest'])
+            exp_topline.dictUA = json.loads(prj['UA'])
 
             isSuccess = exp_topline.toExcel()
             if not isSuccess[0]:
@@ -468,8 +498,20 @@ class MsnPrj:
                     'zipName': None
                 }
 
+            clear_prj_Ttest_UA = await self.prj_collection.update_one(
+                {'_id': ObjectId(_id)}, {'$set': {
+                        'Ttest': "",
+                        'UA': ""
+                    }
+                }
+            )
 
-
+            if not clear_prj_Ttest_UA:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Clear Ttest & UA failed',
+                    'zipName': None
+                }
 
             return {
                     'isSuccess': True,

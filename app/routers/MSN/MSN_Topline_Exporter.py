@@ -58,8 +58,8 @@ class ToplineExporter:
             self.toTabulation(wb, self.dictTtest)
             self.toOlJrSummary(wb, self.dictTtest, 'OL')
             self.toOlJrSummary(wb, self.dictTtest, 'JR')
-            # self.toUandA(wb, self.dictUA)
-            # self.toCorr(wb)
+            self.toUandA(wb, self.dictUA)
+            self.toCorr(wb)
 
             wb.remove(wb['Sheet'])
 
@@ -194,7 +194,7 @@ class ToplineExporter:
 
             if not val['isUA']:
 
-                dictTtest[strSubGroupName]['sideQres'][str(key)] = {
+                dictTtest[strSubGroupName]['sideQres'][key] = {
                     'qreLbl': val['qreLbl'],
                     'type': val['type'],
                     'isCount': val['isCount'],
@@ -248,7 +248,7 @@ class ToplineExporter:
                 val0 = count0 / total0 if total0 > 0 else 0
                 val1 = count1 / total1 if total1 > 0 else 0
 
-            dictSideQreFormat.update({str(key): {
+            dictSideQreFormat.update({key: {
                 'catLbl': val,
                 'val0': val0,
                 'sig0': 0,
@@ -257,7 +257,7 @@ class ToplineExporter:
             }})
 
             if not isCount:
-                dictSideQreFormat[str(key)] = self.run_ttest_rel(dictSideQreFormat[str(key)], df['temp0'], df['temp1'])
+                dictSideQreFormat[key] = self.run_ttest_rel(dictSideQreFormat[key], df['temp0'], df['temp1'])
 
 
         lstCats = list(self.dictValLbl[qres[0]].keys())
@@ -414,7 +414,7 @@ class ToplineExporter:
             df['Sum'] = df[qresName].sum(axis=1)
             df['Sum'].replace({0: np.nan}, inplace=True)
 
-            total0 = df['Sum'].count()
+            total0 = int(df['Sum'].count())
 
             # Base
             if 'Base' not in excl:
@@ -432,7 +432,7 @@ class ToplineExporter:
                     if key in excl:
                         continue
 
-                    count0 = df.loc[df[qName] == key, qName].count()
+                    count0 = int(df.loc[df[qName] == key, qName].count())
 
                     if isCount:
                         val0 = count0
@@ -446,7 +446,7 @@ class ToplineExporter:
 
         elif qType == 'NUM':
 
-            total0 = df[qres[0]].count()
+            total0 = int(df[qres[0]].count())
 
             # Base
             if 'Base' not in excl:
@@ -463,7 +463,7 @@ class ToplineExporter:
 
         else:
 
-            total0 = df[qres[0]].count()
+            total0 = int(df[qres[0]].count())
 
             # Base
             if 'Base' not in excl:
@@ -478,7 +478,7 @@ class ToplineExporter:
                 if key in excl:
                     continue
 
-                count0 = df.loc[df[qres[0]] == key, qres[0]].count()
+                count0 = int(df.loc[df[qres[0]] == key, qres[0]].count())
 
                 if isCount:
                     val0 = count0
@@ -495,7 +495,7 @@ class ToplineExporter:
 
             # T2B
             if 'T2B' in atts:
-                count0 = df.loc[df[qres[0]] >= lstCats[-2], qres[0]].count()
+                count0 = int(df.loc[df[qres[0]] >= lstCats[-2], qres[0]].count())
 
                 dictSideQreFormat.update({'t2b': {
                     'catLbl': 'T2B',
@@ -505,7 +505,7 @@ class ToplineExporter:
 
             # B2B
             if 'B2B' in atts:
-                count0 = df.loc[df[qres[0]] <= lstCats[1], qres[0]].count()
+                count0 = int(df.loc[df[qres[0]] <= lstCats[1], qres[0]].count())
 
                 dictSideQreFormat.update({'b2b': {
                     'catLbl': 'B2B',
@@ -918,7 +918,7 @@ class ToplineExporter:
 
                     for key2, val2 in val1['sigResult'].items():
 
-                        if key2 == 3:
+                        if key2 == '3':
                             cellValLbl = ws.cell(row=sideStartRow, column=2)
                             cellVal0 = ws.cell(row=sideStartRow, column=headerStartCol)
                             cellVal1 = ws.cell(row=sideStartRow, column=headerStartCol + 1)
@@ -1445,7 +1445,7 @@ class ToplineExporter:
 
                         cellValLbl.alignment = Alignment(horizontal='right')
 
-                        if key2 == 3:
+                        if key2 == '3':
                             cellValLbl.value = 'Medium' if val1['type'] == 'OL' else 'JR'
                         else:
                             cellValLbl.value = val2['catLbl']
@@ -1679,7 +1679,7 @@ class ToplineExporter:
                                     cellSP2.border = Border(left=thin, right=thin, top=dot, bottom=medium)
 
                         else:
-                            if key2 in ['mean', 'b2b', 3, 't2b']:
+                            if key2 in ['mean', 'b2b', '3', 't2b']:
 
                                 stepSP1 = -1
                                 cellBorder = Border()
@@ -1692,7 +1692,7 @@ class ToplineExporter:
                                     stepSP1 = 1
                                     cellBorder = Border(left=thin, right=thin, top=dot, bottom=dot)
 
-                                elif key2 == 3:
+                                elif key2 == '3':
                                     stepSP1 = 2
                                     cellBorder = Border(left=thin, right=thin, top=dot, bottom=dot)
 
@@ -1927,7 +1927,7 @@ class ToplineExporter:
                     if val1['type'] == 'NUM':
                         lstAtt = ['mean']
                     else:
-                        lstAtt = ['b2b', 3, 't2b', 'mean', 'std']
+                        lstAtt = ['b2b', '3', 't2b', 'mean', 'std']
 
                     for item in lstAtt:
 
@@ -1939,7 +1939,7 @@ class ToplineExporter:
 
                         cellValLbl.alignment = Alignment(horizontal='right')
 
-                        if key2 == 3:
+                        if key2 == '3':
                             cellValLbl.value = 'Medium' if val1['type'] == 'OL' else 'JR'
                         else:
                             cellValLbl.value = val2['catLbl']

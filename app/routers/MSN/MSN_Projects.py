@@ -91,38 +91,55 @@ async def clear_prj_data(request: Request, _id: str):
 
 
 @router.get('/data_export/{_id}', response_class=FileResponse)
-async def prj_data_export(request: Request, _id: str, export_section, export_task):
+async def prj_data_export(request: Request, _id: str, export_section):
 
-    if export_task == 'Data':
-        result = await msn_prj.data_export(_id, export_section)
+    result = await msn_prj.data_export(_id, export_section)
 
-        if result['isSuccess']:
+    if result['isSuccess']:
 
-            return FileResponse(result['zipName'], filename=result['zipName'])
+        return FileResponse(result['zipName'], filename=result['zipName'])
 
-        else:
-            return templates.TemplateResponse('error.html', {
-                'request': request,
-                'strTask': 'Export data error',
-                'strErr': result['strErr']
-            })
-
-    if export_task == 'Topline':
-        result = await msn_prj.topline_export(_id, export_section)
-
-        if result['isSuccess']:
-
-            return FileResponse(result['zipName'], filename=result['zipName'])
-
-        else:
-            return templates.TemplateResponse('error.html', {
-                'request': request,
-                'strTask': 'Export topline error',
-                'strErr': result['strErr']
-            })
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Export data error',
+            'strErr': result['strErr']
+        })
 
 
+@router.get('/topline_process/{_id}', response_class=RedirectResponse)
+async def prj_topline_process(request: Request, _id: str, export_section):
 
+    result = await msn_prj.topline_process(_id, export_section)
+
+    if result['isSuccess']:
+
+        redirect_url = request.url_for('retrieve_id', **{'_id': _id})
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Process topline error',
+            'strErr': result['strErr']
+        })
+
+
+@router.get('/topline_export/{_id}', response_class=FileResponse)
+async def prj_topline_export(request: Request, _id: str, export_section):
+
+    result = await msn_prj.topline_export(_id, export_section)
+
+    if result['isSuccess']:
+
+        return FileResponse(result['zipName'], filename=result['zipName'])
+
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Export topline error',
+            'strErr': result['strErr']
+        })
 
 
 

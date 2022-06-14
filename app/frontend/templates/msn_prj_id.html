@@ -1137,7 +1137,7 @@
 
                     <form id="form_data_upload" action="/msn-prj/data_upload/{{ prj.id }}" method="post" enctype="multipart/form-data">
 
-                        <h3 class="bg-light rounded h-100 p-2">Upload</h3>
+                        <h3 class="bg-light rounded h-100 p-2">Upload Rawdata</h3>
 
                         <div class="row g-4 p-4">
 
@@ -1163,13 +1163,13 @@
 
                     <form id="form_data_export" action="/msn-prj/data_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
 
-                        <h3 class="bg-light rounded h-100 p-2">Export</h3>
+                        <h3 class="bg-light rounded h-100 p-2">Export Data</h3>
+                        <h6 class="bg-light rounded h-100 p-3">Excel file & stack sav & unstack sav</h6>
 
-                        <div class="row g-4 p-4">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="col-md-6 text-center p-2">
 
-                            <div class="col-sm-12 col-xl-4">
-
-                                <div class="form-floating mb-0">
+                                <div class="form-floating mb-2">
 
                                     <select class="form-select" id="export_section"
                                         aria-label="Floating label select example"
@@ -1190,36 +1190,84 @@
                                         {% endfor %}
 
                                     </select>
-                                    <label for="export_section">Please select section</label>
+
+                                    <label for="export_section">Please select data section</label>
+
                                 </div>
 
-                            </div>
-
-                            <div class="col-sm-12 col-xl-4">
-
-                                <div class="form-floating mb-0">
-
-                                    <select class="form-select" id="export_task"
-                                        aria-label="Floating label select example"
-                                        name="export_task">
-
-                                        <option selected value="Data">Data</option>
-                                        <option value="Topline">Topline</option>
-
-                                    </select>
-                                    <label for="export_task">Please select task</label>
-                                </div>
+                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Export">
 
                             </div>
-
-                            <div class="col-sm-12 col-xl-4">
-                                <input class="btn btn-primary py-3 w-100" type="submit" value="Export">
-                            </div>
-
 
                         </div>
 
                     </form>
+
+                    <hr>
+
+                    <form id="form_topline_process" action="/msn-prj/topline_process/{{ prj.id }}" method="get" enctype="multipart/form-data">
+
+                        <h3 class="bg-light rounded h-100 p-2">Export Topline</h3>
+
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+
+                            <div class="col-md-6 text-center p-2">
+
+                                <input type="hidden" value="" id="export_tl_section_1" name="export_section">
+
+                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="(1) Process" onclick="fnc_tl_submit('form_topline_process');">
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                    <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                        <div class="d-flex align-items-center justify-content-center mb-0">
+                            <div class="col-md-6 text-center p-2">
+
+                                <input type="hidden" value="" id="export_tl_section_2" name="export_section">
+
+                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="(2) Export" onclick="fnc_tl_submit('form_topline_export');">
+
+                            </div>
+                        </div>
+                    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                 </div>
@@ -2023,6 +2071,23 @@
                 });
             }
         };
+
+        function fnc_tl_submit(form_id){
+
+            sel_elm = document.getElementById("export_section");
+
+            val1 = document.getElementById("export_tl_section_1");
+            val2 = document.getElementById("export_tl_section_2");
+
+            val1.value = sel_elm.value;
+            val2.value = sel_elm.value;
+
+
+            document.getElementById(form_id).submit();
+
+        };
+
+
 
     </script>
 {% endblock %}
