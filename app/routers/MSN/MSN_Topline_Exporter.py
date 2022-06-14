@@ -32,15 +32,24 @@ class ToplineExporter:
         self.dictUA = dict()
 
 
-    def toExcel(self):
+    def getInfo_RunSig(self):
 
         try:
-
             isSuccess = self.getInfo()
             if not isSuccess[0]:
                 return isSuccess
 
             self.run()
+
+            return True, None
+
+        except Exception:
+            return False, traceback.format_exc()
+
+
+    def toExcel(self):
+
+        try:
 
             wb = openpyxl.Workbook()
             fileName = self.toplineName
@@ -185,7 +194,7 @@ class ToplineExporter:
 
             if not val['isUA']:
 
-                dictTtest[strSubGroupName]['sideQres'][key] = {
+                dictTtest[strSubGroupName]['sideQres'][str(key)] = {
                     'qreLbl': val['qreLbl'],
                     'type': val['type'],
                     'isCount': val['isCount'],
@@ -213,9 +222,9 @@ class ToplineExporter:
         if 'Base' not in excl:
             dictSideQreFormat.update({'base': {
                 'catLbl': 'Base',
-                'val0': total0,
+                'val0': int(total0),
                 'sig0': 0,
-                'val1': total1,
+                'val1': int(total1),
                 'sig1': 0,
             }})
 
@@ -233,13 +242,13 @@ class ToplineExporter:
             df['temp1'] = [1 if a == key else 0 for a in df[qres[1]]]
 
             if isCount:
-                val0 = count0
-                val1 = count1
+                val0 = int(count0)
+                val1 = int(count1)
             else:
                 val0 = count0 / total0 if total0 > 0 else 0
                 val1 = count1 / total1 if total1 > 0 else 0
 
-            dictSideQreFormat.update({int(key): {
+            dictSideQreFormat.update({str(key): {
                 'catLbl': val,
                 'val0': val0,
                 'sig0': 0,
@@ -248,7 +257,7 @@ class ToplineExporter:
             }})
 
             if not isCount:
-                dictSideQreFormat[key] = self.run_ttest_rel(dictSideQreFormat[key], df['temp0'], df['temp1'])
+                dictSideQreFormat[str(key)] = self.run_ttest_rel(dictSideQreFormat[str(key)], df['temp0'], df['temp1'])
 
 
         lstCats = list(self.dictValLbl[qres[0]].keys())
@@ -1425,7 +1434,7 @@ class ToplineExporter:
                         sideStartRow += 1
 
                 if val1['type'] in ['OL', 'JR']:
-                    for item in ['b2b', 3, 't2b', 'mean', 'std']:
+                    for item in ['b2b', '3', 't2b', 'mean', 'std']:
 
                         key2 = item
                         val2 = val1['sigResult'][key2]

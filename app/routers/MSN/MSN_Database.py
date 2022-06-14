@@ -417,6 +417,8 @@ class MsnPrj:
                     'zipName': None
                 }
 
+            a = prj['Ttest']
+
             if prj:
                 prj = self.prj_info(prj, False)
 
@@ -434,6 +436,29 @@ class MsnPrj:
                                           dictValLbl=dictUnstack_variable_value_labels,
                                           lstSPCodes=lstSPCodes,
                                           export_section=export_section)
+            #
+            # isSuccess = exp_topline.getInfo_RunSig()
+            # if not isSuccess[0]:
+            #     return {
+            #         'isSuccess': False,
+            #         'strErr': isSuccess[1],
+            #         'zipName': None
+            #     }
+            #
+            #
+            # a = exp_topline.dictTtest
+            # b = exp_topline.dictUA
+            #
+            # c = 1
+            #
+            #
+            # upload_prj_data = await self.prj_collection.update_one(
+            #     {'_id': ObjectId(_id)}, {'$set': {'Ttest': exp_topline.dictTtest}}
+            # )
+            #
+            # d = 1
+
+            exp_topline.dictTtest = a
 
             isSuccess = exp_topline.toExcel()
             if not isSuccess[0]:
@@ -442,6 +467,9 @@ class MsnPrj:
                     'strErr': isSuccess[1],
                     'zipName': None
                 }
+
+
+
 
             return {
                     'isSuccess': True,
