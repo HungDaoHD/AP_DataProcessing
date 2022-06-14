@@ -7,7 +7,7 @@ import zipfile
 import traceback
 
 
-warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
+# warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
 
 class ExportMSNData:
@@ -240,8 +240,17 @@ class ExportMSNData:
                 self.dfMerge[strSP1Name].replace({np.nan: 'NULL'}, inplace=True)
                 self.dfMerge[strSP2Name].replace({np.nan: 'NULL'}, inplace=True)
 
-                self.dfMerge[strCombineName] = [(a if a != 'NULL' else (b if b != 'NULL' else np.nan)) for a, b in
-                                                zip(self.dfMerge[strSP1Name], self.dfMerge[strSP2Name])]
+                lst_CombinedOE = [(a if a != 'NULL' else (b if b != 'NULL' else np.nan)) for a, b in
+                                  zip(self.dfMerge[strSP1Name], self.dfMerge[strSP2Name])]
+
+                df_CombinedOE = pd.DataFrame(lst_CombinedOE, columns=[strCombineName])
+                df_CombinedOE[self.strRidColName] = self.dfMerge[self.strRidColName].values
+
+                self.dfMerge = pd.merge(self.dfMerge, df_CombinedOE, how='inner', on=self.strRidColName)
+
+                # self.dfMerge[strCombineName] = [(a if a != 'NULL' else (b if b != 'NULL' else np.nan)) for a, b in
+                #                                 zip(self.dfMerge[strSP1Name], self.dfMerge[strSP2Name])]
+
 
                 self.dfMerge[strSP1Name].replace({'NULL': np.nan}, inplace=True)
                 self.dfMerge[strSP2Name].replace({'NULL': np.nan}, inplace=True)
@@ -266,6 +275,7 @@ class ExportMSNData:
                     self.dfMerge[key].replace(self.dictReProductCode[key], inplace=True)
 
             for key, val in self.dictNewProductCodeQres.items():
+
                 self.dfMerge[key] = [a if float(a) > 0 else b for a, b in
                                      zip(self.dfMerge[val['qres'][0]], self.dfMerge[val['qres'][1]])]
 
@@ -436,7 +446,14 @@ class ExportMSNData:
             dictUnstack_variable_value_labels = dict()
 
             for row in self.lstScrFormat:
-                self.dfUnstacked[row[1]] = self.dfMerge[row[0]].copy()
+
+                if self.dfUnstacked.empty:
+                    self.dfUnstacked[row[1]] = self.dfMerge[row[0]].copy()
+                else:
+                    dfToMerge = pd.DataFrame(self.dfMerge[row[0]].copy())
+                    dfToMerge.rename(columns={row[0]: row[1]}, inplace=True)
+
+                    self.dfUnstacked = pd.concat([self.dfUnstacked, dfToMerge], axis=1)
 
                 lstUnstack_column_labels.append(self.dictMerge_column_labels[row[0]])
                 dictUnstack_variable_value_labels[row[1]] = self.dictMerge_variable_value_labels[row[0]]
@@ -445,10 +462,19 @@ class ExportMSNData:
                 self.dictUnstack_variable_value_labels[row[1]] = self.dictMerge_variable_value_labels[row[0]]
 
 
+            arr_empty = np.empty(self.dfUnstacked.shape[0])
+            arr_empty[:] = np.nan
+            arr_empty = list(arr_empty)
+
             for row in self.lstSP1Format:
                 if row[0] != list(self.dictReProductCode.keys())[0]:  # row[0] != self.lstNewProductCodeQres[0]:
                     for spCode in self.lstSPCodes:
-                        self.dfUnstacked[f'{row[1]}_{spCode}'] = [np.nan] * self.dfUnstacked.shape[0]
+
+                        dfToMerge = pd.DataFrame(arr_empty, columns=[f'{row[1]}_{spCode}'])
+
+                        self.dfUnstacked = pd.concat([self.dfUnstacked, dfToMerge], axis=1)
+
+                        # self.dfUnstacked[f'{row[1]}_{spCode}'] = [np.nan] * self.dfUnstacked.shape[0]
 
                         lstUnstack_column_labels.append(f'{self.dictMerge_column_labels[row[0]]}_{spCode}')
                         dictUnstack_variable_value_labels[f'{row[1]}_{spCode}'] = self.dictMerge_variable_value_labels[row[0]]
@@ -458,14 +484,19 @@ class ExportMSNData:
 
 
             for row in self.lstPreFormat:
-                self.dfUnstacked[row[1]] = self.dfMerge[row[0]].copy()
+
+                dfToMerge = pd.DataFrame(self.dfMerge[row[0]].copy())
+                dfToMerge.rename(columns={row[0]: row[1]}, inplace=True)
+
+                self.dfUnstacked = pd.concat([self.dfUnstacked, dfToMerge], axis=1)
+
+                # self.dfUnstacked[row[1]] = self.dfMerge[row[0]].copy()
 
                 lstUnstack_column_labels.append(self.dictMerge_column_labels[row[0]])
                 dictUnstack_variable_value_labels[row[1]] = self.dictMerge_variable_value_labels[row[0]]
 
                 self.dictUnstack_column_labels[row[1]] = self.dictMerge_column_labels[row[0]]
                 self.dictUnstack_variable_value_labels[row[1]] = self.dictMerge_variable_value_labels[row[0]]
-
 
 
             for idx in self.dfUnstacked.index:
