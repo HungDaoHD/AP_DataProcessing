@@ -46,12 +46,12 @@ class ToplineExporter:
             wb = openpyxl.Workbook()
             fileName = self.toplineName
 
-            # self.toSummary(wb, self.dictTtest)
-            # self.toTabulation(wb, self.dictTtest)
-            # self.toOlJrSummary(wb, self.dictTtest, 'OL')
-            # self.toOlJrSummary(wb, self.dictTtest, 'JR')
+            self.toSummary(wb, self.dictTtest)
+            self.toTabulation(wb, self.dictTtest)
+            self.toOlJrSummary(wb, self.dictTtest, 'OL')
+            self.toOlJrSummary(wb, self.dictTtest, 'JR')
             self.toUandA(wb, self.dictUA)
-            # self.toCorr(wb)
+            self.toCorr(wb)
 
             wb.remove(wb['Sheet'])
 
@@ -81,7 +81,6 @@ class ToplineExporter:
 
             # Header
             for key, val in self.prj['detail']['topline_design']['header'].items():
-                a = val['hidden_cats']
 
                 excl_hder = str(val['hidden_cats']).split('|') if len(val['hidden_cats']) > 0 else []
                 excl_hder = list(map(int, excl_hder))

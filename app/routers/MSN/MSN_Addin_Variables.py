@@ -21,9 +21,6 @@ class AddinVariables:
 
             for key, val in self.prj_addVars.items():
 
-                if key == '19':
-                    a = 1
-
                 varName = val['name']
                 varLbl = val['lbl']
 
