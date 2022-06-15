@@ -60,29 +60,63 @@ class ToplineExporter:
             self.toTabulation(wb, self.dictTtest)
             self.toOlJrSummary(wb, self.dictTtest, 'OL')
             self.toOlJrSummary(wb, self.dictTtest, 'JR')
-
+            self.toUandA(wb, self.dictUA)
+            self.toCorr(wb)
 
             wb.remove(wb['Sheet'])
 
             wb.save(fileName)
             wb.close()
 
-            # ----------------------------------------------------------------------------------
+            print('----------------------------Topline exporting completed----------------------------')
 
+            return True, None
+
+        except Exception:
+            return False, traceback.format_exc()
+
+
+    def toExcel_Product(self):
+
+        try:
 
             wb = openpyxl.Workbook()
+            self.toplineName = self.toplineName.replace('.xlsx', '_Product.xlsx')
             fileName = self.toplineName
 
+            self.toSummary(wb, self.dictTtest)
+            self.toTabulation(wb, self.dictTtest)
+            self.toOlJrSummary(wb, self.dictTtest, 'OL')
+            self.toOlJrSummary(wb, self.dictTtest, 'JR')
+
+            wb.remove(wb['Sheet'])
+
+            wb.save(fileName)
+            wb.close()
+
+            print('----------------------------Topline exporting completed----------------------------')
+
+            return True, None
+
+        except Exception:
+            return False, traceback.format_exc()
+
+
+    def toExcel_UA_Corr(self):
+
+        try:
+
+            wb = openpyxl.Workbook()
+            self.toplineName = self.toplineName.replace('.xlsx', '_UA_Corr.xlsx')
+            fileName = self.toplineName
 
             self.toUandA(wb, self.dictUA)
             self.toCorr(wb)
 
             wb.remove(wb['Sheet'])
 
-            wb.save(fileName.replace('.xlsx', '_UA_Corr.xlsx'))
+            wb.save(fileName)
             wb.close()
-
-
 
             print('----------------------------Topline exporting completed----------------------------')
 

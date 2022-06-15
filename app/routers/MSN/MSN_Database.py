@@ -496,7 +496,7 @@ class MsnPrj:
             }
 
 
-    async def topline_export(self, _id: str, export_section):
+    async def topline_export(self, _id: str, export_section, strHow):
 
         try:
             prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
@@ -522,7 +522,29 @@ class MsnPrj:
             exp_topline.dictTtest = dictTtest
             exp_topline.dictUA = dictUA
 
-            isSuccess = exp_topline.toExcel()
+            if strHow in ['PRODUCTS']:
+
+                isSuccess = exp_topline.toExcel_Product()
+                data_clear = {
+                    export_section: {
+                        'Ttest': json.dumps(dictTtest),
+                        'UA': json.dumps(dictUA),
+                        'dfStacked': json.dumps(dfCorr.to_dict('records')),
+                        'dictSide': json.dumps(dictSide)
+
+                    }
+                }
+
+            elif strHow in ['UA_CORR']:
+
+                isSuccess = exp_topline.toExcel_UA_Corr()
+                data_clear = {}
+
+            else:
+                isSuccess = exp_topline.toExcel()
+                data_clear = {}
+
+
             if not isSuccess[0]:
                 return {
                     'isSuccess': False,
@@ -532,7 +554,7 @@ class MsnPrj:
 
             clear_prj_Ttest_UA = await self.prj_collection.update_one(
                 {'_id': ObjectId(_id)}, {'$set': {
-                        'topline_exporter': {}
+                        'topline_exporter': data_clear
                     }
                 }
             )

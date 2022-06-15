@@ -1248,7 +1248,23 @@
                         <div class="col-sm-12 col-xl-4">
                             <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                 <input type="hidden" value="" id="export_tl_section_2" name="export_section">
-                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export topline" onclick="fnc_tl_submit(this, 'form_topline_export');">
+                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export full topline" onclick="fnc_tl_submit(this, 'form_topline_export');">
+                            </form>
+                        </div>
+
+                        <div class="col-sm-12 col-xl-4"></div>
+
+                        <div class="col-sm-12 col-xl-4">
+                            <form id="form_topline_export_product" action="/msn-prj/topline_export_product/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                <input type="hidden" value="" id="export_tl_section_3" name="export_section">
+                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export topline product sheets" onclick="fnc_tl_submit(this, 'form_topline_export');">
+                            </form>
+                        </div>
+
+                        <div class="col-sm-12 col-xl-4">
+                            <form id="form_topline_export_ua" action="/msn-prj/topline_export_ua_corr/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                <input type="hidden" value="" id="export_tl_section_4" name="export_section">
+                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export topline U&A + Correlation sheets" onclick="fnc_tl_submit(this, 'form_topline_export');">
                             </form>
                         </div>
 
@@ -2146,9 +2162,13 @@
             else{
                 val1 = document.getElementById("export_tl_section_1");
                 val2 = document.getElementById("export_tl_section_2");
+                val3 = document.getElementById("export_tl_section_3");
+                val4 = document.getElementById("export_tl_section_4");
 
                 val1.value = sel_elm.value;
                 val2.value = sel_elm.value;
+                val3.value = sel_elm.value;
+                val4.value = sel_elm.value;
 
                 isConfirm = confirm('Confirm export topline for ' + sel_elm.options[sel_elm.selectedIndex].text + '?');
 
