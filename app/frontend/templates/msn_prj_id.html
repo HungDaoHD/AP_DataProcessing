@@ -1203,8 +1203,18 @@
                     <hr>
 
                     <h3 class="bg-light rounded h-100 p-2">Export Topline</h3>
-                    <h6 class="bg-light rounded h-100 p-3">Please chose the topline section -> click process topline -> export topline.</h6>
-                    <h7 class="bg-light rounded h-100 p-3">It will take a several minute</h7>
+
+                    {% if prj.lst_sec_topline_exporter %}
+                        <div class="alert alert-success" role="alert">
+                            The topline of <b>{{ prj.lst_sec_topline_exporter[0] }}</b> is processed. Please choose section <b>{{ prj.lst_sec_topline_exporter[0] }}</b> then click <b>export button</b>.
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            The topline is not processed. Please choose the <b>topline section</b> -> click <b>process topline</b> -> <b>export topline</b>.
+                        </div>
+                    {% endif %}
+
+                    <h7 class="bg-light rounded h-100 p-4">It will take a several minute</h7>
 
                     <div class="row g-4 p-4">
 
@@ -1231,14 +1241,14 @@
                         <div class="col-sm-12 col-xl-4">
                             <form id="form_topline_process" action="/msn-prj/topline_process/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                 <input type="hidden" value="" id="export_tl_section_1" name="export_section">
-                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Process topline" onclick="fnc_tl_submit('form_topline_process');">
+                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Process topline" onclick="fnc_tl_submit(this, 'form_topline_process');">
                             </form>
                         </div>
 
                         <div class="col-sm-12 col-xl-4">
                             <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                 <input type="hidden" value="" id="export_tl_section_2" name="export_section">
-                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export topline" onclick="fnc_tl_submit('form_topline_export');">
+                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export topline" onclick="fnc_tl_submit(this, 'form_topline_export');">
                             </form>
                         </div>
 
@@ -2121,7 +2131,7 @@
             }
         };
 
-        function fnc_tl_submit(form_id){
+        function fnc_tl_submit(btn, form_id){
 
             sel_elm = document.getElementById("export_tl_section");
             form_elm = document.getElementById(form_id);
@@ -2143,10 +2153,12 @@
                 isConfirm = confirm('Confirm export topline for ' + sel_elm.options[sel_elm.selectedIndex].text + '?');
 
                 if(isConfirm == true) {
+
                     form_elm.addEventListener('submit', (e) => {
                         e.preventDefault();
                         form_elm.submit();
                     });
+
                 }
                 else
                 {

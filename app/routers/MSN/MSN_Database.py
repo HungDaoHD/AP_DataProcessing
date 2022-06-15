@@ -9,11 +9,12 @@ from .MSN_Export_Data import ExportMSNData
 from .MSN_Topline_Exporter import ToplineExporter
 
 
+
 class MsnPrj:
 
     def __init__(self):
-        # MONGO_DETAILS = 'mongodb://localhost:27017'
-        MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
+        MONGO_DETAILS = 'mongodb://localhost:27017'
+        # MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
 
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
@@ -33,6 +34,15 @@ class MsnPrj:
                 'status': prj['status']
             }
         else:
+            lst_sec_topline_exporter = list()
+            if not prj['topline_exporter']:
+                lst_sec_topline_exporter = []
+            else:
+                for key, val in prj['topline_exporter'].items():
+                    if val:
+                        strSecName = prj['detail']['sections'][str(key)]['name']
+                        lst_sec_topline_exporter.append(strSecName)
+
             return {
                 'id': str(prj['_id']),
                 'internal_id': prj['internal_id'],
@@ -41,8 +51,12 @@ class MsnPrj:
                 'status': prj['status'],
                 'detail': prj['detail'],
                 'lenOfScr': len(prj['screener']['data']),
-                'lenOfMain': len(prj['main']['data'])
+                'lenOfMain': len(prj['main']['data']),
+                'lst_sec_topline_exporter': lst_sec_topline_exporter
             }
+
+
+
 
 
     async def retrieve(self):
