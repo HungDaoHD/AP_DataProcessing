@@ -445,12 +445,20 @@ class MsnPrj:
             json_Ttest = json.dumps(exp_topline.dictTtest)
             json_UA = json.dumps(exp_topline.dictUA)
 
+            topline_exporter_data = {
+                export_section: {
+                        'Ttest': json_Ttest,
+                        'UA': json_UA,
+                        'dfStacked': json.dumps(dfStacked.to_dict('records')),
+                        'dictSide': json.dumps(exp_topline.dictSide)
+                    }
+                }
+
             exp_topline = None
 
             upload_prj_Ttest_UA = await self.prj_collection.update_one(
                 {'_id': ObjectId(_id)}, {'$set': {
-                        'Ttest': json_Ttest,
-                        'UA': json_UA,
+                        'topline_exporter': topline_exporter_data
                     }
                 }
             )
@@ -479,16 +487,26 @@ class MsnPrj:
         try:
             prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
+
+            dfCorr = pd.DataFrame(json.loads(prj['topline_exporter'][export_section]['dfStacked']))
+            dictSide = json.loads(prj['topline_exporter'][export_section]['dictSide'])
+            dictTtest = json.loads(prj['topline_exporter'][export_section]['Ttest'])
+            dictUA = json.loads(prj['topline_exporter'][export_section]['UA'])
+
+            if prj:
+                prj = self.prj_info(prj, False)
+
             exp_topline = ToplineExporter(prj=prj,
                                           df=pd.DataFrame(),
-                                          dfCorr=pd.DataFrame(),
+                                          dfCorr=dfCorr,
                                           dictVarName=dict(),
                                           dictValLbl=dict(),
                                           lstSPCodes=list(),
                                           export_section=export_section)
 
-            exp_topline.dictTtest = json.loads(prj['Ttest'])
-            exp_topline.dictUA = json.loads(prj['UA'])
+            exp_topline.dictSide = dictSide
+            exp_topline.dictTtest = dictTtest
+            exp_topline.dictUA = dictUA
 
             isSuccess = exp_topline.toExcel()
             if not isSuccess[0]:
@@ -500,8 +518,7 @@ class MsnPrj:
 
             clear_prj_Ttest_UA = await self.prj_collection.update_one(
                 {'_id': ObjectId(_id)}, {'$set': {
-                        'Ttest': "",
-                        'UA': ""
+                        'topline_exporter': {}
                     }
                 }
             )

@@ -18,7 +18,7 @@ class ToplineExporter:
         self.dfCorr = dfCorr
 
         self.toplineName = f"{self.prj['internal_id']}_{self.prj['name']}_{self.prj['detail']['sections'][export_section]['name']}_Topline.xlsx"
-        self.toplineTitle = f"{self.prj['internal_id']}_{self.prj['name']}_{self.prj['detail']['sections'][export_section]['name']}"
+        self.toplineTitle = f"{self.prj['name']}_{self.prj['detail']['sections'][export_section]['name']}"
         self.toplineFile = None
 
         self.productCode = lstSPCodes
@@ -40,6 +40,8 @@ class ToplineExporter:
                 return isSuccess
 
             self.run()
+
+            print('----------------------------Topline processing completed----------------------------')
 
             return True, None
 

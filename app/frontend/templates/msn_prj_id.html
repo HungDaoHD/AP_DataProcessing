@@ -1166,37 +1166,34 @@
                         <h3 class="bg-light rounded h-100 p-2">Export Data</h3>
                         <h6 class="bg-light rounded h-100 p-3">Excel file & stack sav & unstack sav</h6>
 
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <div class="col-md-6 text-center p-2">
+                        <div class="row g-4 p-4">
 
+                            <div class="col-sm-12 col-xl-4">
+                                <h7 >Please select the section to export data.<br/> It will take a several minute</h7>
+                            </div>
+
+                            <div class="col-sm-12 col-xl-4">
                                 <div class="form-floating mb-2">
 
                                     <select class="form-select" id="export_section"
                                         aria-label="Floating label select example"
                                         name="export_section">
 
+                                        <option selected value="-1">Select section</option>
+
                                         {% for key, val in prj.detail.sections.items() %}
-
-                                            {% if key == '1' %}
-
-                                                <option selected value="{{ key }}">{{ val.name }}</option>
-
-                                            {% else %}
-
-                                                <option value="{{ key }}">{{ val.name }}</option>
-
-                                            {% endif %}
-
+                                            <option value="{{ key }}">{{ val.name }}</option>
                                         {% endfor %}
 
                                     </select>
 
-                                    <label for="export_section">Please select data section</label>
+                                    <label for="export_section">Please select the data section</label>
 
                                 </div>
+                            </div>
 
-                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Export">
-
+                            <div class="col-sm-12 col-xl-4">
+                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Export data" onclick="submit_export_data('form_data_export');">
                             </div>
 
                         </div>
@@ -1205,35 +1202,56 @@
 
                     <hr>
 
-                    <form id="form_topline_process" action="/msn-prj/topline_process/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                    <h3 class="bg-light rounded h-100 p-2">Export Topline</h3>
+                    <h6 class="bg-light rounded h-100 p-3">Please chose the topline section -> click process topline -> export topline.</h6>
+                    <h7 class="bg-light rounded h-100 p-3">It will take a several minute</h7>
 
-                        <h3 class="bg-light rounded h-100 p-2">Export Topline</h3>
+                    <div class="row g-4 p-4">
 
-                        <div class="d-flex align-items-center justify-content-center mb-2">
+                        <div class="col-sm-12 col-xl-4">
+                            <div class="form-floating mb-2">
 
-                            <div class="col-md-6 text-center p-2">
+                                <select class="form-select" id="export_tl_section"
+                                    aria-label="Floating label select example"
+                                    name="export_tl_section">
 
+                                    <option selected value="-1">Select section</option>
+
+                                    {% for key, val in prj.detail.sections.items() %}
+                                        <option value="{{ key }}">{{ val.name }}</option>
+                                    {% endfor %}
+
+                                </select>
+
+                                <label for="export_section">Please select the topline section</label>
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-xl-4">
+                            <form id="form_topline_process" action="/msn-prj/topline_process/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                 <input type="hidden" value="" id="export_tl_section_1" name="export_section">
-
-                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="(1) Process" onclick="fnc_tl_submit('form_topline_process');">
-
-                            </div>
-
+                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Process topline" onclick="fnc_tl_submit('form_topline_process');">
+                            </form>
                         </div>
 
-                    </form>
-
-                    <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
-                        <div class="d-flex align-items-center justify-content-center mb-0">
-                            <div class="col-md-6 text-center p-2">
-
+                        <div class="col-sm-12 col-xl-4">
+                            <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                 <input type="hidden" value="" id="export_tl_section_2" name="export_section">
-
-                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="(2) Export" onclick="fnc_tl_submit('form_topline_export');">
-
-                            </div>
+                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export topline" onclick="fnc_tl_submit('form_topline_export');">
+                            </form>
                         </div>
-                    </form>
+
+                    </div>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2072,22 +2090,74 @@
             }
         };
 
-        function fnc_tl_submit(form_id){
+        function submit_export_data(form_id) {
 
-            sel_elm = document.getElementById("export_section");
+            form_elm = document.getElementById(form_id);
 
-            val1 = document.getElementById("export_tl_section_1");
-            val2 = document.getElementById("export_tl_section_2");
+            selSection = document.getElementById("export_section");
 
-            val1.value = sel_elm.value;
-            val2.value = sel_elm.value;
+            if(selSection.value == '-1'){
+                alert("Please select the export section!");
+                form_elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                });
+            }
+            else {
+                isConfirm = confirm('Confirm export data for ' + selSection.options[selSection.selectedIndex].text + '?');
 
+                if(isConfirm == true){
 
-            document.getElementById(form_id).submit();
-
+                    form_elm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        form_elm.submit();
+                    });
+                }
+                else
+                {
+                    form_elm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                    });
+                }
+            }
         };
 
+        function fnc_tl_submit(form_id){
 
+            sel_elm = document.getElementById("export_tl_section");
+            form_elm = document.getElementById(form_id);
+
+            if(sel_elm.value == '-1')
+            {
+                alert("Please select the export section!");
+                form_elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                });
+            }
+            else{
+                val1 = document.getElementById("export_tl_section_1");
+                val2 = document.getElementById("export_tl_section_2");
+
+                val1.value = sel_elm.value;
+                val2.value = sel_elm.value;
+
+                isConfirm = confirm('Confirm export topline for ' + sel_elm.options[sel_elm.selectedIndex].text + '?');
+
+                if(isConfirm == true) {
+                    form_elm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        form_elm.submit();
+                    });
+                }
+                else
+                {
+                    form_elm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                    });
+                }
+
+            }
+
+        };
 
     </script>
 {% endblock %}
