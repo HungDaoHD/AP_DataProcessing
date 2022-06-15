@@ -501,7 +501,6 @@ class MsnPrj:
         try:
             prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
 
-
             dfCorr = pd.DataFrame(json.loads(prj['topline_exporter'][export_section]['dfStacked']))
             dictSide = json.loads(prj['topline_exporter'][export_section]['dictSide'])
             dictTtest = json.loads(prj['topline_exporter'][export_section]['Ttest'])
@@ -525,24 +524,13 @@ class MsnPrj:
             if strHow in ['PRODUCTS']:
 
                 isSuccess = exp_topline.toExcel_Product()
-                data_clear = {
-                    export_section: {
-                        'Ttest': json.dumps(dictTtest),
-                        'UA': json.dumps(dictUA),
-                        'dfStacked': json.dumps(dfCorr.to_dict('records')),
-                        'dictSide': json.dumps(dictSide)
-
-                    }
-                }
 
             elif strHow in ['UA_CORR']:
 
                 isSuccess = exp_topline.toExcel_UA_Corr()
-                data_clear = {}
 
             else:
                 isSuccess = exp_topline.toExcel()
-                data_clear = {}
 
 
             if not isSuccess[0]:
@@ -552,25 +540,26 @@ class MsnPrj:
                     'zipName': None
                 }
 
-            clear_prj_Ttest_UA = await self.prj_collection.update_one(
-                {'_id': ObjectId(_id)}, {'$set': {
-                        'topline_exporter': data_clear
+            if strHow in ['FULL', 'UA_CORR']:
+                clear_prj_Ttest_UA = await self.prj_collection.update_one(
+                    {'_id': ObjectId(_id)}, {'$set': {
+                            'topline_exporter': {}
+                        }
                     }
-                }
-            )
+                )
 
-            if not clear_prj_Ttest_UA:
-                return {
-                    'isSuccess': False,
-                    'strErr': 'Clear Ttest & UA failed',
-                    'zipName': None
-                }
+                if not clear_prj_Ttest_UA:
+                    return {
+                        'isSuccess': False,
+                        'strErr': 'Clear Ttest & UA failed',
+                        'zipName': None
+                    }
 
             return {
-                    'isSuccess': True,
-                    'strErr': None,
-                    'zipName': exp_topline.toplineName
-                }
+                'isSuccess': True,
+                'strErr': None,
+                'zipName': exp_topline.toplineName
+            }
 
         except Exception:
 
