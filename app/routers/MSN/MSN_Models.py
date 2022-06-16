@@ -1,167 +1,165 @@
-from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
-
-
-# class PrjSchema(BaseModel):
-#     prj_id: str = Field(...)
-#     name: str = Field(...)
-#     categorical: str = Field(...)
-#     status: str = Field(...)
-#     detail: dict = {
-#         'join_col': str(),
-#         'sections': {
-#             '1': {
-#                 'name': str(),
-#                 'filter': str(),
-#                 'product_qres': {
-#                     '1': {
-#                         'name': str(),
-#                         'lbl': str(),
-#                         'qres': [str()],
-#                         'cats': {
-#                           '1': int(),
-#                           '2': int()
-#                         }
-#                     },
-#                     '2': {
-#                         'name': str(),
-#                         'lbl': str(),
-#                         'qres': [str()],
-#                         'cats': {
-#                           '1': int(),
-#                           '2': int()
-#                         }
-#                     }
-#                 },
-#                 'fc_qres': [str()]
-#             },
-#             '2': {
-#                 'name': str(),
-#                 'filter': str(),
-#                 'product_qres': {
-#                     '1': {
-#                         'name': str(),
-#                         'lbl': str(),
-#                         'qres': [str()],
-#                         'cats': {
-#                             '1': int(),
-#                             '2': int()
-#                         }
-#                     },
-#                     '2': {
-#                         'name': str(),
-#                         'lbl': str(),
-#                         'qres': [str()],
-#                         'cats': {
-#                             '1': int(),
-#                             '2': int()
-#                         }
-#                     }
-#                 },
-#                 'fc_qres': [str()]
-#             },
-#         },
-#
-#         'oe_combine_cols': dict(),
-#         'scr_cols': dict(),
-#         'product_cols': dict(),
-#         'fc_cols': dict(),
-#         'addin_vars': dict(),
-#         'topline_design': dict()
-#     }
-#
-#     class Config:
-#         schema_extra = {
-#             'example': {
-#                 'prj_id': str(),
-#                 'name': str(),
-#                 'categorical': str(),
-#                 'status': str(),
-#                 'detail': {
-#                     'join_col': str(),
-#                     'sections': {
-#                         '1': {
-#                             'name': str(),
-#                             'filter': str(),
-#                             'product_qres': {
-#                                 '1': {
-#                                     'name': str(),
-#                                     'lbl': str(),
-#                                     'qres': [str()],
-#                                     'cats': {
-#                                         '1': int(),
-#                                         '2': int()
-#                                     }
-#                                 },
-#                                 '2': {
-#                                     'name': str(),
-#                                     'lbl': str(),
-#                                     'qres': [str()],
-#                                     'cats': {
-#                                         '1': int(),
-#                                         '2': int()
-#                                     }
-#                                 }
-#                             },
-#                             'fc_qres': [str()]
-#                         },
-#                         '2': {
-#                             'name': str(),
-#                             'filter': str(),
-#                             'product_qres': {
-#                                 '1': {
-#                                     'name': str(),
-#                                     'lbl': str(),
-#                                     'qres': [str()],
-#                                     'cats': {
-#                                         '1': int(),
-#                                         '2': int()
-#                                     }
-#                                 },
-#                                 '2': {
-#                                     'name': str(),
-#                                     'lbl': str(),
-#                                     'qres': [str()],
-#                                     'cats': {
-#                                         '1': int(),
-#                                         '2': int()
-#                                     }
-#                                 }
-#                             },
-#                             'fc_qres': [str()]
-#                         },
-#                     },
-#
-#                     'oe_combine_cols': dict(),
-#                     'scr_cols': dict(),
-#                     'product_cols': dict(),
-#                     'fc_cols': dict(),
-#                     'addin_vars': dict(),
-#                     'topline_design': dict()
-#                 }
-#             }
-#         }
-
-
-class UpdatePrjModel(BaseModel):
-
-    # prj_id: Optional[str]
-    # name: Optional[str]
-    # categorical: Optional[str]
-    # status: Optional[str]
-    join_col: Optional[str]
-
-    class Config:
-        orm_mode = True
-
-        schema_extra = {
-            'example': {
-                # 'prj_id': str(),
-                # 'name': str(),
-                # 'categorical': str(),
-                # 'status': str()
-                'join_col': str()
+new_prj_template = {
+    "internal_id": "",
+    "name": "",
+    "categorical": "",
+    "status": "",
+    "detail": {
+        "join_col": "",
+        "sections": {
+            "1": {
+                "name": "",
+                "filter": "",
+                "product_qres": {
+                    "1": {
+                        "name": "",
+                        "lbl": "",
+                        "qres": [
+                            ""
+                        ],
+                        "cats": {
+                            "1": {
+                                "val": "1",
+                                "lbl": ""
+                            },
+                            "2": {
+                                "val": "2",
+                                "lbl": ""
+                            }
+                        }
+                    },
+                    "2": {
+                        "name": "",
+                        "lbl": "",
+                        "qres": [
+                            ""
+                        ],
+                        "cats": {
+                            "1": {
+                                "val": "1",
+                                "lbl": ""
+                            },
+                            "2": {
+                                "val": "2",
+                                "lbl": ""
+                            }
+                        }
+                    }
+                },
+                "fc_qres": [
+                    ""
+                ]
+            },
+            "2": {
+                "name": "",
+                "filter": "",
+                "product_qres": {
+                    "1": {
+                        "name": "",
+                        "lbl": "",
+                        "qres": [
+                            ""
+                        ],
+                        "cats": {
+                            "1": {
+                                "val": "1",
+                                "lbl": ""
+                            },
+                            "2": {
+                                "val": "2",
+                                "lbl": ""
+                            }
+                        }
+                    },
+                    "2": {
+                        "name": "",
+                        "lbl": "",
+                        "qres": [
+                            ""
+                        ],
+                        "cats": {
+                            "1": {
+                                "val": "1",
+                                "lbl": ""
+                            },
+                            "2": {
+                                "val": "2",
+                                "lbl": ""
+                            }
+                        }
+                    }
+                },
+                "fc_qres": [
+                    ""
+                ]
+            }
+        },
+        "oe_combine_cols": {},
+        "scr_cols": {},
+        "product_cols": {},
+        "fc_cols": {},
+        "addin_vars": {
+            "1": {
+                "name": "FC",
+                "lbl": "FC",
+                "cats": {
+                    "1": {
+                        "val": "1",
+                        "lbl": "Thích 654/328",
+                        "condition": "Main_Recall_P100_thich_hon = 1"
+                    },
+                    "2": {
+                        "val": "2",
+                        "lbl": "Thích 403/394",
+                        "condition": "Main_Recall_P100_thich_hon = 2"
+                    }
+                }
+            },
+            "2": {
+                "name": "Rotation",
+                "lbl": "Rotation",
+                "cats": {
+                    "1": {
+                        "val": "1",
+                        "lbl": "Thử 654/328 trước",
+                        "condition": "Main_P0b_ROTATION = 1 OR Main_P0b_ROTATION = 3"
+                    },
+                    "2": {
+                        "val": "2",
+                        "lbl": "Thử 403/394 trước",
+                        "condition": "Main_P0b_ROTATION = 2 OR Main_P0b_ROTATION = 4"
+                    }
+                }
+            }
+        },
+        "topline_design": {
+            "is_display_pct_sign": False,
+            "is_jar_scale_3": True,
+            "header": {
+                "1": {
+                  "name": "Total",
+                  "lbl": "Total",
+                  "hidden_cats": ""
+                }
+            },
+            "side": {
+                "1": {
+                  "group_lbl": "I. ĐÁNH GIÁ SẢN PHẨM TRƯỚC KHI ĂN",
+                  "name": "Main_P2_OL_Mui_nuoc_dung",
+                  "lbl": "P2. Mức độ thích MÙI NƯỚC DÙNG",
+                  "type": "OL",
+                  "t2b": True,
+                  "b2b": True,
+                  "mean": True,
+                  "ma_cats": "",
+                  "hidden_cats": "",
+                  "is_count": False,
+                  "is_corr": True,
+                  "is_ua": False
+                },
             }
         }
-
-
+    },
+    "screener": {},
+    "main": {},
+    "topline_exporter": {}
+}

@@ -76,6 +76,28 @@ class ToplineExporter:
             return False, traceback.format_exc()
 
 
+    def toExcel_Handcount(self):
+
+        try:
+
+            wb = openpyxl.Workbook()
+            fileName = self.toplineName
+
+            self.toSummary(wb, self.dictTtest)
+
+            wb.remove(wb['Sheet'])
+
+            wb.save(fileName)
+            wb.close()
+
+            print('----------------------------Handcount exporting completed----------------------------')
+
+            return True, None
+
+        except Exception:
+            return False, traceback.format_exc()
+
+
     def toExcel_Product(self):
 
         try:

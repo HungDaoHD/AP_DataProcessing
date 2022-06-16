@@ -1202,21 +1202,19 @@
 
                     <hr>
 
-                    <h3 class="bg-light rounded h-100 p-2">Export Topline</h3>
+                    <h3 class="bg-light rounded h-100 p-2">Process Topline / Handcount</h3>
 
-                    {% if prj.lst_sec_topline_exporter %}
-                        <div class="alert alert-success" role="alert">
-                            The topline of <b>{{ prj.lst_sec_topline_exporter[0] }}</b> is processed. Please choose section <b>{{ prj.lst_sec_topline_exporter[0] }}</b> then click <b>export button</b>.
-                        </div>
-                    {% else %}
+                    {% if not prj.sec_topline_exporter %}
                         <div class="alert alert-warning" role="alert">
-                            The topline is not processed. Please choose the <b>topline section</b> -> click <b>process topline</b> -> <b>export topline</b>.
+                            The topline is not processed. Please choose the <b>topline section</b> -> click <b>process topline</b>.
                         </div>
                     {% endif %}
 
-                    <h7 class="bg-light rounded h-100 p-4">It will take a several minute</h7>
-
                     <div class="row g-4 p-4">
+
+                        <div class="col-sm-12 col-xl-4">
+                            <h7 >Please select the section to export topline. It will take a several minute</h7>
+                        </div>
 
                         <div class="col-sm-12 col-xl-4">
                             <div class="form-floating mb-2">
@@ -1233,7 +1231,7 @@
 
                                 </select>
 
-                                <label for="export_section">Please select the topline section</label>
+                                <label for="export_tl_section">Please select the topline section</label>
 
                             </div>
                         </div>
@@ -1241,34 +1239,69 @@
                         <div class="col-sm-12 col-xl-4">
                             <form id="form_topline_process" action="/msn-prj/topline_process/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                 <input type="hidden" value="" id="export_tl_section_1" name="export_section">
-                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Process topline" onclick="fnc_tl_submit(this, 'form_topline_process');">
+                                <input class="btn btn-primary py-3 w-100 mb-2" type="submit" value="Process topline" onclick="fnc_process_tl_submit(this, 'form_topline_process');">
                             </form>
                         </div>
-
-                        <div class="col-sm-12 col-xl-4">
-                            <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
-                                <input type="hidden" value="" id="export_tl_section_2" name="export_section">
-                                <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="Export full topline" onclick="fnc_tl_submit(this, 'form_topline_export');">
-                            </form>
-                        </div>
-
-                        <div class="col-sm-12 col-xl-4"></div>
-
-                        <div class="col-sm-12 col-xl-4">
-                            <form id="form_topline_export_product" action="/msn-prj/topline_export_product/{{ prj.id }}" method="get" enctype="multipart/form-data">
-                                <input type="hidden" value="" id="export_tl_section_3" name="export_section">
-                                <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="Export topline product" onclick="fnc_tl_submit(this, 'form_topline_export');">
-                            </form>
-                        </div>
-
-                        <div class="col-sm-12 col-xl-4">
-                            <form id="form_topline_export_ua" action="/msn-prj/topline_export_ua_corr/{{ prj.id }}" method="get" enctype="multipart/form-data">
-                                <input type="hidden" value="" id="export_tl_section_4" name="export_section">
-                                <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="Export topline U&A + Correlation" onclick="fnc_tl_submit(this, 'form_topline_export');">
-                            </form>
-                        </div>
-
                     </div>
+
+                    {% if prj.sec_topline_exporter %}
+
+                        {% for key, val in prj.sec_topline_exporter.items()  %}
+                            <hr>
+
+                            <h3 class="bg-light rounded h-100 p-2">Export {{ val }} Handcount</h3>
+
+                            <div class="row g-4 p-4">
+
+                                <div class="col-sm-12 col-xl-4">
+
+                                </div>
+
+                                <div class="col-sm-12 col-xl-4">
+
+                                </div>
+
+                                <div class="col-sm-12 col-xl-4">
+                                    <form id="form_handcount_export" action="/msn-prj/handcount_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input type="hidden" value="{{ key }}" name="export_section">
+                                        <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="{{ val }} handcount" onclick="fnc_tl_submit(this, 'form_handcount_export', 'Handcount');">
+                                    </form>
+                                </div>
+
+                            </div>
+
+                            <hr>
+
+                            <h3 class="bg-light rounded h-100 p-2">Export {{ val }} Topline</h3>
+
+                            <div class="row g-4 p-4">
+
+                                <div class="col-sm-12 col-xl-4">
+                                    <form id="form_topline_export_product" action="/msn-prj/topline_export_product/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input type="hidden" value="{{ key }}" name="export_section">
+                                        <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="{{ val }} product" onclick="fnc_tl_submit(this, 'form_topline_export_product', 'Topline Product Sheets');">
+                                    </form>
+                                </div>
+
+                                <div class="col-sm-12 col-xl-4">
+                                    <form id="form_topline_export_ua" action="/msn-prj/topline_export_ua_corr/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input type="hidden" value="{{ key }}" name="export_section">
+                                        <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="{{ val }} U&A + Correlation" onclick="fnc_tl_submit(this, 'form_topline_export_ua', 'Topline U&A + Correlation Sheets');">
+                                    </form>
+                                </div>
+
+                                <div class="col-sm-12 col-xl-4">
+                                    <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input type="hidden" value="{{ key }}" name="export_section">
+                                        <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="{{ val }} full topline" onclick="fnc_tl_submit(this, 'form_topline_export', 'Full Topline');">
+                                    </form>
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
 
 
 
@@ -2147,7 +2180,7 @@
             }
         };
 
-        function fnc_tl_submit(btn, form_id){
+        function fnc_process_tl_submit(btn, form_id){
 
             sel_elm = document.getElementById("export_tl_section");
             form_elm = document.getElementById(form_id);
@@ -2159,16 +2192,11 @@
                     e.preventDefault();
                 });
             }
-            else{
+            else
+            {
                 val1 = document.getElementById("export_tl_section_1");
-                val2 = document.getElementById("export_tl_section_2");
-                val3 = document.getElementById("export_tl_section_3");
-                val4 = document.getElementById("export_tl_section_4");
 
                 val1.value = sel_elm.value;
-                val2.value = sel_elm.value;
-                val3.value = sel_elm.value;
-                val4.value = sel_elm.value;
 
                 isConfirm = confirm('Confirm export topline for ' + sel_elm.options[sel_elm.selectedIndex].text + '?');
 
@@ -2187,6 +2215,29 @@
                     });
                 }
 
+            }
+
+        };
+
+        function fnc_tl_submit(btn, form_id, lbl){
+
+            form_elm = document.getElementById(form_id);
+
+            isConfirm = confirm('Confirm export ' + lbl + '?');
+
+            if(isConfirm == true) {
+
+                form_elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    form_elm.submit();
+                });
+
+            }
+            else
+            {
+                form_elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                });
             }
 
         };

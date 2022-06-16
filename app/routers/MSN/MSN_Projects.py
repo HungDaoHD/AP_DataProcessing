@@ -29,6 +29,23 @@ async def retrieve(request: Request):
         })
 
 
+@router.get('/add', response_class=HTMLResponse)
+async def prj_add(request: Request, internal_id, prj_name, categorical, prj_status):
+
+    result = await msn_prj.add(internal_id, prj_name, categorical, prj_status)
+
+    if result['isSuccess']:
+        redirect_url = request.url_for('retrieve')
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Add project error',
+            'strErr': result['strErr']
+        })
+
+
 @router.get('/{_id}', response_class=HTMLResponse)
 async def retrieve_id(_id, request: Request):
     result = await msn_prj.retrieve_id(_id)
@@ -121,6 +138,23 @@ async def prj_topline_process(request: Request, _id: str, export_section):
         return templates.TemplateResponse('error.html', {
             'request': request,
             'strTask': 'Process topline error',
+            'strErr': result['strErr']
+        })
+
+
+@router.get('/handcount_export/{_id}', response_class=FileResponse)
+async def prj_handcount_export(request: Request, _id: str, export_section):
+
+    result = await msn_prj.topline_export(_id, export_section, 'HAND')
+
+    if result['isSuccess']:
+
+        return FileResponse(result['zipName'], filename=result['zipName'])
+
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Export handcount error',
             'strErr': result['strErr']
         })
 

@@ -55,8 +55,9 @@
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h4 class="mb-0">MSN Projects</h4>
-                <button type="button" class="btn btn-primary m-2">Add project</button>
+                <button type="button" class="btn btn-primary m-2" onclick="showDialog('dialog_add_prj')">Add project</button>
             </div>
+
             <div class="table-responsive">
                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
@@ -87,6 +88,103 @@
             </div>
         </div>
 
+        <dialog id="dialog_add_prj" class="col-sm-12 col-xl-6">
+
+            <div class="bg-light rounded h-100 p-4">
+
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h5 class="mb-2">Add Project</h5>
+                </div>
+
+                <form id="form_add_prj" action="/msn-prj/add" method="get" enctype="multipart/form-data">
+
+                    <div class="row g-0">
+                        <div class="col-sm-12 col-xl-6">
+                            <div class="bg-light rounded h-100 p-2">
+                                <div class="form-floating mb-0">
+                                    <input type="text" class="form-control" id="internal_id"
+                                           name="internal_id" value="" placeholder="">
+                                    <label for="internal_id">Internal ID</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-xl-6">
+                            <div class="bg-light rounded h-100 p-2">
+                                <div class="form-floating mb-0">
+                                    <input type="text" class="form-control" id="prj_name"
+                                           name="prj_name" value="" placeholder="">
+                                    <label for="prj_name">Name</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-0">
+                        <div class="col-sm-12 col-xl-6">
+                            <div class="bg-light rounded h-100 p-2">
+                                <div class="form-floating mb-0">
+                                    <input type="text" class="form-control" id="prj_cat"
+                                           name="categorical" value="" placeholder="">
+                                    <label for="prj_cat">Category</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-xl-6">
+                            <div class="bg-light rounded h-100 p-2">
+                                <div class="form-floating mb-0">
+
+                                    <select class="form-select" id="floatingSelect_status"
+                                        aria-label="Floating label select example"
+                                        name="prj_status">
+
+                                        {% for stt in ['Completed', 'On Going', 'Pending', 'Cancel'] %}
+
+                                            {% if stt == 'On Going' %}
+                                                <option selected value="{{ stt }}">{{ stt }}</option>
+                                            {% else %}
+                                                <option value="{{ stt }}">{{ stt }}</option>
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </select>
+                                    <label for="floatingSelect_status">Status</label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row g-0 p-0">
+                        <div class="col-sm-12 col-xl-3"></div>
+                        <div class="col-sm-12 col-xl-3"></div>
+
+                        <div class="col-sm-12 col-xl-3">
+                            <div class="bg-light rounded h-100 p-2">
+                                <button type="button" class="btn btn-secondary py-3 w-100" onclick="closeDialog('dialog_add_prj')">Close</button>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12 col-xl-3">
+                            <div class="bg-light rounded h-100 p-2">
+                                <input class="btn btn-primary py-3 w-100" type="submit" value="Add" id="submit_add_prj" onclick="func_submit_add_prj('form_add_prj');">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </dialog>
+
+
+
         <!--Pagination-->
     <!--    <div class="bg-light rounded h-100 p-4">-->
     <!--        <div class="btn-toolbar justify-content-end" role="group">-->
@@ -110,5 +208,38 @@
             err.style.display = 'none';
     <!--        err.style.visibility = 'hidden';-->
         }, 3000);
+
+        function showDialog(strID) {
+            document.getElementById(strID).showModal();
+        };
+
+        function closeDialog(strID) {
+            document.getElementById(strID).close();
+        };
+
+        function func_submit_add_prj(strID) {
+
+            form_elm = document.getElementById(strID)
+
+            isConfirm = confirm('Confirm add new project?');
+
+            if(isConfirm == true) {
+
+                form_elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    form_elm.submit();
+                });
+
+            }
+            else
+            {
+                form_elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                });
+            }
+
+        };
+
+
     </script>
 {% endblock %}

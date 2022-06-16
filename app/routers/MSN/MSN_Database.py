@@ -7,7 +7,7 @@ import traceback
 from .MSN_Data_Converter import QMeFileConvert
 from .MSN_Export_Data import ExportMSNData
 from .MSN_Topline_Exporter import ToplineExporter
-
+from .MSN_Models import new_prj_template
 
 
 class MsnPrj:
@@ -34,14 +34,17 @@ class MsnPrj:
                 'status': prj['status']
             }
         else:
-            lst_sec_topline_exporter = list()
+            sec_topline_exporter = dict()
             if not prj['topline_exporter']:
-                lst_sec_topline_exporter = []
+                sec_topline_exporter = {}
             else:
                 for key, val in prj['topline_exporter'].items():
                     if val:
                         strSecName = prj['detail']['sections'][str(key)]['name']
-                        lst_sec_topline_exporter.append(strSecName)
+                        sec_topline_exporter.update({str(key): strSecName})
+
+            lenOfScr = len(prj['screener']['data']) if prj['screener'] else 0
+            lenOfMain = len(prj['main']['data']) if prj['main'] else 0
 
             return {
                 'id': str(prj['_id']),
@@ -50,13 +53,10 @@ class MsnPrj:
                 'categorical': prj['categorical'],
                 'status': prj['status'],
                 'detail': prj['detail'],
-                'lenOfScr': len(prj['screener']['data']),
-                'lenOfMain': len(prj['main']['data']),
-                'lst_sec_topline_exporter': lst_sec_topline_exporter
+                'lenOfScr': lenOfScr,
+                'lenOfMain': lenOfMain,
+                'sec_topline_exporter': sec_topline_exporter
             }
-
-
-
 
 
     async def retrieve(self):
@@ -94,6 +94,35 @@ class MsnPrj:
                 'strErr': traceback.format_exc(),
                 'lst_prj': None,
                 'overView': None
+            }
+
+
+    async def add(self, internal_id, prj_name, categorical, prj_status):
+        try:
+
+            new_prj = new_prj_template
+            new_prj['internal_id'] = internal_id
+            new_prj['name'] = prj_name
+            new_prj['categorical'] = categorical
+            new_prj['status'] = prj_status
+
+            prj = await self.prj_collection.insert_one(new_prj)
+
+            if not prj:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Add projects error'
+                }
+
+            return {
+                'isSuccess': True,
+                'strErr': None
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
             }
 
 
@@ -529,6 +558,9 @@ class MsnPrj:
 
                 isSuccess = exp_topline.toExcel_UA_Corr()
 
+            elif strHow in ['HAND']:
+                isSuccess = exp_topline.toExcel_Handcount()
+
             else:
                 isSuccess = exp_topline.toExcel()
 
@@ -540,7 +572,7 @@ class MsnPrj:
                     'zipName': None
                 }
 
-            if strHow in ['FULL', 'UA_CORR']:
+            if strHow in ['FULL', 'UA_CORR', 'HAND']:
                 clear_prj_Ttest_UA = await self.prj_collection.update_one(
                     {'_id': ObjectId(_id)}, {'$set': {
                             'topline_exporter': {}
