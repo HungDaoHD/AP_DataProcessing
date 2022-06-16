@@ -550,9 +550,13 @@ class MsnPrj:
             exp_topline.dictTtest = dictTtest
             exp_topline.dictUA = dictUA
 
-            if strHow in ['PRODUCTS']:
+            if strHow in ['PRODUCTS_1']:
 
-                isSuccess = exp_topline.toExcel_Product()
+                isSuccess = exp_topline.toExcel_Product_1()
+
+            elif strHow in ['PRODUCTS_2']:
+
+                isSuccess = exp_topline.toExcel_Product_2()
 
             elif strHow in ['UA_CORR']:
 

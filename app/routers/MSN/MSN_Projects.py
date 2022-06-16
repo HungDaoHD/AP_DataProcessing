@@ -160,7 +160,7 @@ async def prj_handcount_export(request: Request, _id: str, export_section):
 
 
 @router.get('/topline_export/{_id}', response_class=FileResponse)
-async def prj_topline_export(request: Request, _id: str, export_section):
+async def prj_topline_export_full(request: Request, _id: str, export_section):
 
     result = await msn_prj.topline_export(_id, export_section, 'FULL')
 
@@ -176,10 +176,27 @@ async def prj_topline_export(request: Request, _id: str, export_section):
         })
 
 
-@router.get('/topline_export_product/{_id}', response_class=FileResponse)
-async def prj_topline_export(request: Request, _id: str, export_section):
+@router.get('/topline_export_product_1/{_id}', response_class=FileResponse)
+async def prj_topline_export_pro_1(request: Request, _id: str, export_section):
 
-    result = await msn_prj.topline_export(_id, export_section, 'PRODUCTS')
+    result = await msn_prj.topline_export(_id, export_section, 'PRODUCTS_1')
+
+    if result['isSuccess']:
+
+        return FileResponse(result['zipName'], filename=result['zipName'])
+
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Export topline error',
+            'strErr': result['strErr']
+        })
+
+
+@router.get('/topline_export_product_2/{_id}', response_class=FileResponse)
+async def prj_topline_export_pro_2(request: Request, _id: str, export_section):
+
+    result = await msn_prj.topline_export(_id, export_section, 'PRODUCTS_2')
 
     if result['isSuccess']:
 
@@ -194,7 +211,7 @@ async def prj_topline_export(request: Request, _id: str, export_section):
 
 
 @router.get('/topline_export_ua_corr/{_id}', response_class=FileResponse)
-async def prj_topline_export(request: Request, _id: str, export_section):
+async def prj_topline_export_ua_corr(request: Request, _id: str, export_section):
 
     result = await msn_prj.topline_export(_id, export_section, 'UA_CORR')
 

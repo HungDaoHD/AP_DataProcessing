@@ -1276,21 +1276,28 @@
 
                             <div class="row g-4 p-4">
 
-                                <div class="col-sm-12 col-xl-4">
-                                    <form id="form_topline_export_product" action="/msn-prj/topline_export_product/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                <div class="col-sm-12 col-xl-3">
+                                    <form id="form_topline_export_product_1" action="/msn-prj/topline_export_product_1/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                         <input type="hidden" value="{{ key }}" name="export_section">
-                                        <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="{{ val }} product" onclick="fnc_tl_submit(this, 'form_topline_export_product', 'Topline Product Sheets');">
+                                        <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="{{ val }} Summary + Tabulation" onclick="fnc_tl_submit(this, 'form_topline_export_product_1', 'Topline Summary + Tabulation Sheets');">
                                     </form>
                                 </div>
 
-                                <div class="col-sm-12 col-xl-4">
+                                <div class="col-sm-12 col-xl-3">
+                                    <form id="form_topline_export_product_2" action="/msn-prj/topline_export_product_2/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input type="hidden" value="{{ key }}" name="export_section">
+                                        <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="{{ val }} OL + JR Summary" onclick="fnc_tl_submit(this, 'form_topline_export_product_2', 'Topline OL + JR Summary Sheets');">
+                                    </form>
+                                </div>
+
+                                <div class="col-sm-12 col-xl-3">
                                     <form id="form_topline_export_ua" action="/msn-prj/topline_export_ua_corr/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                         <input type="hidden" value="{{ key }}" name="export_section">
                                         <input class="btn btn-outline-primary py-3 w-100 mb-0" type="submit" value="{{ val }} U&A + Correlation" onclick="fnc_tl_submit(this, 'form_topline_export_ua', 'Topline U&A + Correlation Sheets');">
                                     </form>
                                 </div>
 
-                                <div class="col-sm-12 col-xl-4">
+                                <div class="col-sm-12 col-xl-3">
                                     <form id="form_topline_export" action="/msn-prj/topline_export/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                         <input type="hidden" value="{{ key }}" name="export_section">
                                         <input class="btn btn-primary py-3 w-100 mb-0" type="submit" value="{{ val }} full topline" onclick="fnc_tl_submit(this, 'form_topline_export', 'Full Topline');">

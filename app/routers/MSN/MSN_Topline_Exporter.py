@@ -124,6 +124,54 @@ class ToplineExporter:
             return False, traceback.format_exc()
 
 
+    def toExcel_Product_1(self):
+
+        try:
+
+            wb = openpyxl.Workbook()
+            self.toplineName = self.toplineName.replace('.xlsx', '_Product_1.xlsx')
+            fileName = self.toplineName
+
+            self.toSummary(wb, self.dictTtest)
+            self.toTabulation(wb, self.dictTtest)
+
+            wb.remove(wb['Sheet'])
+
+            wb.save(fileName)
+            wb.close()
+
+            print('----------------------------Topline exporting completed----------------------------')
+
+            return True, None
+
+        except Exception:
+            return False, traceback.format_exc()
+
+
+    def toExcel_Product_2(self):
+
+        try:
+
+            wb = openpyxl.Workbook()
+            self.toplineName = self.toplineName.replace('.xlsx', '_Product_2.xlsx')
+            fileName = self.toplineName
+
+            self.toOlJrSummary(wb, self.dictTtest, 'OL')
+            self.toOlJrSummary(wb, self.dictTtest, 'JR')
+
+            wb.remove(wb['Sheet'])
+
+            wb.save(fileName)
+            wb.close()
+
+            print('----------------------------Topline exporting completed----------------------------')
+
+            return True, None
+
+        except Exception:
+            return False, traceback.format_exc()
+
+
     def toExcel_UA_Corr(self):
 
         try:
