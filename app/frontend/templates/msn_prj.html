@@ -1,5 +1,9 @@
 {% extends 'master_page.html' %}
 
+{% block page_title %}
+    <title>MSN Projects</title>
+{% endblock %}
+
 {% block sidebar_MSN_prj %}
     <a href="\msn-prj" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>MSN projects</a>
 {% endblock %}
@@ -62,24 +66,31 @@
                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                     <thead>
                         <tr class="text-dark">
-                            <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                            <th scope="col">ID</th>
+<!--                            <th scope="col"><input class="form-check-input" type="checkbox"></th>-->
+                            <th scope="col" width="5%"></th>
+                            <th scope="col" width="12%">ID</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Categorical</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Action</th>
+                            <th scope="col" width="12%">Categorical</th>
+                            <th scope="col" width="10%">Status</th>
+                            <th scope="col" width="5%"></th>
                         </tr>
                     </thead>
                     <tbody>
 
                         {% for prj in lst_prj %}
                             <tr>
-                                <td><input class="form-check-input" type="checkbox"></td>
+<!--                                <td><input class="form-check-input" type="checkbox"></td>-->
+                                <td>
+                                    <form id="form_del_prj" action="/msn-prj/delete/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input id="{{ prj.id }}" name="{{ prj.name }}" class="btn btn-sm btn-outline-danger" type="submit" value="Delete" onclick="submit_delete_prj(this.id, this.name)">
+                                    </form>
+                                </td>
+
                                 <td>{{ prj.internal_id }}</td>
                                 <td>{{ prj.name }}</td>
                                 <td>{{ prj.categorical }}</td>
                                 <td>{{ prj.status }}</td>
-                                <td><a class="btn btn-sm btn-primary" href="/msn-prj/{{ prj.id }}" >Detail</a></td>
+                                <td><a class="btn btn-sm btn-primary" href="/msn-prj/{{ prj.id }}" target="_blank">Detail</a></td>
                             </tr>
                         {% endfor %}
 
@@ -202,7 +213,7 @@
     </div>
     <!-- Recent Sales End -->
 
-    <script>
+    <script type="text/javascript">
         setTimeout(() => {
             const err = document.getElementById('err');
             err.style.display = 'none';
@@ -219,11 +230,45 @@
 
         function func_submit_add_prj(strID) {
 
-            form_elm = document.getElementById(strID)
+            form_elm = document.getElementById(strID);
 
-            isConfirm = confirm('Confirm add new project?');
+            form_id = form_elm['internal_id'].value;
+            form_prj_name = form_elm['prj_name'].value;
+            form_categorical = form_elm['categorical'].value;
 
-            if(isConfirm == true) {
+            if(form_id == "" || form_prj_name == "" || form_categorical == ""){
+                alert("Please input project information.");
+                form_elm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                });
+            }
+            else {
+                isConfirm = confirm('Confirm add new project?');
+
+                if(isConfirm == true) {
+
+                    form_elm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        form_elm.submit();
+                    });
+
+                }
+                else
+                {
+                    form_elm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                    });
+                }
+            }
+
+        };
+
+        function submit_delete_prj(prj_id, prj_name) {
+
+            del_name = prompt("Please input project name '" + prj_name + "' to delete.");
+            form_elm = document.getElementById("form_del_prj");
+
+            if(del_name.toString() == prj_name.toString()){
 
                 form_elm.addEventListener('submit', (e) => {
                     e.preventDefault();
@@ -235,6 +280,7 @@
             {
                 form_elm.addEventListener('submit', (e) => {
                     e.preventDefault();
+                    alert("Cancel delete project.");
                 });
             }
 

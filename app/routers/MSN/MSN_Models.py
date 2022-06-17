@@ -1,4 +1,5 @@
 new_prj_template = {
+    "_id": {},
     "internal_id": "",
     "name": "",
     "categorical": "",

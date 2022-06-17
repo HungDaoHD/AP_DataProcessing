@@ -66,6 +66,8 @@ class MsnPrj:
             async for prj in self.prj_collection.find():
                 lst_prj.append(self.prj_info(prj, True))
 
+            lst_prj.reverse()
+
             overView = {
                 'total': len(lst_prj),
                 'completed': 0,
@@ -101,6 +103,7 @@ class MsnPrj:
         try:
 
             new_prj = new_prj_template
+            new_prj['_id'] = ObjectId()
             new_prj['internal_id'] = internal_id
             new_prj['name'] = prj_name
             new_prj['categorical'] = categorical
@@ -112,6 +115,29 @@ class MsnPrj:
                 return {
                     'isSuccess': False,
                     'strErr': 'Add projects error'
+                }
+
+            return {
+                'isSuccess': True,
+                'strErr': None
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
+            }
+
+
+    async def delete(self, _id):
+        try:
+
+            prj = await self.prj_collection.delete_one({'_id': ObjectId(_id)})
+
+            if not prj:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Delete projects error'
                 }
 
             return {
