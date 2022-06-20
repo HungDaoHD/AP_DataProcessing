@@ -8,6 +8,7 @@ from .MSN_Data_Converter import QMeFileConvert
 from .MSN_Export_Data import ExportMSNData
 from .MSN_Topline_Exporter import ToplineExporter
 from .MSN_Models import new_prj_template
+from datetime import datetime
 
 
 class MsnPrj:
@@ -15,7 +16,7 @@ class MsnPrj:
     def __init__(self):
         # MONGO_DETAILS = 'mongodb://localhost:27017'
         MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
-        
+
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
         db_msn = client.msn
@@ -58,49 +59,61 @@ class MsnPrj:
                 'sec_topline_exporter': sec_topline_exporter
             }
 
+    @staticmethod
+    def get_overView(lst_prj: list):
+        overView = {
+            'total': len(lst_prj),
+            'completed': 0,
+            'on_going': 0,
+            'pending_cancel': 0,
+        }
 
-    async def retrieve(self, prj_name: str = 'ALL'):
+        for item in lst_prj:
+            if item['status'] in ['Completed']:
+                overView['completed'] += 1
+            elif item['status'] in ['On Going']:
+                overView['on_going'] += 1
+            elif item['status'] in ['Pending', 'Cancel']:
+                overView['pending_cancel'] += 1
+
+        return overView
+
+
+    @staticmethod
+    def count_page(lst_prj, step):
+        tuple_divMod = divmod(len(lst_prj), step)
+
+        if tuple_divMod[1] != 0:
+            page_count = tuple_divMod[0] + 1
+        else:
+            page_count = tuple_divMod[0]
+
+        return page_count
+
+
+    async def retrieve(self, page):
         try:
 
-            if prj_name == 'ALL':
-                lst_prj = list()
-                async for prj in self.prj_collection.find().limit(5):
-                    lst_prj.append(self.prj_info(prj, True))
+            lst_prj = list()
+            async for prj in self.prj_collection.find().sort('create_date', -1):
+                lst_prj.append(self.prj_info(prj, True))
+
+            overView = self.get_overView(lst_prj)
+
+            step = 5
+            page_count = self.count_page(lst_prj, step)
+
+            if page == 1:
+                lst_prj = lst_prj[:5]
             else:
-                lst_prj = list()
-                async for prj in self.prj_collection.find({'name': {"$regex": f".*{prj_name}.*"}}):
-                    lst_prj.append(self.prj_info(prj, True))
-
-            lst_prj.reverse()
-
-            overView = {
-                'total': len(lst_prj),
-                'completed': 0,
-                'on_going': 0,
-                'pending_cancel': 0,
-            }
-
-            for item in lst_prj:
-                if item['status'] in ['Completed']:
-                    overView['completed'] += 1
-                elif item['status'] in ['On Going']:
-                    overView['on_going'] += 1
-                elif item['status'] in ['Pending', 'Cancel']:
-                    overView['pending_cancel'] += 1
-
-            # if prj_name != 'ALL':
-            #     lst_prj_search = list()
-            #     for prj in lst_prj:
-            #         if prj_name.lower() in (prj['name']).lower():
-            #             lst_prj_search.append(prj)
-            #
-            #     lst_prj = lst_prj_search
+                lst_prj = lst_prj[((page - 1) * step) + 1:(page * step) + 1]
 
             return {
                 'isSuccess': True,
                 'strErr': None,
                 'lst_prj': lst_prj,
-                'overView': overView
+                'overView': overView,
+                'page_count': page_count
             }
 
         except Exception:
@@ -108,7 +121,38 @@ class MsnPrj:
                 'isSuccess': False,
                 'strErr': traceback.format_exc(),
                 'lst_prj': None,
-                'overView': None
+                'overView': None,
+                'page_count': None
+            }
+
+
+    async def search(self, prj_name: str = ''):
+        try:
+
+            lst_prj = list()
+            async for prj in self.prj_collection.find({'name': {'$regex': f'.*{prj_name}.*', '$options': 'i'}}).sort('create_date', -1):
+                lst_prj.append(self.prj_info(prj, True))
+
+            overView = self.get_overView(lst_prj)
+
+            step = 10
+            page_count = self.count_page(lst_prj, step)
+
+            return {
+                'isSuccess': True,
+                'strErr': None,
+                'lst_prj': lst_prj,
+                'overView': overView,
+                'page_count': page_count
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc(),
+                'lst_prj': None,
+                'overView': None,
+                'page_count': None
             }
 
 
@@ -121,6 +165,7 @@ class MsnPrj:
             new_prj['name'] = prj_name
             new_prj['categorical'] = categorical
             new_prj['status'] = prj_status
+            new_prj['create_date'] = datetime.now()
 
             prj = await self.prj_collection.insert_one(new_prj)
 

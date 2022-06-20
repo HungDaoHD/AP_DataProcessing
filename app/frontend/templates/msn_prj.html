@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block search_bar %}
-    <form class="d-none d-md-flex ms-4" action="/msn-prj" method="get" enctype="multipart/form-data">
+    <form id="form_search_prj_name" class="d-none d-md-flex ms-4" action="/msn-prj/search" method="get" enctype="multipart/form-data">
         <input class="form-control border-0" name="search_prj_name" type="search" placeholder="Search project name" value="{{ search_prj_name }}">
     </form>
 {% endblock %}
@@ -198,18 +198,28 @@
 
 
         <!--Pagination-->
-        <div class="bg-light rounded h-100 p-4">
-            <div class="btn-toolbar justify-content-end" role="group">
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="btnradio1">1</label>
+        {% if page_count > 1 %}
+            <div class="bg-light rounded h-100 p-4">
+                <div class="btn-toolbar justify-content-end" role="group">
 
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio2">2</label>
+                    <form action="/msn-prj" method="get" enctype="multipart/form-data">
 
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio3">3</label>
+                        {% for i in range(1, page_count + 1) %}
+
+                            {% if i == page_sel %}
+                                <input type="submit" class="btn-check" name="page" id="btnradio{{ i * 1 }}" autocomplete="off" value="{{ i }}">
+                                <label class="btn btn-primary" for="btnradio{{ i * 1 }}">{{ i }}</label>
+                            {% else %}
+                                <input type="submit" class="btn-check" name="page" id="btnradio{{ i }}" autocomplete="off" value="{{ i }}">
+                                <label class="btn btn-outline-primary" for="btnradio{{ i }}">{{ i }}</label>
+                            {% endif %}
+
+                        {% endfor %}
+                    </form>
+                </div>
             </div>
-        </div>
+        {% endif %}
+
 
     </div>
     <!-- Recent Sales End -->
@@ -289,7 +299,6 @@
             }
 
         };
-
 
     </script>
 {% endblock %}

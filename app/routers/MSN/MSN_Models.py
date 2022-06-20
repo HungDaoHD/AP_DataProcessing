@@ -4,6 +4,7 @@ new_prj_template = {
     "name": "",
     "categorical": "",
     "status": "",
+    "create_date": "",
     "detail": {
         "join_col": "",
         "sections": {

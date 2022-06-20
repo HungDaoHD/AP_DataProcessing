@@ -13,19 +13,34 @@ router = APIRouter(prefix='/msn-prj', tags=['msn-prj'])
 
 
 @router.get('', response_class=HTMLResponse)
-async def retrieve(request: Request, search_prj_name: str = 'ALL'):
+async def retrieve(request: Request, page: int = 1):
 
-    result = await msn_prj.retrieve(search_prj_name)
+    result = await msn_prj.retrieve(page)
 
     if result['isSuccess']:
-        if search_prj_name == 'ALL':
-            search_prj_name = ''
-
-        return templates.TemplateResponse('msn_prj.html', {'request': request, 'overView': result['overView'], 'lst_prj': result['lst_prj'], 'search_prj_name': search_prj_name})
+        return templates.TemplateResponse('msn_prj.html', {'request': request, 'overView': result['overView'], 'lst_prj': result['lst_prj'], 'page_sel': int(page), 'page_count': result['page_count']})
     else:
         return templates.TemplateResponse('error.html', {
             'request': request,
-            'strTask': 'Retrieve project by name error',
+            'strTask': 'Retrieve project error',
+            'strErr': result['strErr']
+        })
+
+
+@router.get('/search', response_class=HTMLResponse)
+async def search(request: Request, search_prj_name: str = ''):
+
+    if search_prj_name == '':
+        result = await msn_prj.retrieve(1)
+    else:
+        result = await msn_prj.search(search_prj_name)
+
+    if result['isSuccess']:
+        return templates.TemplateResponse('msn_prj.html', {'request': request, 'overView': result['overView'], 'lst_prj': result['lst_prj'], 'search_prj_name': search_prj_name, 'page_sel': 1, 'page_count': result['page_count']})
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Search project by name error',
             'strErr': result['strErr']
         })
 
