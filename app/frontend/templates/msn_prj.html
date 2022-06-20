@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block search_bar %}
-    <form class="d-none d-md-flex ms-4">
-        <input class="form-control border-0" type="search" placeholder="Search">
+    <form class="d-none d-md-flex ms-4" action="/msn-prj" method="get" enctype="multipart/form-data">
+        <input class="form-control border-0" name="search_prj_name" type="search" placeholder="Search project name" value="{{ search_prj_name }}">
     </form>
 {% endblock %}
 

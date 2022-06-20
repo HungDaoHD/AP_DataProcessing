@@ -15,7 +15,7 @@ class MsnPrj:
     def __init__(self):
         # MONGO_DETAILS = 'mongodb://localhost:27017'
         MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
-        
+
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
         db_msn = client.msn
@@ -59,7 +59,7 @@ class MsnPrj:
             }
 
 
-    async def retrieve(self):
+    async def retrieve(self, prj_name: str = 'ALL'):
         try:
 
             lst_prj = []
@@ -82,6 +82,16 @@ class MsnPrj:
                     overView['on_going'] += 1
                 elif item['status'] in ['Pending', 'Cancel']:
                     overView['pending_cancel'] += 1
+
+            if prj_name != 'ALL':
+                lst_prj_search = list()
+                for prj in lst_prj:
+                    if prj_name.lower() in (prj['name']).lower():
+                        lst_prj_search.append(prj)
+
+                lst_prj = lst_prj_search
+
+
 
             return {
                 'isSuccess': True,

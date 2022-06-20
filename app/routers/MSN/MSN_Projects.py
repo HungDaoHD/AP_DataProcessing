@@ -13,18 +13,20 @@ templates = Jinja2Templates(directory='./app/frontend/templates')
 router = APIRouter(prefix='/msn-prj', tags=['msn-prj'])
 
 
-
 @router.get('', response_class=HTMLResponse)
-async def retrieve(request: Request):
+async def retrieve(request: Request, search_prj_name: str = 'ALL'):
 
-    result = await msn_prj.retrieve()
+    result = await msn_prj.retrieve(search_prj_name)
 
     if result['isSuccess']:
-        return templates.TemplateResponse('msn_prj.html', {'request': request, 'overView': result['overView'], 'lst_prj': result['lst_prj']})
+        if search_prj_name == 'ALL':
+            search_prj_name = ''
+
+        return templates.TemplateResponse('msn_prj.html', {'request': request, 'overView': result['overView'], 'lst_prj': result['lst_prj'], 'search_prj_name': search_prj_name})
     else:
         return templates.TemplateResponse('error.html', {
             'request': request,
-            'strTask': 'Retrieve project error',
+            'strTask': 'Retrieve project by name error',
             'strErr': result['strErr']
         })
 
