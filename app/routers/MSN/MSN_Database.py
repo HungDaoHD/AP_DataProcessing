@@ -15,7 +15,7 @@ class MsnPrj:
     def __init__(self):
         # MONGO_DETAILS = 'mongodb://localhost:27017'
         MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
-
+        
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
         db_msn = client.msn
@@ -62,9 +62,14 @@ class MsnPrj:
     async def retrieve(self, prj_name: str = 'ALL'):
         try:
 
-            lst_prj = []
-            async for prj in self.prj_collection.find():
-                lst_prj.append(self.prj_info(prj, True))
+            if prj_name == 'ALL':
+                lst_prj = list()
+                async for prj in self.prj_collection.find().limit(5):
+                    lst_prj.append(self.prj_info(prj, True))
+            else:
+                lst_prj = list()
+                async for prj in self.prj_collection.find({'name': {"$regex": f".*{prj_name}.*"}}):
+                    lst_prj.append(self.prj_info(prj, True))
 
             lst_prj.reverse()
 
@@ -83,15 +88,13 @@ class MsnPrj:
                 elif item['status'] in ['Pending', 'Cancel']:
                     overView['pending_cancel'] += 1
 
-            if prj_name != 'ALL':
-                lst_prj_search = list()
-                for prj in lst_prj:
-                    if prj_name.lower() in (prj['name']).lower():
-                        lst_prj_search.append(prj)
-
-                lst_prj = lst_prj_search
-
-
+            # if prj_name != 'ALL':
+            #     lst_prj_search = list()
+            #     for prj in lst_prj:
+            #         if prj_name.lower() in (prj['name']).lower():
+            #             lst_prj_search.append(prj)
+            #
+            #     lst_prj = lst_prj_search
 
             return {
                 'isSuccess': True,

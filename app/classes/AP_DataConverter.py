@@ -259,7 +259,7 @@ class APDataConverter:
 
         self.spsName = self.strFileName.replace('xlsx', 'sps')
 
-        with open(f'{self.spsName}', 'w') as text_file:
+        with open(f'{self.spsName}', 'w', encoding='utf-8-sig') as text_file:
             text_file.write(strMRSet)
 
         self.spsFile = text_file
