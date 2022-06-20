@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Request, UploadFile, Form, Body, Depends, status
+from fastapi import APIRouter, Request, UploadFile, Body, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
-import traceback
 from .MSN_Database import MsnPrj
 
 

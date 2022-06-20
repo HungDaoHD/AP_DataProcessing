@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 import pyreadstat
-import openpyxl
-import warnings
 import zipfile
 import traceback
 
