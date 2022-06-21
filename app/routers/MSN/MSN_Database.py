@@ -1,6 +1,7 @@
 import motor.motor_asyncio
 import pandas as pd
 from bson.objectid import ObjectId
+from datetime import datetime
 import re
 import json
 import traceback
@@ -8,14 +9,14 @@ from .MSN_Data_Converter import QMeFileConvert
 from .MSN_Export_Data import ExportMSNData
 from .MSN_Topline_Exporter import ToplineExporter
 from .MSN_Models import new_prj_template
-from datetime import datetime
+
 
 
 class MsnPrj:
 
     def __init__(self):
-        # MONGO_DETAILS = 'mongodb://localhost:27017'
-        MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
+        MONGO_DETAILS = 'mongodb://localhost:27017'
+        # MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
 
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
@@ -103,10 +104,7 @@ class MsnPrj:
             step = 5
             page_count = self.count_page(lst_prj, step)
 
-            if page == 1:
-                lst_prj = lst_prj[:5]
-            else:
-                lst_prj = lst_prj[((page - 1) * step) + 1:(page * step) + 1]
+            lst_prj = lst_prj[((page - 1) * step):(page * step)]
 
             return {
                 'isSuccess': True,

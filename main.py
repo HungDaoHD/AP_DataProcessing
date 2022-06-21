@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from app.routers import Excel2Sav, BaeminCheck
 from app.routers.MSN import MSN_Projects
+import uvicorn
+
 
 templates = Jinja2Templates(directory='app/frontend/templates')
 
@@ -44,6 +46,6 @@ async def index(request: Request):
     return templates.TemplateResponse('chart.html', {'request': request})
 
 
-import uvicorn
+
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

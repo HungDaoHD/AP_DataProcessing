@@ -204,17 +204,87 @@
 
                     <form action="/msn-prj" method="get" enctype="multipart/form-data">
 
+                        <input type="submit" class="btn-check" name="page" id="btnradio_1st" autocomplete="off" value="1">
+                        <label class="btn btn-outline-primary" for="btnradio_1st"><<</label>
+
                         {% for i in range(1, page_count + 1) %}
 
-                            {% if i == page_sel %}
-                                <input type="submit" class="btn-check" name="page" id="btnradio{{ i * 1 }}" autocomplete="off" value="{{ i }}">
-                                <label class="btn btn-primary" for="btnradio{{ i * 1 }}">{{ i }}</label>
-                            {% else %}
+                            {% if i == 1 %}
+
                                 <input type="submit" class="btn-check" name="page" id="btnradio{{ i }}" autocomplete="off" value="{{ i }}">
-                                <label class="btn btn-outline-primary" for="btnradio{{ i }}">{{ i }}</label>
+
+                                {% if i == page_sel %}
+                                    <label class="btn btn-primary" for="btnradio{{ i }}">{{ i }}</label>
+                                {% else %}
+                                    <label class="btn btn-outline-primary" for="btnradio{{ i }}">{{ i }}</label>
+                                {% endif %}
+
+                            {% elif i == 2 %}
+
+                                <input type="submit" class="btn-check" name="page" id="btnradio{{ i*1 }}" autocomplete="off" value="{{ i }}">
+
+                                {% if i == page_sel %}
+
+                                    <label class="btn btn-primary" for="btnradio{{ i }}">{{ i }}</label>
+
+                                    <input type="submit" class="btn-check" name="page" id="btnradio{{ i + 1 }}" autocomplete="off" value="{{ i + 1 }}">
+                                    <label class="btn btn-outline-primary" for="btnradio{{ i + 1 }}">{{ i + 1 }}</label>
+
+                                {% else %}
+                                    <label class="btn btn-outline-primary" for="btnradio{{ i }}">{{ i }}</label>
+                                {% endif %}
+
+                            {% elif i == page_count - 1 %}
+
+                                {% if i == page_sel %}
+                                    <input type="submit" class="btn-check" name="page" id="btnradio{{ i - 1 }}" autocomplete="off" value="{{ i - 1 }}">
+                                    <label class="btn btn-outline-primary" for="btnradio{{ i*1 - 1 }}">{{ i - 1 }}</label>
+                                {% endif %}
+
+                                <input type="submit" class="btn-check" name="page" id="btnradio{{ i*1*1 }}" autocomplete="off" value="{{ i }}">
+
+                                {% if i == page_sel %}
+                                    <label class="btn btn-primary" for="btnradio{{ i }}">{{ i }}</label>
+                                {% else %}
+                                    <label class="btn btn-outline-primary" for="btnradio{{ i }}">{{ i }}</label>
+                                {% endif %}
+
+                            {% elif i == page_count %}
+
+                                <input type="submit" class="btn-check" name="page" id="btnradio{{ i*1*1*1 }}" autocomplete="off" value="{{ i }}">
+
+                                {% if i == page_sel %}
+                                    <label class="btn btn-primary" for="btnradio{{ i }}">{{ i }}</label>
+                                {% else %}
+                                    <label class="btn btn-outline-primary" for="btnradio{{ i }}">{{ i }}</label>
+                                {% endif %}
+
+                            {% else %}
+
+                                {% if i == page_sel %}
+
+                                    {% if i != 3 %}
+                                        <input type="submit" class="btn-check" name="page" id="btnradio{{ i*1 - 1 }}" autocomplete="off" value="{{ i - 1 }}">
+                                        <label class="btn btn-outline-primary" for="btnradio{{ i*1 - 1 }}">{{ i - 1 }}</label>
+                                    {% endif %}
+
+                                    <input type="submit" class="btn-check" name="page" id="btnradio{{ i*1*1*1*1 }}" autocomplete="off" value="{{ i }}">
+                                    <label class="btn btn-primary" for="btnradio{{ i }}">{{ i }}</label>
+
+                                    {% if i != page_count - 2 %}
+                                        <input type="submit" class="btn-check" name="page" id="btnradio{{ i*1 + 1 }}" autocomplete="off" value="{{ i + 1 }}">
+                                        <label class="btn btn-outline-primary" for="btnradio{{ i + 1 }}">{{ i + 1 }}</label>
+                                    {% endif %}
+
+                                {% endif %}
+
                             {% endif %}
 
                         {% endfor %}
+
+                        <input type="submit" class="btn-check" name="page" id="btnradio_last" autocomplete="off" value="{{ page_count }}">
+                        <label class="btn btn-outline-primary" for="btnradio_last">>></label>
+
                     </form>
                 </div>
             </div>
