@@ -33,11 +33,12 @@
         <div class="row bg-light rounded align-items-top justify-content-center mx-0">
             <div class="col-md-6 text-center p-4">
 
-                {% if user_name|trim|length %}
-                    <h1>Welcome, {{ user_name }}</h1>
+                <h1>Welcome, {{ user_name }}</h1>
+
+                {% if user_name == 'Guest' %}
+                    <p class="mb-4">Please login to have full permission in 'MSN projects' section.</p>
                 {% else %}
-                    <h1>Welcome, Guest</h1>
-                    <p class="mb-4">Please login.</p>
+                    <p class="mb-4">Please choose the section on left side to start.</p>
                 {% endif %}
 
             </div>
