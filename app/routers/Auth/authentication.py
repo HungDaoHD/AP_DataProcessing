@@ -1,5 +1,5 @@
 import traceback
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta, datetime
 from fastapi.responses import HTMLResponse, RedirectResponse
