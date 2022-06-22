@@ -4,12 +4,42 @@
     <title>Data processing</title>
 {% endblock %}
 
+{% block bl_user_name %}
+
+    <div class="navbar-nav align-items-center ms-auto">
+        <div class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <img class="rounded-circle me-lg-2" src="static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                <span id="user_name" class="d-none d-lg-inline-flex">{{ user_name }}</span>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                {% if user_name == 'Guest' %}
+                    <a href="/login" class="dropdown-item">Log In</a>
+                {% else %}
+                    <a href="#" class="dropdown-item">My Profile</a>
+                    <a href="#" class="dropdown-item">Settings</a>
+                    <a href="/logout" class="dropdown-item">Log Out</a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid pt-4 px-4">
         <div class="row bg-light rounded align-items-top justify-content-center mx-0">
             <div class="col-md-6 text-center p-4">
-                <h1>Welcome, User</h1>
-<!--                <p class="mb-4">Please choose tools to start.</p>-->
+
+                {% if user_name|trim|length %}
+                    <h1>Welcome, {{ user_name }}</h1>
+                {% else %}
+                    <h1>Welcome, Guest</h1>
+                    <p class="mb-4">Please login.</p>
+                {% endif %}
+
             </div>
         </div>
     </div>

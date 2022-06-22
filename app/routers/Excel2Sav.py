@@ -1,9 +1,17 @@
-from fastapi import APIRouter, Request, UploadFile
+from fastapi import APIRouter, Request, UploadFile, HTTPException, status
 from fastapi.responses import HTMLResponse
 from starlette.responses import FileResponse
 from fastapi.templating import Jinja2Templates
 from ..classes.AP_DataConverter import APDataConverter
+from .Auth import token
 import traceback
+
+
+credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail='Could not validate credentials',
+        headers={'WWW-Authenticate': 'Bearer'},
+    )
 
 
 templates = Jinja2Templates(directory='./app/frontend/templates')
@@ -12,7 +20,9 @@ router = APIRouter(prefix='/convert-sav', tags=['convert-sav'])
 
 @router.get('', response_class=HTMLResponse)
 async def load_xlsx(request: Request):
-    return templates.TemplateResponse('load_xlsx.html', {'request': request})
+    user_name = token.get_token_username(request, credentials_exception)
+
+    return templates.TemplateResponse('load_xlsx.html', {'request': request, 'user_name': user_name})
 
 
 @router.post('', response_class=FileResponse)
