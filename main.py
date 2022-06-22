@@ -33,27 +33,25 @@ app.mount('/login/static', StaticFiles(directory='app/frontend/static'), name='s
 @app.get('/', response_class=HTMLResponse)
 async def index(request: Request):
     user_name = token.get_token_username(request, credentials_exception)
-
     return templates.TemplateResponse('home.html', {'request': request, 'user_name': user_name})
 
 
 @app.get('/index', response_class=HTMLResponse)
 async def index(request: Request):
     user_name = token.get_token_username(request, credentials_exception)
-
     return templates.TemplateResponse('home.html', {'request': request, 'user_name': user_name})
 
 
 @app.exception_handler(status.HTTP_404_NOT_FOUND)
 async def custom_404_handler(request: Request, _):
     user_name = token.get_token_username(request, credentials_exception)
-
     return templates.TemplateResponse('404.html', {'request': request, 'user_name': user_name})
 
 
-# @app.exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-# async def custom_404_handler(request: Request, _):
-#     return templates.TemplateResponse('404.html', {'request': request})
+@app.get('/chart', response_class=HTMLResponse)
+async def index(request: Request):
+    user_name = token.get_token_username(request, credentials_exception)
+    return templates.TemplateResponse('chart.html', {'request': request, 'user_name': user_name})
 
 
 @app.exception_handler(status.HTTP_403_FORBIDDEN)
@@ -66,14 +64,6 @@ async def custom_403_handler(_, __):
 async def custom_401_handler(_, __):
     print('HTTP_401_UNAUTHORIZED')
     return RedirectResponse('/login', status_code=status.HTTP_303_SEE_OTHER)
-
-
-@app.get('/chart', response_class=HTMLResponse)
-async def index(request: Request):
-    user_name = token.get_token_username(request, credentials_exception)
-
-    return templates.TemplateResponse('chart.html', {'request': request, 'user_name': user_name})
-
 
 
 if __name__ == "__main__":

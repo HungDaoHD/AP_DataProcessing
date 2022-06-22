@@ -15,8 +15,8 @@ from .MSN_Models import new_prj_template
 class MsnPrj:
 
     def __init__(self):
-        # MONGO_DETAILS = 'mongodb://localhost:27017'
-        MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
+        MONGO_DETAILS = 'mongodb://localhost:27017'
+        # MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
 
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
@@ -24,7 +24,6 @@ class MsnPrj:
 
         self.prj_collection = db_msn.get_collection('projects')
         self.user_collection = db_msn.get_collection('users')
-
 
 
     @staticmethod
@@ -71,13 +70,13 @@ class MsnPrj:
             'pending_cancel': 0,
         }
 
-        for item in lst_prj:
-            if item['status'] in ['Completed']:
-                overView['completed'] += 1
-            elif item['status'] in ['On Going']:
-                overView['on_going'] += 1
-            elif item['status'] in ['Pending', 'Cancel']:
-                overView['pending_cancel'] += 1
+        # for item in lst_prj:
+        #     if item['status'] in ['Completed']:
+        #         overView['completed'] += 1
+        #     elif item['status'] in ['On Going']:
+        #         overView['on_going'] += 1
+        #     elif item['status'] in ['Pending', 'Cancel']:
+        #         overView['pending_cancel'] += 1
 
         return overView
 
