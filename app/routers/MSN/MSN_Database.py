@@ -15,9 +15,9 @@ from .MSN_Models import new_prj_template, new_user_template
 class MsnPrj:
 
     def __init__(self):
-        # MONGO_DETAILS = 'mongodb://localhost:27017'
-        MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
-        
+        MONGO_DETAILS = 'mongodb://localhost:27017'
+        # MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
+
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
         db_msn = client.msn
@@ -221,8 +221,15 @@ class MsnPrj:
             }
 
 
-    async def delete(self, _id):
+    async def delete(self, _id, email):
         try:
+            user = await self.user_collection.find_one({'email': email})
+
+            if user['role'] != 'admin':
+                return {
+                    'isSuccess': False,
+                    'strErr': 'You don\'t have permission to delete project.'
+                }
 
             prj = await self.prj_collection.delete_one({'_id': ObjectId(_id)})
 
@@ -727,9 +734,7 @@ class MsnPrj:
     async def add_user(self, username, useremail, password):
         try:
 
-            users = list()
-            async for usr in self.user_collection.find({'email': useremail}):
-                users.append(usr)
+            users = self.user_collection.find({'email': useremail})
 
             if users:
                 return {

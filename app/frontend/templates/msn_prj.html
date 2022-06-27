@@ -6,25 +6,7 @@
 
 {% block bl_user_name %}
 
-    <div class="navbar-nav align-items-center ms-auto">
-        <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img class="rounded-circle me-lg-2" src="{{ url_for('static', path='/img/user.jpg') }}" alt="" style="width: 40px; height: 40px;">
-                <span id="user_name" class="d-none d-lg-inline-flex">{{ user_name }}</span>
-            </a>
-
-            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                {% if user_name == 'Guest' %}
-                    <a href="/login" class="dropdown-item">Log In</a>
-                {% else %}
-                    <a href="#" class="dropdown-item">My Profile</a>
-                    <a href="#" class="dropdown-item">Settings</a>
-                    <a href="/logout" class="dropdown-item">Log Out</a>
-                {% endif %}
-
-            </div>
-        </div>
-    </div>
+    {% include 'user_bar.html' %}
 
 {% endblock %}
 
@@ -91,11 +73,11 @@
                     <thead>
                         <tr class="text-dark">
 <!--                            <th scope="col"><input class="form-check-input" type="checkbox"></th>-->
-                            <th scope="col" width="5%"></th>
                             <th scope="col" width="12%">ID</th>
                             <th scope="col">Name</th>
                             <th scope="col" width="12%">Categorical</th>
                             <th scope="col" width="10%">Status</th>
+                            <th scope="col" width="5%"></th>
                             <th scope="col" width="5%"></th>
                             <th scope="col" width="5%"></th>
                         </tr>
@@ -105,13 +87,6 @@
                         {% for prj in lst_prj %}
                             <tr>
 <!--                                <td><input class="form-check-input" type="checkbox"></td>-->
-                                <td>
-                                    <form id="form_del_prj_{{ prj.id }}" action="/msn-prj/delete/{{ prj.id }}" method="get" enctype="multipart/form-data">
-                                        <input type="hidden" name="del_prj_{{ prj.id }}" value="{{ prj.name }}">
-                                        <input class="btn btn-sm btn-outline-danger" type="submit" value="Delete" onclick="submit_delete_copy_prj('{{ prj.id }}', 'del');">
-                                    </form>
-                                </td>
-
                                 <td>{{ prj.internal_id }}</td>
                                 <td>{{ prj.name }}</td>
                                 <td>{{ prj.categorical }}</td>
@@ -121,6 +96,12 @@
                                     <form id="form_copy_prj_{{ prj.id }}" action="/msn-prj/copy/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                         <input type="hidden" name="copy_prj_{{ prj.id }}" value="{{ prj.name }}">
                                         <input class="btn btn-sm btn-outline-primary" type="submit" value="Copy" onclick="submit_delete_copy_prj('{{ prj.id }}', 'copy');">
+                                    </form>
+                                </td>
+                                <td>
+                                    <form id="form_del_prj_{{ prj.id }}" action="/msn-prj/delete/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input type="hidden" name="del_prj_{{ prj.id }}" value="{{ prj.name }}">
+                                        <input class="btn btn-sm btn-outline-danger" type="submit" value="Delete" onclick="submit_delete_copy_prj('{{ prj.id }}', 'del');">
                                     </form>
                                 </td>
                             </tr>

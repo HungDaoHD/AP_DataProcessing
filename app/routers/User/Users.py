@@ -16,7 +16,7 @@ async def add_user(request: Request, username: str = Form(default=''), useremail
     result = await msn_prj.add_user(username, useremail, Hash.bcrypt(password))
 
     if result['isSuccess']:
-        return templates.TemplateResponse('login.html', {'request': request, 'strSuccess': 'Successfully registration, please wait for admin activate this account.'})
+        return templates.TemplateResponse('login.html', {'request': request, 'strSuccess': 'Successfully registration, please wait for admin activate your account.'})
     else:
         return templates.TemplateResponse('logup.html', {
             'request': request,

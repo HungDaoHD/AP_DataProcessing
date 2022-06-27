@@ -92,7 +92,9 @@ async def prj_copy(request: Request, _id):
 
 @router.get('/delete/{_id}', response_class=HTMLResponse, dependencies=[Depends(oauth2.get_current_user)])
 async def prj_delete_id(_id, request: Request):
-    result = await msn_prj.delete(_id)
+    email = token.verify_token(request.cookies['ap-login'], credentials_exception)['email']
+
+    result = await msn_prj.delete(_id, email)
 
     if result['isSuccess']:
         redirect_url = request.url_for('retrieve')
