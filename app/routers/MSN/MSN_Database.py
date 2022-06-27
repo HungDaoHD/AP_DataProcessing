@@ -15,8 +15,8 @@ from .MSN_Models import new_prj_template, new_user_template
 class MsnPrj:
 
     def __init__(self):
-        MONGO_DETAILS = 'mongodb://localhost:27017'
-        # MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
+        # MONGO_DETAILS = 'mongodb://localhost:27017'
+        MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
 
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
@@ -24,7 +24,7 @@ class MsnPrj:
 
         self.prj_collection = db_msn.get_collection('projects')
         self.user_collection = db_msn.get_collection('users')
-
+        
 
     @staticmethod
     def prj_info(prj, isShort) -> dict:
