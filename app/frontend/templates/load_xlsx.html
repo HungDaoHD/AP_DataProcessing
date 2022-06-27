@@ -9,7 +9,7 @@
     <div class="navbar-nav align-items-center ms-auto">
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img class="rounded-circle me-lg-2" src="static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                <img class="rounded-circle me-lg-2" src="{{ url_for('static', path='/img/user.jpg') }}" alt="" style="width: 40px; height: 40px;">
                 <span id="user_name" class="d-none d-lg-inline-flex">{{ user_name }}</span>
             </a>
 

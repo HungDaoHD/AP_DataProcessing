@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\PC\OneDrive\My Source Code\My Py Prj\AP_DataProcessing\env
+set VIRTUAL_ENV=G:\My Drive\AP_Projects\2_AP_DataProcessing\env
 
 if not defined PROMPT set PROMPT=$P$G
 

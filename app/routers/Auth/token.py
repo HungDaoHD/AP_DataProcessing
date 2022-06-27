@@ -15,7 +15,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=5)
 
     to_encode.update({'exp': expire})
 
@@ -47,7 +47,8 @@ def verify_token(token: str, credentials_exception):
 
 def get_token_username(request, credentials_exception):
     if 'ap-login' in request.cookies.keys():
-        return verify_token(request.cookies['ap-login'], credentials_exception)['name']
+        if request.cookies['ap-login']:
+            return verify_token(request.cookies['ap-login'], credentials_exception)['name']
 
     return 'Guest'
 

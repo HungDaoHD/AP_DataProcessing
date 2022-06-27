@@ -73,6 +73,23 @@ async def prj_add(request: Request, internal_id, prj_name, categorical, prj_stat
         })
 
 
+@router.get('/copy/{_id}', response_class=HTMLResponse, dependencies=[Depends(oauth2.get_current_user)])
+async def prj_copy(request: Request, _id):
+
+    result = await msn_prj.copy_prj(_id)
+
+    if result['isSuccess']:
+        redirect_url = request.url_for('retrieve')
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+    else:
+        return templates.TemplateResponse('error.html', {
+            'request': request,
+            'strTask': 'Copy project error',
+            'strErr': result['strErr']
+        })
+
+
 @router.get('/delete/{_id}', response_class=HTMLResponse, dependencies=[Depends(oauth2.get_current_user)])
 async def prj_delete_id(_id, request: Request):
     result = await msn_prj.delete(_id)

@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from app.routers import Excel2Sav, BaeminCheck
 from app.routers.MSN import MSN_Projects
 from app.routers.Auth import authentication, token
+from app.routers.User import Users
 import uvicorn
 
 
@@ -22,6 +23,7 @@ app.include_router(Excel2Sav.router)
 app.include_router(BaeminCheck.router)
 app.include_router(MSN_Projects.router)
 app.include_router(authentication.router)
+app.include_router(Users.router)
 
 app.mount('/static', StaticFiles(directory='app/frontend/static'), name='static')
 # app.mount('/convert-sav/static', StaticFiles(directory='app/frontend/static'), name='static')

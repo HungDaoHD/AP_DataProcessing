@@ -123,6 +123,8 @@ class APDataConverter:
             'Edited',
             'Edited by',
             'Edited ratio',
+
+            'Verify Status',
         ]
 
         for col in dfData.columns:

@@ -9,7 +9,7 @@
     <div class="navbar-nav align-items-center ms-auto">
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img class="rounded-circle me-lg-2" src="static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                <img class="rounded-circle me-lg-2" src="{{ url_for('static', path='/img/user.jpg') }}" alt="" style="width: 40px; height: 40px;">
                 <span id="user_name" class="d-none d-lg-inline-flex">{{ user_name }}</span>
             </a>
 
@@ -34,7 +34,7 @@
 
 {% block search_bar %}
     <form id="form_search_prj_name" class="d-none d-md-flex ms-4" action="/msn-prj/search" method="get" enctype="multipart/form-data">
-        <input class="form-control border-0" name="search_prj_name" type="search" placeholder="Search project name" value="{{ search_prj_name }}">
+        <input class="form-control border-0" name="search_prj_name" type="search" placeholder="Project name/ID" value="{{ search_prj_name }}">
     </form>
 {% endblock %}
 
@@ -97,6 +97,7 @@
                             <th scope="col" width="12%">Categorical</th>
                             <th scope="col" width="10%">Status</th>
                             <th scope="col" width="5%"></th>
+                            <th scope="col" width="5%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,7 +108,7 @@
                                 <td>
                                     <form id="form_del_prj_{{ prj.id }}" action="/msn-prj/delete/{{ prj.id }}" method="get" enctype="multipart/form-data">
                                         <input type="hidden" name="del_prj_{{ prj.id }}" value="{{ prj.name }}">
-                                        <input class="btn btn-sm btn-outline-danger" type="submit" value="Delete" onclick="submit_delete_prj('{{ prj.id }}');">
+                                        <input class="btn btn-sm btn-outline-danger" type="submit" value="Delete" onclick="submit_delete_copy_prj('{{ prj.id }}', 'del');">
                                     </form>
                                 </td>
 
@@ -116,6 +117,12 @@
                                 <td>{{ prj.categorical }}</td>
                                 <td>{{ prj.status }}</td>
                                 <td><a class="btn btn-sm btn-primary" href="/msn-prj/{{ prj.id }}">Detail</a></td>
+                                <td>
+                                    <form id="form_copy_prj_{{ prj.id }}" action="/msn-prj/copy/{{ prj.id }}" method="get" enctype="multipart/form-data">
+                                        <input type="hidden" name="copy_prj_{{ prj.id }}" value="{{ prj.name }}">
+                                        <input class="btn btn-sm btn-outline-primary" type="submit" value="Copy" onclick="submit_delete_copy_prj('{{ prj.id }}', 'copy');">
+                                    </form>
+                                </td>
                             </tr>
                         {% endfor %}
 
@@ -368,16 +375,20 @@
 
         };
 
-        function submit_delete_prj(prj_id) {
+        function submit_delete_copy_prj(prj_id, strAction) {
 
-            form_elm = document.getElementById('form_del_prj_' + prj_id);
-            prj_name = form_elm['del_prj_' + prj_id].value;
+            form_elm = document.getElementById('form_' + strAction + '_prj_' + prj_id);
+            prj_name = form_elm[strAction + '_prj_' + prj_id].value;
 
-            del_name = prompt("Please input project name '" + prj_name + "' to delete.");
+            strActionFullName = 'Delete';
+            if (strAction == 'copy'){
+                strActionFullName = 'Copy';
+            }
 
-            if(del_name == prj_name){
+            del_copy_name = prompt("Please input project name '" + prj_name + "' to " + strActionFullName + ".");
 
-                alert('accept delete project.');
+            if(del_copy_name == prj_name){
+
                 form_elm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     form_elm.submit();
@@ -386,7 +397,7 @@
             }
             else
             {
-                alert('Cancel delete project.');
+                alert('Cancel ' + strActionFullName + ' project.');
                 form_elm.addEventListener('submit', (e) => {
                     e.preventDefault();
                 });

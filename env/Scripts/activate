@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\PC\OneDrive\My Source Code\My Py Prj\AP_DataProcessing\env"
+VIRTUAL_ENV="G:\My Drive\AP_Projects\2_AP_DataProcessing\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

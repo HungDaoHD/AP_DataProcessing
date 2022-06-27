@@ -43,6 +43,9 @@ async def login(request: Request, OAuth: OAuth2PasswordRequestForm = Depends()):
         if not Hash.verify(user['password'], OAuth.password):
             return templates.TemplateResponse('login.html', {'request': request, 'strErr': 'Incorrect password'})
 
+        if not user['legal']:
+            return templates.TemplateResponse('login.html', {'request': request, 'strErr': 'Account is not activated'})
+
         await msn_prj.user_collection.update_one(
             {'email': user['email']}, {'$set': {
                     'login_at': datetime.now()
@@ -67,12 +70,15 @@ async def login(request: Request, OAuth: OAuth2PasswordRequestForm = Depends()):
 
 
 @router.get('/logout', response_class=HTMLResponse)
-async def logout(request: Request):
-    resp = RedirectResponse(url='/login', status_code=status.HTTP_302_FOUND)
+async def logout():
+    resp = RedirectResponse(url='/index', status_code=status.HTTP_302_FOUND)
     manager.set_cookie(response=resp, token='')
     return resp
 
 
+@router.get('/logup', response_class=HTMLResponse)
+async def logup(request: Request):
+    return templates.TemplateResponse('logup.html', {'request': request})
 
 
 

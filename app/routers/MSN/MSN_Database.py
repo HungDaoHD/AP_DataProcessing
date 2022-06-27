@@ -129,7 +129,14 @@ class MsnPrj:
         try:
 
             lst_prj = list()
-            async for prj in self.prj_collection.find({'name': {'$regex': f'.*{prj_name}.*', '$options': 'i'}}).sort('create_date', -1):
+            async for prj in self.prj_collection.find(
+                    {
+                        '$or': [
+                            {'name': {'$regex': f'.*{prj_name}.*', '$options': 'i'}},
+                            {'internal_id': {'$regex': f'.*{prj_name}.*', '$options': 'i'}}
+                        ]
+                    }
+            ).sort('create_date', -1):
                 lst_prj.append(self.prj_info(prj, True))
 
             overView = self.get_overView(lst_prj)
@@ -172,6 +179,34 @@ class MsnPrj:
                 return {
                     'isSuccess': False,
                     'strErr': 'Add projects error'
+                }
+
+            return {
+                'isSuccess': True,
+                'strErr': None
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
+            }
+
+
+    async def copy_prj(self, _id):
+        try:
+
+            prj = await self.prj_collection.find_one({'_id': ObjectId(_id)})
+            prj['_id'] = ObjectId()
+            prj['name'] = f"{prj['name']} - copy at {datetime.now()}"
+            prj['create_date'] = datetime.now()
+
+            new_prj = await self.prj_collection.insert_one(prj)
+
+            if not new_prj:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Copy projects error'
                 }
 
             return {

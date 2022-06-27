@@ -48,7 +48,7 @@ async def convert_sav(file: UploadFile, request: Request):
         return templates.TemplateResponse('load_xlsx.html', {
             'request': request,
             'strTask': 'Convert to SAV',
-            'strErr': 'Error!!! Please check your upload file.'
+            'strErr': traceback.format_exc()
         })
 
 
