@@ -8,15 +8,15 @@ import traceback
 from .MSN_Data_Converter import QMeFileConvert
 from .MSN_Export_Data import ExportMSNData
 from .MSN_Topline_Exporter import ToplineExporter
-from .MSN_Models import new_prj_template
+from .MSN_Models import new_prj_template, new_user_template
 
 
 
 class MsnPrj:
 
     def __init__(self):
-        # MONGO_DETAILS = 'mongodb://localhost:27017'
-        MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
+        MONGO_DETAILS = 'mongodb://localhost:27017'
+        # MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
 
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
@@ -724,7 +724,45 @@ class MsnPrj:
             }
 
 
+    async def add_user(self, username, useremail, password):
+        try:
 
+            users = list()
+            async for usr in self.user_collection.find({'email': useremail}):
+                users.append(usr)
+
+            if users:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Email is already registered.'
+                }
+
+            new_user = new_user_template
+            new_user['_id'] = ObjectId()
+            new_user['email'] = useremail
+            new_user['password'] = password
+            new_user['name'] = username
+            new_user['create_at'] = datetime.now()
+            new_user['login_at'] = datetime.now()
+
+            user = await self.user_collection.insert_one(new_user)
+
+            if not user:
+                return {
+                    'isSuccess': False,
+                    'strErr': 'Add user error'
+                }
+
+            return {
+                'isSuccess': True,
+                'strErr': None
+            }
+
+        except Exception:
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc()
+            }
 
 
 

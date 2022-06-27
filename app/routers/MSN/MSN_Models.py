@@ -1,3 +1,14 @@
+new_user_template = {
+    "_id": {},
+    "email": "",
+    "password": "",
+    "name": "",
+    "role": "user",
+    "create_at": "",
+    "login_at": "",
+    "legal": False
+}
+
 new_prj_template = {
     "_id": {},
     "internal_id": "",

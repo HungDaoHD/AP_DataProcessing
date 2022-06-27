@@ -61,6 +61,12 @@
                                 </div>
                             {% endif %}
 
+                            {% if strSuccess|trim|length %}
+                                <div class="alert alert-success" role="alert">
+                                    {{ strSuccess }}
+                                </div>
+                            {% endif %}
+
                             <form id="form_login" method="post" action="/login">
                                 <div class="form-floating mb-3">
                                     <input type="email" class="form-control" id="username" name="username" placeholder="name@example.com">
@@ -133,11 +139,11 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <script type="text/javascript">
-        setTimeout(() => {
-            const err = document.getElementById('err');
-            err.style.display = 'none';
-    <!--        err.style.visibility = 'hidden';-->
-        }, 3000);
+<!--        setTimeout(() => {-->
+<!--            const err = document.getElementById('err');-->
+<!--            err.style.display = 'none';-->
+<!--    &lt;!&ndash;        err.style.visibility = 'hidden';&ndash;&gt;-->
+<!--        }, 3000);-->
 
 
         function func_submit_login(strID) {
@@ -166,9 +172,6 @@
         };
 
         function onRecaptchaSuccess() {
-
-
-
             $('#recaptcha_check_empty').val(1);
             $('#submitBtn').removeAttr('disabled');
         };
