@@ -147,7 +147,7 @@ class QMeFileConvert:
         for i in lstMatrixHeader:
             for code in dictQres[i]['cats'].keys():
                 lstLblMatrixMA = dictQres[f'{i}_{code}']['label'].split('_')
-                dictQres[f'{i}_{code}']['cats'].update({1: self.cleanhtml(lstLblMatrixMA[1])})
+                dictQres[f'{i}_{code}']['cats'].update({'1': self.cleanhtml(lstLblMatrixMA[1])})
                 dictQres[f'{i}_{code}']['label'] = f"{dictQres[i]['label']}_{lstLblMatrixMA[1]}"
 
         dictVarLbl = dict()

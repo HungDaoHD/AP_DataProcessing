@@ -24,7 +24,7 @@ class MsnPrj:
 
         self.prj_collection = db_msn.get_collection('projects')
         self.user_collection = db_msn.get_collection('users')
-        
+
 
     @staticmethod
     def prj_info(prj, isShort) -> dict:
@@ -60,6 +60,7 @@ class MsnPrj:
                 'lenOfMain': lenOfMain,
                 'sec_topline_exporter': sec_topline_exporter
             }
+
 
     @staticmethod
     def get_overView(lst_prj: list):
@@ -492,6 +493,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()

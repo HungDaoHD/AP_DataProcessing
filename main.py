@@ -26,10 +26,6 @@ app.include_router(authentication.router)
 app.include_router(Users.router)
 
 app.mount('/static', StaticFiles(directory='app/frontend/static'), name='static')
-# app.mount('/convert-sav/static', StaticFiles(directory='app/frontend/static'), name='static')
-# app.mount('/baemin-check/static', StaticFiles(directory='app/frontend/static'), name='static')
-# app.mount('/msn-prj/static', StaticFiles(directory='app/frontend/static'), name='static')
-# app.mount('/login/static', StaticFiles(directory='app/frontend/static'), name='static')
 
 
 @app.get('/', response_class=HTMLResponse)
