@@ -11,11 +11,6 @@ import uvicorn
 
 templates = Jinja2Templates(directory='app/frontend/templates')
 
-credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail='Could not validate credentials',
-        headers={'WWW-Authenticate': 'Bearer'},
-    )
 
 app = FastAPI()
 
@@ -30,25 +25,25 @@ app.mount('/static', StaticFiles(directory='app/frontend/static'), name='static'
 
 @app.get('/', response_class=HTMLResponse)
 async def index(request: Request):
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
     return templates.TemplateResponse('home.html', {'request': request, 'user_name': user_name})
 
 
 @app.get('/index', response_class=HTMLResponse)
 async def index(request: Request):
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
     return templates.TemplateResponse('home.html', {'request': request, 'user_name': user_name})
 
 
 @app.get('/chart', response_class=HTMLResponse)
 async def index(request: Request):
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
     return templates.TemplateResponse('chart.html', {'request': request, 'user_name': user_name})
 
 
 @app.exception_handler(status.HTTP_404_NOT_FOUND)
 async def custom_404_handler(request: Request, _):
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
     return templates.TemplateResponse('404.html', {'request': request, 'user_name': user_name})
 
 

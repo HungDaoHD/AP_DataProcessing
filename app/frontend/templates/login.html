@@ -138,46 +138,6 @@
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-    <script type="text/javascript">
-<!--        setTimeout(() => {-->
-<!--            const err = document.getElementById('err');-->
-<!--            err.style.display = 'none';-->
-<!--    &lt;!&ndash;        err.style.visibility = 'hidden';&ndash;&gt;-->
-<!--        }, 3000);-->
-
-
-        function func_submit_login(strID) {
-
-            form_elm = document.getElementById(strID);
-
-<!--            cbx_login = form_elm['login_checked'];-->
-
-            capcha = form_elm['recaptcha_check_empty'];
-
-            if(capcha.value != 1)
-            {
-                form_elm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                });
-                alert("Please check the capcha.");
-            }
-            else
-            {
-                form_elm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    form_elm.submit();
-                });
-            }
-
-        };
-
-        function onRecaptchaSuccess() {
-            $('#recaptcha_check_empty').val(1);
-            $('#submitBtn').removeAttr('disabled');
-        };
-
-
-
-    </script>
+    <script src="{{ url_for('static', path='/js/my_frontend.js') }}"></script>
 
 </html>

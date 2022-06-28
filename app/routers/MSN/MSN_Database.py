@@ -17,7 +17,7 @@ class MsnPrj:
     def __init__(self):
         # MONGO_DETAILS = 'mongodb://localhost:27017'
         MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
-
+        
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
         db_msn = client.msn

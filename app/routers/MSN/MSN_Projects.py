@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, UploadFile, Body, status, Depends, HTTPException
+from fastapi import APIRouter, Request, UploadFile, Body, status, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
@@ -8,11 +8,6 @@ from ..Auth import oauth2, token
 
 msn_prj = MsnPrj()
 
-credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail='Could not validate credentials',
-        headers={'WWW-Authenticate': 'Bearer'},
-    )
 
 templates = Jinja2Templates(directory='./app/frontend/templates')
 # router = APIRouter(prefix='/msn-prj', tags=['msn-prj'], dependencies=[Depends(oauth2.get_current_user)])
@@ -22,7 +17,7 @@ router = APIRouter(prefix='/msn-prj', tags=['msn-prj'])
 @router.get('', response_class=HTMLResponse)
 async def retrieve(request: Request, page: int = 1):
 
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
 
     result = await msn_prj.retrieve(page)
 
@@ -39,7 +34,7 @@ async def retrieve(request: Request, page: int = 1):
 @router.get('/search', response_class=HTMLResponse)
 async def search(request: Request, search_prj_name: str = ''):
 
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
 
     if search_prj_name == '':
         result = await msn_prj.retrieve(1)
@@ -92,7 +87,7 @@ async def prj_copy(request: Request, _id):
 
 @router.get('/delete/{_id}', response_class=HTMLResponse, dependencies=[Depends(oauth2.get_current_user)])
 async def prj_delete_id(_id, request: Request):
-    email = token.verify_token(request.cookies['ap-login'], credentials_exception)['email']
+    email = token.verify_token(request.cookies['ap-login'])['email']
 
     result = await msn_prj.delete(_id, email)
 
@@ -109,7 +104,7 @@ async def prj_delete_id(_id, request: Request):
 
 @router.get('/{_id}', response_class=HTMLResponse)
 async def retrieve_id(_id, request: Request):
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
 
     result = await msn_prj.retrieve_id(_id)
 

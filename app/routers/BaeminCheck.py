@@ -20,7 +20,7 @@ router = APIRouter(prefix='/baemin-check', tags=['baemin-check'])
 
 @router.get('', response_class=HTMLResponse)
 async def load_baemin_xlsx(request: Request):
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
 
     return templates.TemplateResponse('baemin_check.html', {'request': request, 'user_name': user_name})
 

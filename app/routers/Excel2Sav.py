@@ -20,7 +20,7 @@ router = APIRouter(prefix='/convert-sav', tags=['convert-sav'])
 
 @router.get('', response_class=HTMLResponse)
 async def load_xlsx(request: Request):
-    user_name = token.get_token_username(request, credentials_exception)
+    user_name = token.get_token_username(request)
 
     return templates.TemplateResponse('load_xlsx.html', {'request': request, 'user_name': user_name})
 
