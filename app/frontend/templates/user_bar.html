@@ -1,5 +1,6 @@
 <div class="navbar-nav align-items-center ms-auto">
     <div class="nav-item dropdown">
+
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
             <img class="rounded-circle me-lg-2" src="{{ url_for('static', path='/img/user.jpg') }}" alt="" style="width: 40px; height: 40px;">
             <span id="user_name" class="d-none d-lg-inline-flex">{{ user_name }}</span>
@@ -10,8 +11,8 @@
                 <a href="/login" class="dropdown-item">Log In</a>
                 <a href="/logup" class="dropdown-item">Log Up</a>
             {% else %}
-                <a href="#" class="dropdown-item">My Profile</a>
-                <a href="#" class="dropdown-item">Settings</a>
+<!--                <a href="#" class="dropdown-item">My Profile</a>-->
+<!--                <a href="#" class="dropdown-item">Settings</a>-->
                 <a href="/logout" class="dropdown-item">Log Out</a>
             {% endif %}
 

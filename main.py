@@ -41,6 +41,12 @@ async def index(request: Request):
     return templates.TemplateResponse('chart.html', {'request': request, 'user_name': user_name})
 
 
+@app.get('/workload', response_class=HTMLResponse)
+async def index(request: Request):
+    user_name = token.get_token_username(request)
+    return templates.TemplateResponse('workload.html', {'request': request, 'user_name': user_name})
+
+
 @app.exception_handler(status.HTTP_404_NOT_FOUND)
 async def custom_404_handler(request: Request, _):
     user_name = token.get_token_username(request)

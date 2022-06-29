@@ -334,143 +334,204 @@ class ToplineExporter:
         df = df.copy()
         qres, atts, excl, qType, isCount = val['qres'], val['atts'], val['excl'], val['type'], val['isCount']
 
+        if 'C4a' in qres[0] and qType == "MA":
+            a = 1
+
         dictSideQreFormat = dict()
 
-        total0 = df[qres[0]].count()
-        total1 = df[qres[1]].count()
+        if qType == 'MA':
+            maCats = val['MACats']
+
+            maQre0 = qres[0].rsplit('_', 1)
+            maQre1 = qres[1].rsplit('_', 1)
+
+            qresName0 = [f'{maQre0[0]}_{cat}_{maQre0[1]}' for cat in maCats]
+            qresName1 = [f'{maQre1[0]}_{cat}_{maQre1[1]}' for cat in maCats]
+
+            df['Sum0'] = df[qresName0].sum(axis=1)
+            df['Sum0'].replace({0: np.nan}, inplace=True)
+
+            df['Sum1'] = df[qresName1].sum(axis=1)
+            df['Sum1'].replace({0: np.nan}, inplace=True)
 
 
-        # Base
-        if 'Base' not in excl:
-            dictSideQreFormat.update({'base': {
-                'catLbl': 'Base',
-                'val0': int(total0),
-                'sig0': 0,
-                'val1': int(total1),
-                'sig1': 0,
-            }})
+            total0 = int(df['Sum0'].count())
+            total1 = int(df['Sum1'].count())
 
-        # Scale / Categories
-        for key, val in self.dictValLbl[qres[0]].items():
+            # Base
+            if 'Base' not in excl:
+                dictSideQreFormat.update({'base': {
+                    'catLbl': 'Base',
+                    'val0': total0,
+                    'sig0': 0,
+                    'val1': total1,
+                    'sig1': 0,
+                }})
 
-            if key in excl:
-                continue
+            # Categories MA
+            for cat in maCats:
+                qName0 = f'{maQre0[0]}_{cat}_{maQre0[1]}'
+                qName1 = f'{maQre1[0]}_{cat}_{maQre1[1]}'
 
-            count0 = df.loc[df[qres[0]] == key, qres[0]].count()
-            count1 = df.loc[df[qres[1]] == key, qres[1]].count()
+                for (key0, val_0), (key1, val_1) in zip(self.dictValLbl[qName0].items(), self.dictValLbl[qName1].items()):
+
+                    if key0 in excl or key1 in excl:
+                        continue
+
+                    count0 = int(df.loc[df[qName0] == key0, qName0].count())
+                    count1 = int(df.loc[df[qName1] == key1, qName1].count())
+
+                    if isCount:
+                        val0 = count0
+                        val1 = count1
+                    else:
+                        val0 = count0 / total0 if total0 > 0 else 0
+                        val1 = count1 / total1 if total1 > 0 else 0
+
+                    dictSideQreFormat.update({int(cat): {
+                        'catLbl': val_0,
+                        'val0': val0,
+                        'sig0': 0,
+                        'val1': val1,
+                        'sig1': 0,
+                    }})
+
+        else:
+
+            total0 = df[qres[0]].count()
+            total1 = df[qres[1]].count()
+
+            # Base
+            if 'Base' not in excl:
+                dictSideQreFormat.update({'base': {
+                    'catLbl': 'Base',
+                    'val0': int(total0),
+                    'sig0': 0,
+                    'val1': int(total1),
+                    'sig1': 0,
+                }})
+
+            # Scale / Categories
+            for key, val in self.dictValLbl[qres[0]].items():
+
+                if key in excl:
+                    continue
+
+                count0 = df.loc[df[qres[0]] == key, qres[0]].count()
+                count1 = df.loc[df[qres[1]] == key, qres[1]].count()
 
 
-            df['temp0'] = [1 if a == key else 0 for a in df[qres[0]]]
-            df['temp1'] = [1 if a == key else 0 for a in df[qres[1]]]
+                df['temp0'] = [1 if a == key else 0 for a in df[qres[0]]]
+                df['temp1'] = [1 if a == key else 0 for a in df[qres[1]]]
 
-            if isCount:
-                val0 = int(count0)
-                val1 = int(count1)
-            else:
-                val0 = count0 / total0 if total0 > 0 else 0
-                val1 = count1 / total1 if total1 > 0 else 0
+                if isCount:
+                    val0 = int(count0)
+                    val1 = int(count1)
+                else:
+                    val0 = count0 / total0 if total0 > 0 else 0
+                    val1 = count1 / total1 if total1 > 0 else 0
 
-            dictSideQreFormat.update({key: {
-                'catLbl': val,
-                'val0': val0,
-                'sig0': 0,
-                'val1': val1,
-                'sig1': 0,
-            }})
+                dictSideQreFormat.update({key: {
+                    'catLbl': val,
+                    'val0': val0,
+                    'sig0': 0,
+                    'val1': val1,
+                    'sig1': 0,
+                }})
 
-            if not isCount:
-                dictSideQreFormat[key] = self.run_ttest_rel(dictSideQreFormat[key], df['temp0'], df['temp1'])
+                if not isCount:
+                    dictSideQreFormat[key] = self.run_ttest_rel(dictSideQreFormat[key], df['temp0'], df['temp1'])
 
 
-        lstCats = list(self.dictValLbl[qres[0]].keys())
-        lstCats.sort()
+            lstCats = list(self.dictValLbl[qres[0]].keys())
+            lstCats.sort()
 
-        # T2B
-        if 'T2B' in atts:
+            # T2B
+            if 'T2B' in atts:
 
-            if qType == 'JR' and len(lstCats) == 6:
-                minVal = lstCats[-3]
-                maxVal = lstCats[-2]
-            else:
-                minVal = lstCats[-2]
-                maxVal = lstCats[-1]
+                if qType == 'JR' and len(lstCats) == 6:
+                    minVal = lstCats[-3]
+                    maxVal = lstCats[-2]
+                else:
+                    minVal = lstCats[-2]
+                    maxVal = lstCats[-1]
 
-            count0 = df.loc[(df[qres[0]] >= minVal) & (df[qres[0]] <= maxVal), qres[0]].count()
-            count1 = df.loc[(df[qres[1]] >= minVal) & (df[qres[1]] <= maxVal), qres[1]].count()
+                count0 = df.loc[(df[qres[0]] >= minVal) & (df[qres[0]] <= maxVal), qres[0]].count()
+                count1 = df.loc[(df[qres[1]] >= minVal) & (df[qres[1]] <= maxVal), qres[1]].count()
 
-            df['temp0'] = [1 if maxVal >= a >= minVal else 0 for a in df[qres[0]]]
-            df['temp1'] = [1 if maxVal >= a >= minVal else 0 for a in df[qres[1]]]
+                df['temp0'] = [1 if maxVal >= a >= minVal else 0 for a in df[qres[0]]]
+                df['temp1'] = [1 if maxVal >= a >= minVal else 0 for a in df[qres[1]]]
 
-            dictSideQreFormat.update({'t2b': {
-                'catLbl': 'T2B',
-                'val0': count0 / total0 if total0 > 0 else 0,
-                'sig0': 0,
-                'val1': count1 / total1 if total1 > 0 else 0,
-                'sig1': 0,
-            }})
+                dictSideQreFormat.update({'t2b': {
+                    'catLbl': 'T2B',
+                    'val0': count0 / total0 if total0 > 0 else 0,
+                    'sig0': 0,
+                    'val1': count1 / total1 if total1 > 0 else 0,
+                    'sig1': 0,
+                }})
 
-            dictSideQreFormat['t2b'] = self.run_ttest_rel(dictSideQreFormat['t2b'], df['temp0'], df['temp1'])
+                dictSideQreFormat['t2b'] = self.run_ttest_rel(dictSideQreFormat['t2b'], df['temp0'], df['temp1'])
 
-        # B2B
-        if 'B2B' in atts:
-            count0 = df.loc[df[qres[0]] <= lstCats[1], qres[0]].count()
-            count1 = df.loc[df[qres[1]] <= lstCats[1], qres[1]].count()
+            # B2B
+            if 'B2B' in atts:
+                count0 = df.loc[df[qres[0]] <= lstCats[1], qres[0]].count()
+                count1 = df.loc[df[qres[1]] <= lstCats[1], qres[1]].count()
 
-            df['temp0'] = [1 if a <= lstCats[1] else 0 for a in df[qres[0]]]
-            df['temp1'] = [1 if a <= lstCats[1] else 0 for a in df[qres[1]]]
+                df['temp0'] = [1 if a <= lstCats[1] else 0 for a in df[qres[0]]]
+                df['temp1'] = [1 if a <= lstCats[1] else 0 for a in df[qres[1]]]
 
-            dictSideQreFormat.update({'b2b': {
-                'catLbl': 'B2B',
-                'val0': count0 / total0 if total0 > 0 else 0,
-                'sig0': 0,
-                'val1': count1 / total1 if total1 > 0 else 0,
-                'sig1': 0,
-            }})
+                dictSideQreFormat.update({'b2b': {
+                    'catLbl': 'B2B',
+                    'val0': count0 / total0 if total0 > 0 else 0,
+                    'sig0': 0,
+                    'val1': count1 / total1 if total1 > 0 else 0,
+                    'sig1': 0,
+                }})
 
-            dictSideQreFormat['b2b'] = self.run_ttest_rel(dictSideQreFormat['b2b'], df['temp0'], df['temp1'])
+                dictSideQreFormat['b2b'] = self.run_ttest_rel(dictSideQreFormat['b2b'], df['temp0'], df['temp1'])
 
-        # Mean
-        if 'Mean' in atts:
+            # Mean
+            if 'Mean' in atts:
 
-            if qType == 'JR':
+                if qType == 'JR':
 
-                if self.isJR3Factors:
+                    if self.isJR3Factors:
+                        df[qres[0]].replace({4: 2, 5: 1}, inplace=True)
+                        df[qres[1]].replace({4: 2, 5: 1}, inplace=True)
+
+                    if len(lstCats) == 6:
+                        df[qres[0]].replace({6: np.nan}, inplace=True)
+                        df[qres[1]].replace({6: np.nan}, inplace=True)
+
+                dictSideQreFormat.update({'mean': {
+                    'catLbl': 'Mean',
+                    'val0': df[qres[0]].mean() if df[qres[0]].count() else 0,
+                    'sig0': 0,
+                    'val1': df[qres[1]].mean() if df[qres[1]].count() else 0,
+                    'sig1': 0,
+                }})
+
+                dictSideQreFormat['mean'] = self.run_ttest_rel(dictSideQreFormat['mean'], df[qres[0]], df[qres[1]])
+
+
+            # Std
+            if qType in ['OL', 'JR']:
+
+                if qType == 'JR':
                     df[qres[0]].replace({4: 2, 5: 1}, inplace=True)
                     df[qres[1]].replace({4: 2, 5: 1}, inplace=True)
 
-                if len(lstCats) == 6:
-                    df[qres[0]].replace({6: np.nan}, inplace=True)
-                    df[qres[1]].replace({6: np.nan}, inplace=True)
+                    if len(lstCats) == 6:
+                        df[qres[0]].replace({6: np.nan}, inplace=True)
+                        df[qres[1]].replace({6: np.nan}, inplace=True)
 
-            dictSideQreFormat.update({'mean': {
-                'catLbl': 'Mean',
-                'val0': df[qres[0]].mean() if df[qres[0]].count() else 0,
-                'sig0': 0,
-                'val1': df[qres[1]].mean() if df[qres[1]].count() else 0,
-                'sig1': 0,
-            }})
-
-            dictSideQreFormat['mean'] = self.run_ttest_rel(dictSideQreFormat['mean'], df[qres[0]], df[qres[1]])
-
-
-        # Std
-        if qType in ['OL', 'JR']:
-
-            if qType == 'JR':
-                df[qres[0]].replace({4: 2, 5: 1}, inplace=True)
-                df[qres[1]].replace({4: 2, 5: 1}, inplace=True)
-
-                if len(lstCats) == 6:
-                    df[qres[0]].replace({6: np.nan}, inplace=True)
-                    df[qres[1]].replace({6: np.nan}, inplace=True)
-
-            dictSideQreFormat.update({'std': {
-                'catLbl': 'Standard Deviation',
-                'val0': df[qres[0]].std() if df[qres[0]].count() else 0,
-                'sig0': 0,
-                'val1': df[qres[1]].std() if df[qres[1]].count() else 0,
-                'sig1': 0,
-            }})
+                dictSideQreFormat.update({'std': {
+                    'catLbl': 'Standard Deviation',
+                    'val0': df[qres[0]].std() if df[qres[0]].count() else 0,
+                    'sig0': 0,
+                    'val1': df[qres[1]].std() if df[qres[1]].count() else 0,
+                    'sig1': 0,
+                }})
 
 
         return dictSideQreFormat
@@ -862,121 +923,123 @@ class ToplineExporter:
             # mean OL + JR & others Qre
             for key1, val1 in val['sideQres'].items():
 
-                if key == 'Total':
-                    ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
-                    ws.cell(row=sideStartRow, column=5).value = val1["qreLbl"].split('. ')[1]
+                if val1['type'] in ['OL', 'JR', 'FC']:
 
-                    if val1['type'] == 'OL':
-                        ws.cell(row=sideStartRow, column=4).value = '5pt'
-                    else:
-                        ws.cell(row=sideStartRow, column=4).value = val1['type']
+                    if key == 'Total':
+                        ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
+                        ws.cell(row=sideStartRow, column=5).value = val1["qreLbl"].split('. ')[1]
 
-                    if val1['type'] == 'JR':
-                        ws.cell(row=sideStartRow, column=3).fill = PatternFill('solid', fgColor='FCE4D6')
-                        ws.cell(row=sideStartRow, column=4).fill = PatternFill('solid', fgColor='FCE4D6')
-                        ws.cell(row=sideStartRow, column=5).fill = PatternFill('solid', fgColor='FCE4D6')
+                        if val1['type'] == 'OL':
+                            ws.cell(row=sideStartRow, column=4).value = '5pt'
+                        else:
+                            ws.cell(row=sideStartRow, column=4).value = val1['type']
 
-                    ws.cell(sideStartRow, 3).border = Border(top=dot, bottom=dot, left=medium, right=thin)
-                    ws.cell(sideStartRow, 4).border = Border(top=dot, bottom=dot, left=thin, right=thin)
-                    ws.cell(sideStartRow, 5).border = Border(top=dot, bottom=dot, left=thin, right=medium)
+                        if val1['type'] == 'JR':
+                            ws.cell(row=sideStartRow, column=3).fill = PatternFill('solid', fgColor='FCE4D6')
+                            ws.cell(row=sideStartRow, column=4).fill = PatternFill('solid', fgColor='FCE4D6')
+                            ws.cell(row=sideStartRow, column=5).fill = PatternFill('solid', fgColor='FCE4D6')
 
-
-                cellProd1 = ws.cell(row=3, column=headerStartCol)
-                cellProd1.value = int(val1['productCodes'][0])
-                cellProd1.font = Font(bold=True, color='FFFF00')
-                cellProd1.fill = PatternFill('solid', fgColor='002060')
-                cellProd1.alignment = Alignment(horizontal='center', vertical='center')
-                cellProd1.border = Border(left=medium, right=thin, top=thin)
-
-                cellProd2 = ws.cell(row=3, column=headerStartCol + 1)
-                cellProd2.value = int(val1['productCodes'][1])
-                cellProd2.font = Font(bold=True, color='FFFF00')
-                cellProd2.fill = PatternFill('solid', fgColor='002060')
-                cellProd2.alignment = Alignment(horizontal='center', vertical='center')
-                cellProd2.border = Border(right=medium, top=thin)
-
-                for key2, val2 in val1['sigResult'].items():
-
-                    if key2 == 'base':
-                        cellValLbl = ws.cell(row=4, column=1)
-                        cellVal0 = ws.cell(row=4, column=headerStartCol)
-                        cellVal1 = ws.cell(row=4, column=headerStartCol + 1)
-
-                        if cellValLbl.value is None:
-                            ws.cell(4, 1).border = Border(top=medium, bottom=medium)
-                            ws.cell(4, 2).border = Border(top=medium, bottom=medium)
-                            ws.cell(4, 3).border = Border(top=medium, bottom=medium)
-                            ws.cell(4, 4).border = Border(top=medium, bottom=medium)
-                            ws.cell(4, 5).border = Border(top=medium, bottom=medium, right=medium)
-
-                            ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=5)
-                            cellValLbl.value = 'N='  # val2['catLbl']
-                            cellValLbl.font, cellValLbl.fill = Font(bold=True, color='FF0000'), PatternFill('solid', fgColor='C6E0B4')
-                            cellValLbl.border = Border(left=medium, top=medium, right=medium, bottom=thin)
-                            cellValLbl.alignment = Alignment(horizontal='right')
+                        ws.cell(sideStartRow, 3).border = Border(top=dot, bottom=dot, left=medium, right=thin)
+                        ws.cell(sideStartRow, 4).border = Border(top=dot, bottom=dot, left=thin, right=thin)
+                        ws.cell(sideStartRow, 5).border = Border(top=dot, bottom=dot, left=thin, right=medium)
 
 
-                        if cellVal0.value is None:
-                            cellVal0.value = val2['val0']
-                            cellVal0.font, cellVal0.fill = Font(bold=True, color='FF0000'), PatternFill('solid', fgColor='C6E0B4')
-                            cellVal0.border = Border(left=thin, top=medium, right=thin, bottom=medium)
+                    cellProd1 = ws.cell(row=3, column=headerStartCol)
+                    cellProd1.value = int(val1['productCodes'][0])
+                    cellProd1.font = Font(bold=True, color='FFFF00')
+                    cellProd1.fill = PatternFill('solid', fgColor='002060')
+                    cellProd1.alignment = Alignment(horizontal='center', vertical='center')
+                    cellProd1.border = Border(left=medium, right=thin, top=thin)
 
-                        if cellVal1.value is None:
-                            cellVal1.value = val2['val1']
-                            cellVal1.font, cellVal1.fill = Font(bold=True, color='FF0000'), PatternFill('solid', fgColor='C6E0B4')
-                            cellVal1.border = Border(left=thin, top=medium, right=medium, bottom=medium)
+                    cellProd2 = ws.cell(row=3, column=headerStartCol + 1)
+                    cellProd2.value = int(val1['productCodes'][1])
+                    cellProd2.font = Font(bold=True, color='FFFF00')
+                    cellProd2.fill = PatternFill('solid', fgColor='002060')
+                    cellProd2.alignment = Alignment(horizontal='center', vertical='center')
+                    cellProd2.border = Border(right=medium, top=thin)
 
-                    else:
-                        if key2 == 'mean' or (key2 != 'mean' and val1['type'] not in ['OL', 'JR']):
-                            cellValLbl = ws.cell(row=sideStartRow, column=2)
-                            cellVal0 = ws.cell(row=sideStartRow, column=headerStartCol)
-                            cellVal1 = ws.cell(row=sideStartRow, column=headerStartCol + 1)
+                    for key2, val2 in val1['sigResult'].items():
+
+                        if key2 == 'base':
+                            cellValLbl = ws.cell(row=4, column=1)
+                            cellVal0 = ws.cell(row=4, column=headerStartCol)
+                            cellVal1 = ws.cell(row=4, column=headerStartCol + 1)
+
+                            if cellValLbl.value is None:
+                                ws.cell(4, 1).border = Border(top=medium, bottom=medium)
+                                ws.cell(4, 2).border = Border(top=medium, bottom=medium)
+                                ws.cell(4, 3).border = Border(top=medium, bottom=medium)
+                                ws.cell(4, 4).border = Border(top=medium, bottom=medium)
+                                ws.cell(4, 5).border = Border(top=medium, bottom=medium, right=medium)
+
+                                ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=5)
+                                cellValLbl.value = 'N='  # val2['catLbl']
+                                cellValLbl.font, cellValLbl.fill = Font(bold=True, color='FF0000'), PatternFill('solid', fgColor='C6E0B4')
+                                cellValLbl.border = Border(left=medium, top=medium, right=medium, bottom=thin)
+                                cellValLbl.alignment = Alignment(horizontal='right')
 
 
-                            if val1['type'] in ['FC']:
-                                ws.cell(row=sideStartRow, column=1).value = 'CÁC CÂU SO SÁNH'
-                            elif val1['type'] in ['SA']:
-                                ws.cell(row=sideStartRow, column=1).value = 'CÁC CÂU KHÁC'
-                                ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
-                                ws.cell(row=sideStartRow, column=4).value = val1["qreLbl"].split('. ')[1]
-                                ws.cell(row=sideStartRow, column=5).value = val2['catLbl']
+                            if cellVal0.value is None:
+                                cellVal0.value = val2['val0']
+                                cellVal0.font, cellVal0.fill = Font(bold=True, color='FF0000'), PatternFill('solid', fgColor='C6E0B4')
+                                cellVal0.border = Border(left=thin, top=medium, right=thin, bottom=medium)
 
-                                ws.cell(sideStartRow, 3).border = Border(top=dot, bottom=dot, left=medium, right=thin)
-                                ws.cell(sideStartRow, 4).border = Border(top=dot, bottom=dot, left=thin, right=thin)
-                                ws.cell(sideStartRow, 5).border = Border(top=dot, bottom=dot, left=thin, right=medium)
-                            else:
-                                ws.cell(row=sideStartRow, column=1).value = 'CÁC CÂU OL(Mean) & JR (Mean)'  # val2['catLbl']
+                            if cellVal1.value is None:
+                                cellVal1.value = val2['val1']
+                                cellVal1.font, cellVal1.fill = Font(bold=True, color='FF0000'), PatternFill('solid', fgColor='C6E0B4')
+                                cellVal1.border = Border(left=thin, top=medium, right=medium, bottom=medium)
 
-                            cellValLbl.value = val1['groupLbl']
+                        else:
+                            if key2 == 'mean' or (key2 != 'mean' and val1['type'] not in ['OL', 'JR']):
+                                cellValLbl = ws.cell(row=sideStartRow, column=2)
+                                cellVal0 = ws.cell(row=sideStartRow, column=headerStartCol)
+                                cellVal1 = ws.cell(row=sideStartRow, column=headerStartCol + 1)
 
 
-                            cellVal0.value = val2['val0']
-                            cellVal1.value = val2['val1']
+                                if val1['type'] in ['FC']:
+                                    ws.cell(row=sideStartRow, column=1).value = 'CÁC CÂU SO SÁNH'
+                                elif val1['type'] in ['SA', 'MA']:
+                                    ws.cell(row=sideStartRow, column=1).value = 'CÁC CÂU KHÁC'
+                                    ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
+                                    ws.cell(row=sideStartRow, column=4).value = val1["qreLbl"].split('. ')[1]
+                                    ws.cell(row=sideStartRow, column=5).value = val2['catLbl']
 
-                            cellValLbl.border = Border(left=medium, right=medium, top=thin, bottom=thin)
-                            cellVal0.border = Border(left=medium, right=thin, top=dot, bottom=dot)
-                            cellVal1.border = Border(left=thin, right=medium, top=dot, bottom=dot)
+                                    ws.cell(sideStartRow, 3).border = Border(top=dot, bottom=dot, left=medium, right=thin)
+                                    ws.cell(sideStartRow, 4).border = Border(top=dot, bottom=dot, left=thin, right=thin)
+                                    ws.cell(sideStartRow, 5).border = Border(top=dot, bottom=dot, left=thin, right=medium)
+                                else:
+                                    ws.cell(row=sideStartRow, column=1).value = 'CÁC CÂU OL(Mean) & JR (Mean)'  # val2['catLbl']
 
-                            if key2 == 'mean':
-                                cellVal0.number_format = '0.00'
-                                cellVal1.number_format = '0.00'
-                            else:
-                                if not val1['isCount']:
-                                    if self.isDisplayPctSign:
-                                        cellVal0.number_format = '0%'
-                                        cellVal1.number_format = '0%'
-                                    else:
-                                        cellVal0.number_format = '0'
-                                        cellVal1.number_format = '0'
+                                cellValLbl.value = val1['groupLbl']
 
-                                        cellVal0.value = cellVal0.value * 100
-                                        cellVal1.value = cellVal1.value * 100
 
-                            if val1['type'] in ['OL', 'FC']:
-                                cellVal0.font = self.fillSigColor(val2['sig0'])
-                                cellVal1.font = self.fillSigColor(val2['sig1'])
+                                cellVal0.value = val2['val0']
+                                cellVal1.value = val2['val1']
 
-                            sideStartRow += 1
+                                cellValLbl.border = Border(left=medium, right=medium, top=thin, bottom=thin)
+                                cellVal0.border = Border(left=medium, right=thin, top=dot, bottom=dot)
+                                cellVal1.border = Border(left=thin, right=medium, top=dot, bottom=dot)
+
+                                if key2 == 'mean':
+                                    cellVal0.number_format = '0.00'
+                                    cellVal1.number_format = '0.00'
+                                else:
+                                    if not val1['isCount']:
+                                        if self.isDisplayPctSign:
+                                            cellVal0.number_format = '0%'
+                                            cellVal1.number_format = '0%'
+                                        else:
+                                            cellVal0.number_format = '0'
+                                            cellVal1.number_format = '0'
+
+                                            cellVal0.value = cellVal0.value * 100
+                                            cellVal1.value = cellVal1.value * 100
+
+                                if val1['type'] in ['OL', 'FC']:
+                                    cellVal0.font = self.fillSigColor(val2['sig0'])
+                                    cellVal1.font = self.fillSigColor(val2['sig1'])
+
+                                sideStartRow += 1
 
             # mean JR
             for key1, val1 in val['sideQres'].items():

@@ -15,8 +15,8 @@
 {% endblock %}
 
 {% block search_bar %}
-    <form id="form_search_prj_name" class="d-none d-md-flex ms-4" action="/msn-prj/search" method="get" enctype="multipart/form-data">
-        <input class="form-control border-0" name="search_prj_name" type="search" placeholder="Project name/ID" value="{{ search_prj_name }}">
+    <form id="form_search_prj_name" class="d-none d-md-flex ms-4 w-100" action="/msn-prj/search" method="get" enctype="multipart/form-data">
+        <input class="form-control border-0" name="search_prj_name" type="search" placeholder="Search project name/ID" value="{{ search_prj_name }}">
     </form>
 {% endblock %}
 
@@ -306,6 +306,12 @@
     </div>
     <!-- Recent Sales End -->
 
+
+
+
+{% endblock %}
+
+{% block js_files %}
     <script src="{{ url_for('static', path='/js/my_frontend.js') }}"></script>
 
     <script type="text/javascript">

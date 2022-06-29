@@ -62,18 +62,23 @@
                     {% endblock %}
 
                     {% block sidebar_tool %}
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Tools</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="\convert-sav" class="dropdown-item">Convert to Sav</a>
-                            <a href="\baemin-check" class="dropdown-item">Baemin checking</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Tools</a>
+                            <div class="dropdown-menu bg-transparent border-0">
+                                <a href="\convert-sav" class="dropdown-item">Convert to Sav</a>
+                                <a href="\baemin-check" class="dropdown-item">Baemin checking</a>
+                            </div>
                         </div>
-                    </div>
+                    {% endblock %}
+
+                    {% block sidebar_wl %}
+                        <a href="\workload" class="nav-item nav-link"><i class="fa fa-file-alt me-2"></i>Workload</a>
                     {% endblock %}
 
                     {% block sidebar_chart %}
-                    <a href="\chart" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+                        <a href="\chart" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
                     {% endblock %}
+
                 </div>
             </nav>
         </div>
@@ -151,7 +156,8 @@
     <!-- Template Javascript -->
     <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 
-
+    {% block js_files %}
+    {% endblock %}
 
 <!--    <script src="static/lib/chart/chart.min.js"></script>-->
 <!--    <script src="static/lib/easing/easing.min.js"></script>-->
