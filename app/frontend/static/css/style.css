@@ -276,3 +276,26 @@
     border-color: var(--primary);
 }
 
+
+
+
+
+.msn-prj-tbl tr th:first-child,
+.msn-prj-tbl td:first-child {
+  position: sticky;
+  width: 100px;
+  left: 0;
+  z-index: 10;
+  background: #F3F6F9;
+}
+
+.msn-prj-tbl tr th:first-child {
+  z-index: 11;
+}
+
+.msn-prj-tbl tr th {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  background: #F3F6F9;
+}

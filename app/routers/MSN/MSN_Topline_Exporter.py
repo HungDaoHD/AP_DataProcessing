@@ -81,9 +81,10 @@ class ToplineExporter:
         try:
 
             wb = openpyxl.Workbook()
+            self.toplineName = self.toplineName.replace('Topline', 'Handcount')
             fileName = self.toplineName
 
-            self.toSummary(wb, self.dictTtest)
+            self.toSummary(wb, self.dictTtest, lstQreType=['OL', 'FC'])
 
             wb.remove(wb['Sheet'])
 
@@ -878,9 +879,12 @@ class ToplineExporter:
 
 
 
-    def toSummary(self, wb: openpyxl.workbook, dictTtest: dict):
+    def toSummary(self, wb: openpyxl.workbook, dictTtest: dict, lstQreType=None):
 
         print('Export Topline Summary')
+
+        if lstQreType is None:
+            lstQreType = ['OL', 'JR', 'FC']
 
         ws = wb.create_sheet('1. Summary')
         ws.sheet_properties.tabColor = '002060'
@@ -923,7 +927,7 @@ class ToplineExporter:
             # mean OL + JR & others Qre
             for key1, val1 in val['sideQres'].items():
 
-                if val1['type'] in ['OL', 'JR', 'FC']:
+                if val1['type'] in lstQreType:  # ['OL', 'JR', 'FC']
 
                     if key == 'Total':
                         ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
@@ -1044,7 +1048,7 @@ class ToplineExporter:
             # mean JR
             for key1, val1 in val['sideQres'].items():
 
-                if val1['type'] == 'JR':
+                if val1['type'] == 'JR' and val1['type'] in lstQreType:
 
                     if key == 'Total':
                         ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
@@ -1086,7 +1090,7 @@ class ToplineExporter:
             # % JR - Code 3
             for key1, val1 in val['sideQres'].items():
 
-                if val1['type'] == 'JR':
+                if val1['type'] == 'JR' and val1['type'] in lstQreType:
 
                     if key == 'Total':
                         ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
@@ -1181,7 +1185,7 @@ class ToplineExporter:
             # % T2B - JR
             for key1, val1 in val['sideQres'].items():
 
-                if val1['type'] == 'JR':
+                if val1['type'] == 'JR' and val1['type'] in lstQreType:
 
                     if key == 'Total':
                         ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
@@ -1276,7 +1280,7 @@ class ToplineExporter:
             # % B2B - JR
             for key1, val1 in val['sideQres'].items():
 
-                if val1['type'] == 'JR':
+                if val1['type'] == 'JR' and val1['type'] in lstQreType:
 
                     if key == 'Total':
                         ws.cell(row=sideStartRow, column=3).value = val1["qreLbl"].split('. ')[0]
