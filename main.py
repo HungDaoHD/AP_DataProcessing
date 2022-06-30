@@ -46,6 +46,13 @@ async def index(request: Request):
     return templates.TemplateResponse('workload.html', {'request': request, 'user_name': user_name})
 
 
+@app.get('/d-tbl-prj', response_class=HTMLResponse)
+async def index(request: Request):
+    user_name = token.get_token_username(request)
+    return templates.TemplateResponse('dtable_prj.html', {'request': request, 'user_name': user_name})
+
+
+# EXCEPTION_HANDLER-----------------------------------------------------------------------------------------------------
 @app.exception_handler(status.HTTP_404_NOT_FOUND)
 async def custom_404_handler(request: Request, _):
     print('HTTP_404_NOT_FOUND')
