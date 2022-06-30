@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, status, HTTPException
+from fastapi import FastAPI, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -10,7 +10,6 @@ import uvicorn
 
 
 templates = Jinja2Templates(directory='app/frontend/templates')
-
 
 app = FastAPI()
 
@@ -49,6 +48,7 @@ async def index(request: Request):
 
 @app.exception_handler(status.HTTP_404_NOT_FOUND)
 async def custom_404_handler(request: Request, _):
+    print('HTTP_404_NOT_FOUND')
     user_name = token.get_token_username(request)
     return templates.TemplateResponse('404.html', {'request': request, 'user_name': user_name})
 

@@ -46,6 +46,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -73,6 +74,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -96,6 +98,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -122,6 +125,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -146,6 +150,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -170,6 +175,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -194,6 +200,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -265,6 +272,7 @@ class ToplineExporter:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 

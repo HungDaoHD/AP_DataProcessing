@@ -330,7 +330,7 @@
 
                                     {% for key, val in prj.detail.oe_combine_cols.items() %}
 
-                                        <div class="input-group mb-1">
+                                        <div id="detail.oe_combine_cols.{{ key }}" class="input-group mb-1">
                                             <span class="input-group-text">{{ key }}</span>
 
                                             <input type="text" class="form-control" id="detail.oe_combine_cols.{{ key }}.0"
@@ -345,6 +345,10 @@
 
                                             <input type="text" class="form-control" id="detail.oe_combine_cols.{{ key }}.2"
                                                    name="detail.oe_combine_cols.{{ key }}.2" value="{{ val[2] }}" placeholder="" aria-label="">
+
+                                            <input type="button" class="btn btn-outline-danger" value="X"
+                                                   onclick="Del_Row('detail.oe_combine_cols.{{ key }}', '{{ key }} - {{ val[0] }}');">
+
                                         </div>
 
                                     {% endfor %}
@@ -418,9 +422,10 @@
                                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                                     <thead>
                                         <tr class="text-dark">
-                                            <th scope="col">#</th>
+                                            <th width="5%" scope="col">#</th>
                                             <th scope="col">Output data column name</th>
                                             <th scope="col">Rawdata column name</th>
+                                            <th width="5%" scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -429,12 +434,15 @@
 
                                             {% for key, val in prj.detail.scr_cols.items() %}
 
-                                                <tr>
-                                                    <td>{{ key }}</td>
+                                                <tr id="detail.scr_cols.{{ key }}">
+                                                    <td width="5%">{{ key }}</td>
                                                     <td><input type="text" class="form-control" id="detail.scr_cols.{{ key }}.0"
                                                            name="detail.scr_cols.{{ key }}.0" value="{{ val[0] }}" placeholder="" aria-label=""></td>
                                                     <td><input type="text" class="form-control" id="detail.scr_cols.{{ key }}.1"
                                                            name="detail.scr_cols.{{ key }}.1" value="{{ val[1] }}" placeholder="" aria-label=""></td>
+
+                                                    <td width="5%"><input type="button" class="btn btn-outline-danger" value="X"
+                                                               onclick="Del_Row('detail.scr_cols.{{ key }}', '{{ key }} - {{ val[0] }}');"></td>
                                                 </tr>
 
                                             {% endfor %}
@@ -514,10 +522,11 @@
                                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                                     <thead>
                                         <tr class="text-dark">
-                                            <th scope="col">#</th>
+                                            <th width="5%" scope="col">#</th>
                                             <th scope="col">Output data column name</th>
                                             <th scope="col">Rawdata 1st product col name</th>
                                             <th scope="col">Rawdata 2nd product col name</th>
+                                            <th width="5%" scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -526,14 +535,16 @@
 
                                             {% for key, val in prj.detail.product_cols.items() %}
 
-                                                <tr>
-                                                    <td>{{ key }}</td>
+                                                <tr id="detail.product_cols.{{ key }}">
+                                                    <td width="5%">{{ key }}</td>
                                                     <td><input type="text" class="form-control" id="detail.product_cols.{{ key }}.0"
                                                            name="detail.product_cols.{{ key }}.0" value="{{ val[0] }}" placeholder="" aria-label=""></td>
                                                     <td><input type="text" class="form-control" id="detail.product_cols.{{ key }}.1"
                                                            name="detail.product_cols.{{ key }}.1" value="{{ val[1] }}" placeholder="" aria-label=""></td>
                                                     <td><input type="text" class="form-control" id="detail.product_cols.{{ key }}.2"
                                                            name="detail.product_cols.{{ key }}.2" value="{{ val[2] }}" placeholder="" aria-label=""></td>
+                                                    <td width="5%"><input type="button" class="btn btn-outline-danger" value="X"
+                                                                          onclick="Del_Row('detail.product_cols.{{ key }}', '{{ key }} - {{ val[0] }}');"></td>
                                                 </tr>
 
                                             {% endfor %}
@@ -614,9 +625,10 @@
                                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                                     <thead>
                                         <tr class="text-dark">
-                                            <th scope="col">#</th>
+                                            <th width="5%" scope="col">#</th>
                                             <th scope="col">Output data column name</th>
                                             <th scope="col">Rawdata column name</th>
+                                            <th width="5%" scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -625,12 +637,14 @@
 
                                             {% for key, val in prj.detail.fc_cols.items() %}
 
-                                                <tr>
-                                                    <td>{{ key }}</td>
+                                                <tr id="detail.fc_cols.{{ key }}">
+                                                    <td width="5%">{{ key }}</td>
                                                     <td><input type="text" class="form-control" id="detail.fc_cols.{{ key }}.0"
                                                            name="detail.fc_cols.{{ key }}.0" value="{{ val[0] }}" placeholder="" aria-label=""></td>
                                                     <td><input type="text" class="form-control" id="detail.fc_cols.{{ key }}.1"
                                                            name="detail.fc_cols.{{ key }}.1" value="{{ val[1] }}" placeholder="" aria-label=""></td>
+                                                    <td width="5%"><input type="button" class="btn btn-outline-danger" value="X"
+                                                                          onclick="Del_Row('detail.fc_cols.{{ key }}', '{{ key }} - {{ val[0] }}');"></td>
                                                 </tr>
 
                                             {% endfor %}

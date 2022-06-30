@@ -15,9 +15,9 @@ from .MSN_Models import new_prj_template, new_user_template
 class MsnPrj:
 
     def __init__(self):
-        # MONGO_DETAILS = 'mongodb://localhost:27017'
-        MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
-        
+        MONGO_DETAILS = 'mongodb://localhost:27017'
+        # MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
+
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
         db_msn = client.msn
@@ -117,6 +117,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc(),
@@ -154,6 +155,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc(),
@@ -188,6 +190,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()
@@ -216,6 +219,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()
@@ -246,6 +250,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()
@@ -267,6 +272,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc(),
@@ -306,6 +312,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()
@@ -333,17 +340,55 @@ class MsnPrj:
                     parentKey = str(key).rsplit('.', 1)[0]
                     childKey = str(key).rsplit('.', 1)[1]
 
-                    if parentKey in ['detail.oe_combine_cols', 'detail.scr_cols', 'detail.product_cols', 'detail.fc_cols']:
+                    # if parentKey in ['detail.oe_combine_cols', 'detail.scr_cols', 'detail.product_cols', 'detail.fc_cols']:
+                    #
+                    #     if updateData:
+                    #         updateData[parentKey][childKey] = upVal
+                    #     else:
+                    #         updateData = {
+                    #             parentKey:
+                    #                 {
+                    #                     childKey: upVal
+                    #                 }
+                    #         }
 
-                        if updateData:
-                            updateData[parentKey][childKey] = upVal
+                    if 'detail.oe_combine_cols' in parentKey \
+                            or 'detail.scr_cols' in parentKey \
+                            or 'detail.product_cols' in parentKey \
+                            or 'detail.fc_cols' in parentKey:
+
+                        if isinstance(upVal, list):
+
+                            if parentKey in updateData.keys():
+                                updateData[parentKey].update({childKey: upVal})
+                            else:
+                                updateData = {parentKey: {childKey: upVal}}
+
                         else:
-                            updateData = {
-                                parentKey:
-                                    {
-                                        childKey: upVal
+
+                            lstKey = str(key).split('.')
+                            parentKey2 = '.'.join(lstKey[:2])
+                            childKey2 = lstKey[-2]
+
+                            if updateData:
+
+                                if parentKey2 in updateData.keys():
+                                    if childKey2 in updateData[parentKey2].keys():
+                                        updateData[parentKey2][childKey2].append(upVal)
+                                    else:
+                                        updateData[parentKey2].update({childKey2: [upVal]})
+                                else:
+                                    updateData[parentKey2] = {
+                                        childKey2: [upVal]
                                     }
-                            }
+
+                            else:
+                                updateData = {
+                                    parentKey2:
+                                        {
+                                            childKey2: [upVal]
+                                        }
+                                }
 
                     elif 'detail.addin_vars' in parentKey:
 
@@ -537,6 +582,7 @@ class MsnPrj:
                 }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()
@@ -566,6 +612,7 @@ class MsnPrj:
                 }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc(),
@@ -645,7 +692,7 @@ class MsnPrj:
                 }
 
         except Exception:
-
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()
@@ -725,7 +772,7 @@ class MsnPrj:
             }
 
         except Exception:
-
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc(),
@@ -766,6 +813,7 @@ class MsnPrj:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'strErr': traceback.format_exc()

@@ -51,6 +51,7 @@ class AddinVariables:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 

@@ -195,6 +195,7 @@ class ExportMSNData:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -295,6 +296,7 @@ class ExportMSNData:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -352,6 +354,7 @@ class ExportMSNData:
             }
 
         except Exception:
+            print(traceback.format_exc())
             return {
                 'isSuccess': False,
                 'err': traceback.format_exc(),
@@ -374,6 +377,7 @@ class ExportMSNData:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -430,6 +434,7 @@ class ExportMSNData:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -562,6 +567,7 @@ class ExportMSNData:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -587,6 +593,7 @@ class ExportMSNData:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 
@@ -603,6 +610,7 @@ class ExportMSNData:
             return True, None
 
         except Exception:
+            print(traceback.format_exc())
             return False, traceback.format_exc()
 
 

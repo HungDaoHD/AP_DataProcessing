@@ -989,4 +989,16 @@ function fnc_tl_submit(btn, form_id, lbl){
 
 };
 
+function Del_Row(elm_id, strName){
+
+    isDel = confirm("Confirm delete row #" + strName + "?");
+
+    if(isDel == true){
+        var elm_remove = document.getElementById(elm_id);
+        elm_remove.remove();
+    }
+
+};
+
+
 //END MSN_PRJ_ID
