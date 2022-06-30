@@ -17,7 +17,7 @@ class MsnPrj:
     def __init__(self):
         # MONGO_DETAILS = 'mongodb://localhost:27017'
         MONGO_DETAILS = 'mongodb+srv://hungdao:Hung123456@cluster0.m1qzy.mongodb.net/test'
-        
+
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
         db_msn = client.msn
@@ -62,24 +62,46 @@ class MsnPrj:
             }
 
 
-    @staticmethod
-    def get_overView(lst_prj: list):
-        overView = {
-            'total': len(lst_prj),
-            'completed': 0,
-            'on_going': 0,
-            'pending_cancel': 0,
-        }
+    async def get_overView(self):
 
-        # for item in lst_prj:
-        #     if item['status'] in ['Completed']:
-        #         overView['completed'] += 1
-        #     elif item['status'] in ['On Going']:
-        #         overView['on_going'] += 1
-        #     elif item['status'] in ['Pending', 'Cancel']:
-        #         overView['pending_cancel'] += 1
+        try:
+            lst_prj = list()
+            async for prj in self.prj_collection.find():
+                lst_prj.append(self.prj_info(prj, True))
 
-        return overView
+            overView = {
+                'total': len(lst_prj),
+                'completed': 0,
+                'on_going': 0,
+                'pending': 0,
+                'cancel': 0
+            }
+
+            for item in lst_prj:
+                if item['status'] in ['Completed']:
+                    overView['completed'] += 1
+                elif item['status'] in ['On Going']:
+                    overView['on_going'] += 1
+                elif item['status'] in ['Pending']:
+                    overView['pending'] += 1
+                elif item['status'] in ['Cancel']:
+                    overView['cancel'] += 1
+
+            return {
+                'isSuccess': True,
+                'strErr': None,
+                'overView': overView
+            }
+
+        except Exception:
+            print(traceback.format_exc())
+            return {
+                'isSuccess': False,
+                'strErr': traceback.format_exc(),
+                'overView': None
+            }
+
+
 
 
     @staticmethod
@@ -101,8 +123,6 @@ class MsnPrj:
             async for prj in self.prj_collection.find().sort('create_date', -1):
                 lst_prj.append(self.prj_info(prj, True))
 
-            overView = self.get_overView(lst_prj)
-
             step = 5
             page_count = self.count_page(lst_prj, step)
 
@@ -112,7 +132,7 @@ class MsnPrj:
                 'isSuccess': True,
                 'strErr': None,
                 'lst_prj': lst_prj,
-                'overView': overView,
+                'overView': None,
                 'page_count': page_count
             }
 
@@ -141,8 +161,6 @@ class MsnPrj:
             ).sort('create_date', -1):
                 lst_prj.append(self.prj_info(prj, True))
 
-            overView = self.get_overView(lst_prj)
-
             step = 10
             page_count = self.count_page(lst_prj, step)
 
@@ -150,7 +168,7 @@ class MsnPrj:
                 'isSuccess': True,
                 'strErr': None,
                 'lst_prj': lst_prj,
-                'overView': overView,
+                'overView': None,
                 'page_count': page_count
             }
 

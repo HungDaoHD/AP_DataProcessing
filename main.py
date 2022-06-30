@@ -6,6 +6,7 @@ from app.routers import Excel2Sav, BaeminCheck
 from app.routers.MSN import MSN_Projects
 from app.routers.Auth import authentication, token
 from app.routers.User import Users
+from app.routers.Charts import Charts
 import uvicorn
 
 
@@ -18,12 +19,13 @@ app.include_router(BaeminCheck.router)
 app.include_router(MSN_Projects.router)
 app.include_router(authentication.router)
 app.include_router(Users.router)
+app.include_router(Charts.router)
 
 app.mount('/static', StaticFiles(directory='app/frontend/static'), name='static')
 
 
 @app.get('/', response_class=HTMLResponse)
-async def index(request: Request):
+async def home(request: Request):
     user_name = token.get_token_username(request)
     return templates.TemplateResponse('home.html', {'request': request, 'user_name': user_name})
 
@@ -34,20 +36,14 @@ async def index(request: Request):
     return templates.TemplateResponse('home.html', {'request': request, 'user_name': user_name})
 
 
-@app.get('/chart', response_class=HTMLResponse)
-async def index(request: Request):
-    user_name = token.get_token_username(request)
-    return templates.TemplateResponse('chart.html', {'request': request, 'user_name': user_name})
-
-
 @app.get('/workload', response_class=HTMLResponse)
-async def index(request: Request):
+async def workload(request: Request):
     user_name = token.get_token_username(request)
     return templates.TemplateResponse('workload.html', {'request': request, 'user_name': user_name})
 
 
 @app.get('/d-tbl-prj', response_class=HTMLResponse)
-async def index(request: Request):
+async def dtable_prj(request: Request):
     user_name = token.get_token_username(request)
     return templates.TemplateResponse('dtable_prj.html', {'request': request, 'user_name': user_name})
 
