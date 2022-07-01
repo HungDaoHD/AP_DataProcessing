@@ -5,6 +5,7 @@ import io
 import numpy as np
 import zipfile
 import re
+import os
 
 
 class APDataConverter:
@@ -276,6 +277,10 @@ class APDataConverter:
         with zipfile.ZipFile(self.zipName, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
             zf.write(self.savName)
             zf.write(self.spsName)
+
+            os.remove(self.savName)
+            os.remove(self.spsName)
+
 
         self.zipFile = zf
 

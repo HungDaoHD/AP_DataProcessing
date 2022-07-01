@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Request, UploadFile, HTTPException, status
 from fastapi.responses import HTMLResponse
 from starlette.responses import FileResponse
+from starlette.background import BackgroundTask
 from fastapi.templating import Jinja2Templates
 from ..classes.AP_DataConverter import APDataConverter
+from ..classes.CleanUpResponseFiles import CleanupFiles
 from .Auth import token
 import traceback
 
@@ -34,7 +36,9 @@ async def convert_sav(file: UploadFile, request: Request):
         apCvt.getMRSetSyntax()
         apCvt.zipfiles()
 
-        return FileResponse(apCvt.zipName, filename=apCvt.zipName)
+        cleanup = CleanupFiles(lstFileName=[apCvt.zipName])
+
+        return FileResponse(apCvt.zipName, filename=apCvt.zipName, background=BackgroundTask(cleanup.cleanup))
 
         # return templates.TemplateResponse('successful.html', {
         #     'request': request,

@@ -178,6 +178,7 @@ async def prj_data_export(request: Request, _id: str, export_section):
     result = await msn_prj.data_export(_id, export_section)
 
     if result['isSuccess']:
+
         cleanup = CleanupFiles(lstFileName=[result['zipName']])
         return FileResponse(result['zipName'], filename=result['zipName'], background=BackgroundTask(cleanup.cleanup))
 
@@ -214,7 +215,8 @@ async def prj_handcount_export(request: Request, _id: str, export_section):
 
     if result['isSuccess']:
 
-        return FileResponse(result['zipName'], filename=result['zipName'])
+        cleanup = CleanupFiles(lstFileName=[result['zipName']])
+        return FileResponse(result['zipName'], filename=result['zipName'], background=BackgroundTask(cleanup.cleanup))
 
     else:
         return templates.TemplateResponse('error.html', {
@@ -231,7 +233,8 @@ async def prj_topline_export_full(request: Request, _id: str, export_section):
 
     if result['isSuccess']:
 
-        return FileResponse(result['zipName'], filename=result['zipName'])
+        cleanup = CleanupFiles(lstFileName=[result['zipName']])
+        return FileResponse(result['zipName'], filename=result['zipName'], background=BackgroundTask(cleanup.cleanup))
 
     else:
         return templates.TemplateResponse('error.html', {
@@ -248,7 +251,8 @@ async def prj_topline_export_pro_1(request: Request, _id: str, export_section):
 
     if result['isSuccess']:
 
-        return FileResponse(result['zipName'], filename=result['zipName'])
+        cleanup = CleanupFiles(lstFileName=[result['zipName']])
+        return FileResponse(result['zipName'], filename=result['zipName'], background=BackgroundTask(cleanup.cleanup))
 
     else:
         return templates.TemplateResponse('error.html', {
@@ -265,7 +269,8 @@ async def prj_topline_export_pro_2(request: Request, _id: str, export_section):
 
     if result['isSuccess']:
 
-        return FileResponse(result['zipName'], filename=result['zipName'])
+        cleanup = CleanupFiles(lstFileName=[result['zipName']])
+        return FileResponse(result['zipName'], filename=result['zipName'], background=BackgroundTask(cleanup.cleanup))
 
     else:
         return templates.TemplateResponse('error.html', {
@@ -282,7 +287,8 @@ async def prj_topline_export_ua_corr(request: Request, _id: str, export_section)
 
     if result['isSuccess']:
 
-        return FileResponse(result['zipName'], filename=result['zipName'])
+        cleanup = CleanupFiles(lstFileName=[result['zipName']])
+        return FileResponse(result['zipName'], filename=result['zipName'], background=BackgroundTask(cleanup.cleanup))
 
     else:
         return templates.TemplateResponse('error.html', {

@@ -2,7 +2,9 @@ from fastapi import APIRouter, Request, UploadFile, HTTPException, status
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
+from starlette.background import BackgroundTask
 from ..classes.Baemin_Checking import BaeminCheck
+from ..classes.CleanUpResponseFiles import CleanupFiles
 from .Auth import token
 import traceback
 
@@ -33,7 +35,9 @@ async def baemin_checking(file: UploadFile, request: Request):
         bmc.load(file)
         bmc.check()
 
-        return FileResponse(bmc.strFileName, filename=bmc.strFileName)
+        cleanup = CleanupFiles(lstFileName=[bmc.strFileName])
+
+        return FileResponse(bmc.strFileName, filename=bmc.strFileName, background=BackgroundTask(cleanup.cleanup))
 
     except Exception:
         print(traceback.format_exc())
