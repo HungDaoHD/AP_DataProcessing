@@ -3,6 +3,7 @@ import numpy as np
 import pyreadstat
 import zipfile
 import traceback
+import os
 
 
 # warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
@@ -604,6 +605,7 @@ class ExportMSNData:
             with zipfile.ZipFile(self.zipName, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
                 for f in lstFile:
                     zf.write(f)
+                    os.remove(f)
 
             self.zipFile = zf
 
