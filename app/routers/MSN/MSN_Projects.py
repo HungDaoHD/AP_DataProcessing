@@ -2,8 +2,12 @@ from fastapi import APIRouter, Request, UploadFile, Body, status, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
+from starlette.background import BackgroundTask
 from .MSN_Database import MsnPrj
 from ..Auth import oauth2, token
+from ...classes.CleanUpResponseFiles import CleanupFiles
+
+
 
 
 msn_prj = MsnPrj()
@@ -165,14 +169,17 @@ async def clear_prj_data(request: Request, _id: str):
         })
 
 
+
+
+
 @router.get('/data_export/{_id}', response_class=FileResponse)
 async def prj_data_export(request: Request, _id: str, export_section):
 
     result = await msn_prj.data_export(_id, export_section)
 
     if result['isSuccess']:
-
-        return FileResponse(result['zipName'], filename=result['zipName'])
+        cleanup = CleanupFiles(lstFileName=[result['zipName']])
+        return FileResponse(result['zipName'], filename=result['zipName'], background=BackgroundTask(cleanup.cleanup))
 
     else:
         return templates.TemplateResponse('error.html', {
