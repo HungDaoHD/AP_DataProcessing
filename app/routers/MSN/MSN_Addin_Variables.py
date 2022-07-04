@@ -61,6 +61,8 @@ class AddinVariables:
         if strCondition.upper() != 'SYSMISS':
             df = self.df
             strCondition = str(strCondition).replace('=', '==').replace('<>', '!=')
+            strCondition = str(strCondition).replace('>==', '>=').replace('<==', '<=')
+
             lstCondition = strCondition.split(' ')
 
             dictQreCond = dict()

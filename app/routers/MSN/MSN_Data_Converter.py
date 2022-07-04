@@ -134,9 +134,16 @@ class QMeFileConvert:
                 }
             }
 
-            for col in dfQres.columns:
-                if col not in ['Name of items', 'Question type', 'Question(Matrix)', 'Question(Normal)'] \
-                        and dfQres.loc[idx, col] is not None:
+            lstHeaderCol = list(dfQres.columns)
+            lstHeaderCol.remove('Name of items')
+            lstHeaderCol.remove('Question type')
+            lstHeaderCol.remove('Question(Matrix)')
+            lstHeaderCol.remove('Question(Normal)')
+
+            for col in lstHeaderCol:
+                # if col not in ['Name of items', 'Question type', 'Question(Matrix)', 'Question(Normal)'] \
+                #         and dfQres.loc[idx, col] is not None and len(dfQres.loc[idx, col]) > 0:
+                if dfQres.loc[idx, col] is not None and len(str(dfQres.loc[idx, col])) > 0:
                     dictQres[strQreName]['cats'].update({str(col): self.cleanhtml(str(dfQres.loc[idx, col]))})
 
         lstMatrixHeader = list()
@@ -144,11 +151,12 @@ class QMeFileConvert:
             if dictQres[k]['isMAMatrix'] and len(dictQres[k]['cats'].keys()):
                 lstMatrixHeader.append(k)
 
-        for i in lstMatrixHeader:
-            for code in dictQres[i]['cats'].keys():
-                lstLblMatrixMA = dictQres[f'{i}_{code}']['label'].split('_')
-                dictQres[f'{i}_{code}']['cats'].update({'1': self.cleanhtml(lstLblMatrixMA[1])})
-                dictQres[f'{i}_{code}']['label'] = f"{dictQres[i]['label']}_{lstLblMatrixMA[1]}"
+        if len(lstMatrixHeader):
+            for i in lstMatrixHeader:
+                for code in dictQres[i]['cats'].keys():
+                    lstLblMatrixMA = dictQres[f'{i}_{code}']['label'].split('_')
+                    dictQres[f'{i}_{code}']['cats'].update({'1': self.cleanhtml(lstLblMatrixMA[1])})
+                    dictQres[f'{i}_{code}']['label'] = f"{dictQres[i]['label']}_{lstLblMatrixMA[1]}"
 
         dictVarLbl = dict()
         dictValLbl = dict()

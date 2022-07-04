@@ -893,8 +893,10 @@ class ToplineExporter:
 
         if lstQreType is None:
             lstQreType = ['OL', 'JR', 'FC']
+            ws = wb.create_sheet('1. Summary')
+        else:
+            ws = wb.create_sheet('Handcount')
 
-        ws = wb.create_sheet('1. Summary')
         ws.sheet_properties.tabColor = '002060'
 
         thin = Side(border_style='thin', color='000000')
